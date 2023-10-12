@@ -1,23 +1,21 @@
 #include "FileIO.h"
 
-
 namespace FileIO {
 
 	std::optional<std::string> readFile(const std::filesystem::path& path) {
-		std::ifstream fileStream{path};
+		FileReader fileReader{path};
 
 		// Read From File
-		if (!fileStream.is_open()) {
-			std::cout << "Could not read file!" << std::endl;
+		if (!fileReader.hasContents()) {
 			return std::nullopt;
 		}
 
 		std::string line;
 		std::string file_data;
 
-		while (!fileStream.eof()) {
+		while (fileReader.hasContents()) {
 			line.clear();
-			std::getline(fileStream, line);
+			line = fileReader.readNextLine();
 			file_data.append(std::move(line) + "\n");
 		}
 
