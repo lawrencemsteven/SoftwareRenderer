@@ -24,5 +24,5 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(Catch2)
 
 add_subdirectory("slm")
-add_subdirectory("InputParser")
+add_subdirectory("CommandLineParser")
 add_subdirectory("FileIO")
