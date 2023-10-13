@@ -6,6 +6,8 @@
 
 namespace slm {
 
+	typedef VecT<int, 2> vec2i;
+
 	bool test_func();
 
 }
