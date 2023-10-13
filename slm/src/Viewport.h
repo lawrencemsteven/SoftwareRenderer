@@ -5,7 +5,7 @@ namespace slm {
 	template<class T, std::size_t N>
 	class Viewport {
 	public:
-		static enum class Corner {
+		enum class Corner {
 			BOTTOM_LEFT = 0,
 			BOTTOM_RIGHT = 1,
 			TOP_RIGHT = 2,

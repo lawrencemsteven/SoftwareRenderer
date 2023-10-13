@@ -3,6 +3,7 @@
 #include "LineT.h"
 #include "VecT.h"
 #include "Viewport.h"
+#include "PostscriptInterpreter.h"
 
 namespace slm {
 

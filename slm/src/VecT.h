@@ -40,6 +40,22 @@ namespace slm {
 			return m_vals[3];
 		}
 
+		template<class U>
+		void translate(U amount) {
+			*this += amount;
+		}
+		void rotate(int degreesCounterClockwise) {
+
+		}
+		void scale(float factor) {
+			*this *= factor;
+		}
+		void flip() {
+			for (int i = 0; i < N; i++) {
+				m_vals[i] = -m_vals[i];
+			}
+		}
+
 		std::size_t getSize() const {
 			return N;
 		}
@@ -48,25 +64,22 @@ namespace slm {
 			return m_vals[idx];
 		}
 
-		VecT& operator+(const VecT& vec) {
+		template<class U>
+		VecT& operator+=(const U& vec) {
 			const std::size_t smallestSize = getSize() > vec.getSize();
 
 			for (int i = 0; i < smallestSize; i++) {
-				m_vals[i] += vec[i];
+				m_vals[i] += static_cast<T>(vec[i]);
 			}
 
 			return *this;
 		}
-		VecT& operator-(const VecT& vec) {
-			const std::size_t smallestSize = getSize() > vec.getSize();
-
-			for (int i = 0; i < smallestSize; i++) {
-				m_vals[i] -= vec[i];
-			}
-
-			return *this;
+		template<class U>
+		VecT& operator-=(const U& vec) {
+			U other = vec;
+			*this += other.flip();
 		}
-		VecT& operator*(const float scalar) {
+		VecT& operator*=(const float scalar) {
 			for (int i = 0; i < getSize(); i++) {
 				m_vals[i] = static_cast<T>(static_cast<float>(m_vals[i]) * scalar);
 			}

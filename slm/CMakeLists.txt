@@ -9,6 +9,6 @@ target_include_directories(slm PUBLIC "./src")
 
 target_precompile_headers(slm PUBLIC "./src/slmPCH.h")
 
-target_link_libraries(slm PUBLIC glm)
+target_link_libraries(slm PUBLIC glm FileIO)
 
 add_subdirectory("tests")
