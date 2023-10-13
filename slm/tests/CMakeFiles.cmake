@@ -1,3 +1,6 @@
 set(slm_test_FILES
-    "./src/vec2.cpp"
+    "./src/ClippingUnitTests.cpp"
+    "./src/LineTUnitTests.cpp"
+    "./src/VecTUnitTests.cpp"
+    "./src/ViewportUnitTests.cpp"
 )

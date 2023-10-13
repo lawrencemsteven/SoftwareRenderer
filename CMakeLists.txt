@@ -22,6 +22,7 @@ FetchContent_Declare(
 )
 
 FetchContent_MakeAvailable(Catch2)
+FetchContent_MakeAvailable(glm)
 
 add_subdirectory("slm")
 add_subdirectory("CommandLineParser")
