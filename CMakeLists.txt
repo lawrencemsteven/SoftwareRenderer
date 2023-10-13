@@ -26,3 +26,5 @@ FetchContent_MakeAvailable(Catch2)
 add_subdirectory("slm")
 add_subdirectory("CommandLineParser")
 add_subdirectory("FileIO")
+
+add_subdirectory("CG_hw1")
