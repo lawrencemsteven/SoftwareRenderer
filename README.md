@@ -4,4 +4,6 @@ The only third party libraries that I am using is [Catch2](https://github.com/ca
 \
 To compile the program simply run `make` and that will run the cmake commands to build the project as well as copy the executable to the root directory. \
 \
-Line clipping is located in `slm/src/Scene.h` on `Line 35`.
+Line clipping is located in `slm/src/Scene.h` on `Line 35`. \
+\
+This project is also on [GitHub](https://github.com/lawrencemsteven/SoftwareRenderer).
