@@ -31,8 +31,8 @@ namespace slm {
 			}
 		}
 
-		template <class T>
-		void clip(const T& viewport) {
+		template <class U>
+		void clip(const U& viewport) {
 			// Cohen-Sutherland Clipping Algorithm
 			std::vector<std::pair<uint8_t, uint8_t>> pointLocInfo{};
 			pointLocInfo.resize(getSize());
@@ -160,8 +160,8 @@ namespace slm {
 			return m_objects[idx];
 		}
 
-		template <class T>
-		void printPostscript(const T& viewport) {
+		template <class U>
+		void printPostscript(const U& viewport) {
 			translateAll(slm::vec2i{-viewport.getLeft(), -viewport.getBottom()});
 
 			std::cout << "%!PS\n\n0.1 setlinewidth\n\n%%BeginSetup\n  << /PageSize ["
