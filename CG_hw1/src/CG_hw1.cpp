@@ -21,7 +21,7 @@ int main(const int argc, const char* argv[]) {
 
 	scene.scaleAll(scale);
 	scene.rotateAll(degreeRotation);
-	scene.translateAll(slm::vec2f{xTranslation, yTranslation});
+	scene.translateAll(slm::vec2i{xTranslation, yTranslation});
 
 	scene.clip(viewport);
 	scene.printPostscript(viewport);
