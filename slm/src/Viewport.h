@@ -2,19 +2,19 @@
 
 namespace slm {
 
-	template<class T, std::size_t N>
+	template <class T, std::size_t N>
 	class Viewport {
 	public:
 		enum class Corner {
 			BOTTOM_LEFT = 0,
-			TOP_RIGHT = 1,
+			TOP_RIGHT	= 1,
 		};
 
 		enum class Side {
-			LEFT = 0,
-			RIGHT = 1,
+			LEFT   = 0,
+			RIGHT  = 1,
 			BOTTOM = 2,
-			TOP = 3,
+			TOP	   = 3,
 		};
 
 		Viewport() = default;
@@ -37,10 +37,10 @@ namespace slm {
 		}
 
 		T getWidth() const {
-			return m_corners[1][0] - m_corners[0][0];
+			return m_corners[1][0] - m_corners[0][0] + 1;
 		}
 		T getHeight() const {
-			return m_corners[1][1] - m_corners[0][1];
+			return m_corners[1][1] - m_corners[0][1] + 1;
 		}
 
 		T getSide(Side side) const {

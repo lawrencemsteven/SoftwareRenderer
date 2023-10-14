@@ -170,7 +170,7 @@ namespace slm {
 			for (const auto& object : m_objects) {
 				std::cout << object.toPostscript();
 			}
-			std::cout << "0 sg\n%%%END\n";
+			std::cout << "0 setgray\n%%%END\n";
 
 			translateAll(slm::vec2i{viewport.getLeft(), viewport.getBottom()});
 		}
