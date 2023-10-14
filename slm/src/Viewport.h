@@ -7,18 +7,49 @@ namespace slm {
 	public:
 		enum class Corner {
 			BOTTOM_LEFT = 0,
-			BOTTOM_RIGHT = 1,
-			TOP_RIGHT = 2,
-			TOP_LEFT = 3,
+			TOP_RIGHT = 1,
+		};
+
+		enum class Side {
+			LEFT = 0,
+			RIGHT = 1,
+			BOTTOM = 2,
+			TOP = 3,
 		};
 
 		Viewport() = default;
-		Viewport(VecT<T, N> bottomLeft, VecT<T, N> bottomRight, VecT<T, N> topRight,
-			VecT<T, N> topLeft) {
+		Viewport(VecT<T, N> bottomLeft, VecT<T, N> topRight) {
 			m_corners[0] = std::move(bottomLeft);
-			m_corners[1] = std::move(bottomRight);
-			m_corners[2] = std::move(topRight);
-			m_corners[3] = std::move(topLeft);
+			m_corners[1] = std::move(topRight);
+		}
+
+		T getLeft() const {
+			return m_corners[0][0];
+		}
+		T getRight() const {
+			return m_corners[1][0];
+		}
+		T getBottom() const {
+			return m_corners[0][1];
+		}
+		T getTop() const {
+			return m_corners[1][1];
+		}
+
+		T getWidth() const {
+			return m_corners[1][0] - m_corners[0][0];
+		}
+		T getHeight() const {
+			return m_corners[1][1] - m_corners[0][1];
+		}
+
+		T getSide(Side side) const {
+			switch (side) {
+				case Side::LEFT: return getLeft();
+				case Side::RIGHT: return getRight();
+				case Side::BOTTOM: return getBottom();
+				case Side::TOP: return getTop();
+			}
 		}
 
 		const VecT<T, N>& getCorner(Corner corner) const {
@@ -30,7 +61,7 @@ namespace slm {
 		}
 
 	private:
-		VecT<T, N> m_corners[4]{};
+		VecT<T, N> m_corners[2]{};
 	};
 
 }

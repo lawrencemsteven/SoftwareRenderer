@@ -12,19 +12,27 @@ namespace slm {
 				m_vals[i] = static_cast<T>(0);
 			}
 		}
-		VecT(T args...) {
-			checkSize();
-
-			std::va_list vals;
-			va_start(vals, args);
-
-			m_vals[0] = args;
-
-			for (int i = 1; i < N; i++) {
-				m_vals[i] = va_arg(vals, T);
-			}
-
-			va_end(vals);
+		VecT(T x) {
+			static_assert(N == 1, "Too many arguments!");
+			m_vals[0] = x;
+		}
+		VecT(T x, T y) {
+			static_assert(N == 2, "Too many arguments!");
+			m_vals[0] = x;
+			m_vals[1] = y;
+		}
+		VecT(T x, T y, T z) {
+			static_assert(N == 3, "Too many arguments!");
+			m_vals[0] = x;
+			m_vals[1] = y;
+			m_vals[2] = z;
+		}
+		VecT(T x, T y, T z, T w) {
+			static_assert(N == 4, "Too many arguments!");
+			m_vals[0] = x;
+			m_vals[1] = y;
+			m_vals[2] = z;
+			m_vals[3] = w;
 		}
 
 		T x() const {
@@ -40,12 +48,34 @@ namespace slm {
 			return m_vals[3];
 		}
 
-		template<class U>
+		void x(T val) {
+			m_vals[0] = val;
+		}
+		void y(T val) {
+			m_vals[1] = val;
+		}
+		void z(T val) {
+			m_vals[2] = val;
+		}
+		void w(T val) {
+			m_vals[3] = val;
+		}
+
+		template <class U>
 		void translate(U amount) {
 			*this += amount;
 		}
 		void rotate(int degreesCounterClockwise) {
+			const float radians =
+				static_cast<float>(degreesCounterClockwise) * (static_cast<float>(M_PI) / 180.0f);
+			const float sinRads = sin(radians);
+			const float cosRads = cos(radians);
 
+			const float x = static_cast<float>(m_vals[0]);
+			const float y = static_cast<float>(m_vals[1]);
+
+			m_vals[0] = static_cast<T>(x * cosRads - y * sinRads);
+			m_vals[1] = static_cast<T>(y * cosRads + x * sinRads);
 		}
 		void scale(float factor) {
 			*this *= factor;
@@ -56,7 +86,7 @@ namespace slm {
 			}
 		}
 
-		std::size_t getSize() const {
+		static std::size_t getSize() {
 			return N;
 		}
 
@@ -64,9 +94,9 @@ namespace slm {
 			return m_vals[idx];
 		}
 
-		template<class U>
+		template <class U>
 		VecT& operator+=(const U& vec) {
-			const std::size_t smallestSize = getSize() > vec.getSize();
+			const std::size_t smallestSize = getSize() < vec.getSize() ? getSize() : vec.getSize();
 
 			for (int i = 0; i < smallestSize; i++) {
 				m_vals[i] += static_cast<T>(vec[i]);
@@ -74,7 +104,7 @@ namespace slm {
 
 			return *this;
 		}
-		template<class U>
+		template <class U>
 		VecT& operator-=(const U& vec) {
 			U other = vec;
 			*this += other.flip();
@@ -95,4 +125,6 @@ namespace slm {
 		}
 	};
 
+	typedef VecT<int, 2> vec2i;
+	typedef VecT<float, 2> vec2f;
 }

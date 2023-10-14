@@ -2,7 +2,7 @@
 
 namespace slm {
 
-	template<class T>
+	template <class T>
 	class LineT {
 	public:
 		LineT() = default;
@@ -18,7 +18,7 @@ namespace slm {
 			return m_end;
 		}
 
-		template<class U>
+		template <class U>
 		void translate(U amount) {
 			m_start.translate(amount);
 			m_end.translate(amount);
@@ -37,6 +37,34 @@ namespace slm {
 				return m_start;
 			}
 			return m_end;
+		}
+		T& operator[](std::size_t idx) {
+			if (idx == 0) {
+				return m_start;
+			}
+			return m_end;
+		}
+
+		float getSlope() const {
+			return (m_end.y() - m_start.y()) / (m_end.x() - m_start.x());
+		}
+
+		float getYAtX(float x) const {
+			return getSlope() * (x - m_start.x()) + m_start.y();
+		}
+		float getXAtY(float y) const {
+			return ((y - m_start.y()) / getSlope()) + m_start.x();
+		}
+
+		std::string toPostscript() const {
+			std::string output{""};
+
+			output = std::to_string(static_cast<int>(m_start.x()))
+					 + " " + std::to_string(static_cast<int>(m_start.y())) + " moveto\n"
+					 + std::to_string(static_cast<int>(m_end.x())) + " "
+					 + std::to_string(static_cast<int>(m_end.y())) + " lineto\nstroke\n";
+
+			return std::move(output);
 		}
 
 	private:

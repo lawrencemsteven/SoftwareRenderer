@@ -4,7 +4,7 @@ namespace FileIO {
 
 	class FileReader {
 	public:
-		FileReader(std::filesystem::path path);
+		FileReader(const std::filesystem::path& path);
 		~FileReader()							 = default;
 		FileReader(const FileReader&)			 = delete;
 		FileReader(FileReader&&)				 = delete;

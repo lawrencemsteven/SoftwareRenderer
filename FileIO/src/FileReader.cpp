@@ -2,7 +2,7 @@
 
 namespace FileIO {
 
-	FileReader::FileReader(std::filesystem::path path) {
+	FileReader::FileReader(const std::filesystem::path& path) {
 		m_fileStream = std::ifstream(path);
 
 		if (!m_fileStream.is_open()) {

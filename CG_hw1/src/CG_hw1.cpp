@@ -14,8 +14,15 @@ int main(const int argc, const char* argv[]) {
 	int viewUpX			 = clp.getValueOr("-c", 499);
 	int viewUpY			 = clp.getValueOr("-d", 499);
 
-	slm::Viewport<int, 2> viewport{
-		{viewLowX, viewLowY}, {viewUpX, viewLowY}, {viewUpX, viewUpY}, {viewLowX, viewUpY}};
+	slm::Viewport<int, 2> viewport{{viewLowX, viewLowY}, {viewUpX, viewUpY}};
 
+	slm::Scene<slm::LineT<slm::vec2f>> scene =
+		slm::PostscriptInterpreter::interpret<slm::vec2f>(fileName);
 
+	scene.scaleAll(scale);
+	scene.rotateAll(degreeRotation);
+	scene.translateAll(slm::vec2f{xTranslation, yTranslation});
+
+	scene.clip(viewport);
+	scene.printPostscript(viewport);
 }
