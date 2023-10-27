@@ -29,3 +29,4 @@ add_subdirectory("FileIO")
 add_subdirectory("slm")
 
 add_subdirectory("Assignments/CG_hw1")
+add_subdirectory("Assignments/CG_hw2")
