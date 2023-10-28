@@ -1,5 +1,7 @@
 set(slm_FILES
+    "./src/Clipping.h"
     "./src/LineT.h"
+    "./src/PolygonT.h"
     "./src/PostscriptInterpreter.h"
     "./src/Scene.h"
     "./src/slm.h"

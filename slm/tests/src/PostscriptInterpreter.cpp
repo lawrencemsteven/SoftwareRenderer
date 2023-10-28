@@ -34,73 +34,73 @@ TEST_CASE("PostscriptInterpreter") {
 	const int expectedSize{21};
 
 	SECTION("PostScriptInterpreter") {
-		slm::Scene<slm::LineT<slm::vec2f>> testScene =
+		slm::Scene<slm::vec2f> testScene =
 			slm::PostscriptInterpreter::interpret<slm::vec2f>(filePath);
 
-		CHECK(testScene.getSize() == expectedSize);
+		CHECK(testScene.getNumLines() == expectedSize);
 
 		for (int i = 0; i < expectedSize; i++) {
-			CHECK_THAT(testScene[i][0][0],
+			CHECK_THAT(testScene.getLines()[i][0][0],
 					   Catch::Matchers::WithinAbs(expectedResult[i * 4], 0.0001));
-			CHECK_THAT(testScene[i][0][1],
+			CHECK_THAT(testScene.getLines()[i][0][1],
 					   Catch::Matchers::WithinAbs(expectedResult[i * 4 + 1], 0.0001));
-			CHECK_THAT(testScene[i][1][0],
+			CHECK_THAT(testScene.getLines()[i][1][0],
 					   Catch::Matchers::WithinAbs(expectedResult[i * 4 + 2], 0.0001));
-			CHECK_THAT(testScene[i][1][1],
+			CHECK_THAT(testScene.getLines()[i][1][1],
 					   Catch::Matchers::WithinAbs(expectedResult[i * 4 + 3], 0.0001));
 		}
 	}
 
 	SECTION("Scene Translate") {
-		slm::Scene<slm::LineT<slm::vec2f>> testScene =
+		slm::Scene<slm::vec2f> testScene =
 			slm::PostscriptInterpreter::interpret<slm::vec2f>(filePath);
 
 		testScene.translateAll(slm::vec2i{10, 20});
 
 		for (int i = 0; i < expectedSize; i++) {
-			CHECK_THAT(testScene[i][0][0],
+			CHECK_THAT(testScene.getLines()[i][0][0],
 					   Catch::Matchers::WithinAbs(expectedResult[i * 4] + 10, 0.0001));
-			CHECK_THAT(testScene[i][0][1],
+			CHECK_THAT(testScene.getLines()[i][0][1],
 					   Catch::Matchers::WithinAbs(expectedResult[i * 4 + 1] + 20, 0.0001));
-			CHECK_THAT(testScene[i][1][0],
+			CHECK_THAT(testScene.getLines()[i][1][0],
 					   Catch::Matchers::WithinAbs(expectedResult[i * 4 + 2] + 10, 0.0001));
-			CHECK_THAT(testScene[i][1][1],
+			CHECK_THAT(testScene.getLines()[i][1][1],
 					   Catch::Matchers::WithinAbs(expectedResult[i * 4 + 3] + 20, 0.0001));
 		}
 	}
 
 	SECTION("Scene Scale") {
-		slm::Scene<slm::LineT<slm::vec2f>> testScene =
+		slm::Scene<slm::vec2f> testScene =
 			slm::PostscriptInterpreter::interpret<slm::vec2f>(filePath);
 
 		testScene.scaleAll(0.5);
 
 		for (int i = 0; i < expectedSize; i++) {
-			CHECK_THAT(testScene[i][0][0],
+			CHECK_THAT(testScene.getLines()[i][0][0],
 					   Catch::Matchers::WithinAbs(expectedResult[i * 4] * 0.5, 0.0001));
-			CHECK_THAT(testScene[i][0][1],
+			CHECK_THAT(testScene.getLines()[i][0][1],
 					   Catch::Matchers::WithinAbs(expectedResult[i * 4 + 1] * 0.5, 0.0001));
-			CHECK_THAT(testScene[i][1][0],
+			CHECK_THAT(testScene.getLines()[i][1][0],
 					   Catch::Matchers::WithinAbs(expectedResult[i * 4 + 2] * 0.5, 0.0001));
-			CHECK_THAT(testScene[i][1][1],
+			CHECK_THAT(testScene.getLines()[i][1][1],
 					   Catch::Matchers::WithinAbs(expectedResult[i * 4 + 3] * 0.5, 0.0001));
 		}
 	}
 
 	SECTION("Scene Rotate") {
-		slm::Scene<slm::LineT<slm::vec2f>> testScene =
+		slm::Scene<slm::vec2f> testScene =
 			slm::PostscriptInterpreter::interpret<slm::vec2f>(filePath);
 
 		testScene.rotateAll(90);
 
 		for (int i = 0; i < expectedSize; i++) {
-			CHECK_THAT(testScene[i][0][0],
+			CHECK_THAT(testScene.getLines()[i][0][0],
 					   Catch::Matchers::WithinAbs(-expectedResult[i * 4 + 1], 0.0001));
-			CHECK_THAT(testScene[i][0][1],
+			CHECK_THAT(testScene.getLines()[i][0][1],
 					   Catch::Matchers::WithinAbs(expectedResult[i * 4], 0.0001));
-			CHECK_THAT(testScene[i][1][0],
+			CHECK_THAT(testScene.getLines()[i][1][0],
 					   Catch::Matchers::WithinAbs(-expectedResult[i * 4 + 3], 0.0001));
-			CHECK_THAT(testScene[i][1][1],
+			CHECK_THAT(testScene.getLines()[i][1][1],
 					   Catch::Matchers::WithinAbs(expectedResult[i * 4 + 2], 0.0001));
 		}
 	}

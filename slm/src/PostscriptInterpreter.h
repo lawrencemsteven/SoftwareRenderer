@@ -2,13 +2,14 @@
 
 #include "FileIO.h"
 #include "Scene.h"
+#include "PolygonT.h"
 
 namespace slm::PostscriptInterpreter {
 
 	template <class T>
-	Scene<LineT<T>> interpret(const std::filesystem::path& path) {
+	Scene<T> interpret(const std::filesystem::path& path) {
 		FileIO::FileReader fileReader{path};
-		Scene<LineT<T>> outputScene{};
+		Scene<T> outputScene{};
 
 		bool readingData = false;
 		std::string currentLine;
@@ -22,10 +23,39 @@ namespace slm::PostscriptInterpreter {
 
 		std::string num;
 		float lineData[4] = {0.0f, 0.0f, 0.0f, 0.0f};
+		float pointData[2] = {0.0f, 0.0f};
+		PolygonTFactory<T> polygonFactory;
 		while (fileReader.hasContents() && readingData) {
 			currentLine.clear();
 			currentLine = fileReader.readNextLine();
-			if (currentLine.find("Line") != std::string::npos ||
+			if (currentLine.find("Moveto") != std::string::npos ||
+				currentLine.find("moveto") != std::string::npos) {
+				std::istringstream lineStream;
+				lineStream.str(currentLine);
+				for (int i = 0; i < T::getSize(); i++) {
+					std::getline(lineStream, num, ' ');
+					pointData[i] = std::stof(num);
+				}
+				T point{pointData[0], pointData[1]};
+				polygonFactory.startNewPolygon();
+				polygonFactory.addPoint(std::move(point));
+			}
+			else if (currentLine.find("Lineto") != std::string::npos ||
+					 currentLine.find("lineto") != std::string::npos) {
+				std::istringstream lineStream;
+				lineStream.str(currentLine);
+				for (int i = 0; i < T::getSize(); i++) {
+					std::getline(lineStream, num, ' ');
+					pointData[i] = std::stof(num);
+				}
+				T point{pointData[0], pointData[1]};
+				polygonFactory.addPoint(std::move(point));
+			}
+			else if (currentLine.find("Stroke") != std::string::npos ||
+					 currentLine.find("stroke") != std::string::npos) {
+				outputScene.addPolygon(polygonFactory.exportPolygon());
+			}
+			else if (currentLine.find("Line") != std::string::npos ||
 				currentLine.find("line") != std::string::npos) {
 				std::istringstream lineStream;
 				lineStream.str(currentLine);
@@ -33,7 +63,8 @@ namespace slm::PostscriptInterpreter {
 					std::getline(lineStream, num, ' ');
 					lineData[i] = std::stof(num);
 				}
-				outputScene.addObject(LineT<T>{T{lineData[0], lineData[1]}, T{lineData[2], lineData[3]}});
+				outputScene.addLine(
+					LineT<T>{T{lineData[0], lineData[1]}, T{lineData[2], lineData[3]}});
 			}
 			if (currentLine.find("%%%END") != std::string::npos) {
 				readingData = false;

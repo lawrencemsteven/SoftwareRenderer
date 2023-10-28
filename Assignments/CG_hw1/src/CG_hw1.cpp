@@ -16,8 +16,7 @@ int main(const int argc, const char* argv[]) {
 
 	slm::Viewport<int, 2> viewport{{viewLowX, viewLowY}, {viewUpX, viewUpY}};
 
-	slm::Scene<slm::LineT<slm::vec2f>> scene =
-		slm::PostscriptInterpreter::interpret<slm::vec2f>(fileName);
+	slm::Scene<slm::vec2f> scene = slm::PostscriptInterpreter::interpret<slm::vec2f>(fileName);
 
 	scene.scaleAll(scale);
 	scene.rotateAll(degreeRotation);

@@ -4,7 +4,7 @@
 int main(const int argc, const char* argv[]) {
 	CommandLineParser clp{argc, argv};
 
-	std::string fileName = clp.getValueOr("-f", "");
+	std::string fileName = clp.getValueOr("-f", "hw2_a.ps");
 	float scale			 = clp.getValueOr("-s", 1.0f);
 	int degreeRotation	 = clp.getValueOr("-r", 0);
 	int xTranslation	 = clp.getValueOr("-m", 0);
@@ -16,8 +16,7 @@ int main(const int argc, const char* argv[]) {
 
 	slm::Viewport<int, 2> viewport{{viewLowX, viewLowY}, {viewUpX, viewUpY}};
 
-	slm::Scene<slm::LineT<slm::vec2f>> scene =
-		slm::PostscriptInterpreter::interpret<slm::vec2f>(fileName);
+	slm::Scene<slm::vec2f> scene = slm::PostscriptInterpreter::interpret<slm::vec2f>(fileName);
 
 	scene.scaleAll(scale);
 	scene.rotateAll(degreeRotation);

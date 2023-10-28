@@ -1,6 +1,9 @@
 #pragma once
 
+#include "Clipping.h"
 #include "VecT.h"
+#include "LineT.h"
+#include "PolygonT.h"
 
 namespace slm {
 
@@ -10,154 +13,69 @@ namespace slm {
 		Scene()	 = default;
 		~Scene() = default;
 
-		uint32_t getSize() const {
-			return m_objects.size();
+		uint32_t getNumLines() const {
+			return m_lines.size();
+		}
+		uint32_t getNumPolygons() const {
+			return m_lines.size();
 		}
 
 		template <class U>
 		void translateAll(U amount) {
-			for (auto& object : m_objects) {
-				object.translate(amount);
+			for (auto& line : m_lines) {
+				line.translate(amount);
+			}
+			for (auto& polygon : m_polygons) {
+				polygon.translate(amount);
 			}
 		}
 		void rotateAll(int degreesCounterClockwise) {
-			for (auto& object : m_objects) {
-				object.rotate(degreesCounterClockwise);
+			for (auto& line : m_lines) {
+				line.rotate(degreesCounterClockwise);
+			}
+			for (auto& polygon : m_polygons) {
+				polygon.rotate(degreesCounterClockwise);
 			}
 		}
 		void scaleAll(float factor) {
-			for (auto& object : m_objects) {
-				object.scale(factor);
+			for (auto& line : m_lines) {
+				line.scale(factor);
+			}
+			for (auto& polygon : m_polygons) {
+				polygon.scale(factor);
 			}
 		}
 
 		template <class U>
 		void clip(const U& viewport) {
-			// Cohen-Sutherland Clipping Algorithm
-			std::vector<std::pair<uint8_t, uint8_t>> pointLocInfo{};
-			pointLocInfo.resize(getSize());
-
-			// Classify point Locations
-			for (int i = 0; i < getSize(); i++) {
-				uint8_t locInfo[2] = {0b0000, 0b0000};
-				for (int j = 0; j < 2; j++) {
-					if (m_objects[i][j].x() < viewport.getLeft()) {
-						locInfo[j] = locInfo[j] | 0b0001;
-					}
-					else if (m_objects[i][j].x() > viewport.getRight()) {
-						locInfo[j] = locInfo[j] | 0b0010;
-					}
-					if (m_objects[i][j].y() < viewport.getBottom()) {
-						locInfo[j] = locInfo[j] | 0b0100;
-					}
-					else if (m_objects[i][j].y() > viewport.getTop()) {
-						locInfo[j] = locInfo[j] | 0b1000;
-					}
-				}
-				pointLocInfo[i].first  = locInfo[0];
-				pointLocInfo[i].second = locInfo[1];
-			}
-
-			// Remove Outside Lines
-			for (int i = 0; i < getSize(); i++) {
-				if ((pointLocInfo[i].first & pointLocInfo[i].second) != 0) {
-					m_objects.erase(std::next(m_objects.begin(), i));
-					pointLocInfo.erase(std::next(pointLocInfo.begin(), i));
+			for (std::size_t i = 0; i < m_lines.size(); i++) {
+				const auto clipped = m_lines[i].clip(viewport);
+				if (clipped == ClippingStatus::Outside) {
+					m_lines.erase(std::next(m_lines.begin(), i));
 					i -= 1;
 				}
 			}
-
-			// Clip Remaining Lines
-			for (int i = 0; i < getSize(); i++) {
-				if ((pointLocInfo[i].first & 0b0001) != 0) {
-					const auto xPos = viewport.getLeft();
-					const auto yPos = m_objects[i].getYAtX(xPos);
-					m_objects[i][0].x(xPos);
-					m_objects[i][0].y(yPos);
-					pointLocInfo[i].first = pointLocInfo[i].first & 0b1110;
-				}
-				else if ((pointLocInfo[i].first & 0b0010) != 0) {
-					const auto xPos = viewport.getRight();
-					const auto yPos = m_objects[i].getYAtX(xPos);
-					m_objects[i][0].x(xPos);
-					m_objects[i][0].y(yPos);
-					pointLocInfo[i].first = pointLocInfo[i].first & 0b1101;
-				}
-				if ((pointLocInfo[i].second & 0b0001) != 0) {
-					const auto xPos = viewport.getLeft();
-					const auto yPos = m_objects[i].getYAtX(xPos);
-					m_objects[i][1].x(xPos);
-					m_objects[i][1].y(yPos);
-					pointLocInfo[i].second = pointLocInfo[i].second & 0b1110;
-				}
-				else if ((pointLocInfo[i].second & 0b0010) != 0) {
-					const auto xPos = viewport.getRight();
-					const auto yPos = m_objects[i].getYAtX(xPos);
-					m_objects[i][1].x(xPos);
-					m_objects[i][1].y(yPos);
-					pointLocInfo[i].second = pointLocInfo[i].second & 0b1101;
-				}
-				if ((pointLocInfo[i].first & 0b1000) != 0) {
-					const auto yPos = viewport.getTop();
-					const auto xPos = m_objects[i].getXAtY(yPos);
-					m_objects[i][0].x(xPos);
-					m_objects[i][0].y(yPos);
-					pointLocInfo[i].first = pointLocInfo[i].first & 0b0111;
-				}
-				else if ((pointLocInfo[i].first & 0b0100) != 0) {
-					const auto yPos = viewport.getBottom();
-					const auto xPos = m_objects[i].getXAtY(yPos);
-					m_objects[i][0].x(xPos);
-					m_objects[i][0].y(yPos);
-					pointLocInfo[i].first = pointLocInfo[i].first & 0b1011;
-				}
-				if ((pointLocInfo[i].second & 0b1000) != 0) {
-					const auto yPos = viewport.getTop();
-					const auto xPos = m_objects[i].getXAtY(yPos);
-					m_objects[i][1].x(xPos);
-					m_objects[i][1].y(yPos);
-					pointLocInfo[i].second = pointLocInfo[i].second & 0b0111;
-				}
-				else if ((pointLocInfo[i].second & 0b0100) != 0) {
-					const auto yPos = viewport.getBottom();
-					const auto xPos = m_objects[i].getXAtY(yPos);
-					m_objects[i][1].x(xPos);
-					m_objects[i][1].y(yPos);
-					pointLocInfo[i].second = pointLocInfo[i].second & 0b1011;
-				}
-
-				uint8_t locInfo[2] = {0b0000, 0b0000};
-				for (int j = 0; j < 2; j++) {
-					if (m_objects[i][j].x() < viewport.getLeft()) {
-						locInfo[j] = locInfo[j] | 0b0001;
-					}
-					else if (m_objects[i][j].x() > viewport.getRight()) {
-						locInfo[j] = locInfo[j] | 0b0010;
-					}
-					if (m_objects[i][j].y() < viewport.getBottom()) {
-						locInfo[j] = locInfo[j] | 0b0100;
-					}
-					else if (m_objects[i][j].y() > viewport.getTop()) {
-						locInfo[j] = locInfo[j] | 0b1000;
-					}
-				}
-				pointLocInfo[i].first  = locInfo[0];
-				pointLocInfo[i].second = locInfo[1];
-
-				if ((pointLocInfo[i].first & pointLocInfo[i].second) != 0) {
-					m_objects.erase(std::next(m_objects.begin(), i));
-					pointLocInfo.erase(std::next(pointLocInfo.begin(), i));
+			for (std::size_t i = 0; i < m_polygons.size(); i++) {
+				const auto clipped = m_polygons[i].clip(viewport);
+				if (clipped == ClippingStatus::Outside) {
+					m_polygons.erase(std::next(m_polygons.begin(), i));
 					i -= 1;
 				}
 			}
 		}
 
-		void addObject(T object) {
-			m_objects.push_back(object);
+		void addLine(LineT<T> line) {
+			m_lines.push_back(std::move(line));
+		}
+		void addPolygon(PolygonT<T> polygon) {
+			m_polygons.push_back(std::move(polygon));
 		}
 
-		const T& operator[](std::size_t idx) const {
-			return m_objects[idx];
+		const std::vector<LineT<T>>& getLines() const {
+			return m_lines;
+		}
+		const std::vector<PolygonT<T>>& getPolygons() const {
+			return m_polygons;
 		}
 
 		template <class U>
@@ -167,8 +85,11 @@ namespace slm {
 			std::cout << "%!PS\n\n0.1 setlinewidth\n\n%%BeginSetup\n  << /PageSize ["
 					  << viewport.getWidth() << " " << viewport.getHeight()
 					  << "] >> setpagedevice\n%%EndSetup\n\n%%%BEGIN\n";
-			for (const auto& object : m_objects) {
-				std::cout << object.toPostscript();
+			for (const auto& line : m_lines) {
+				std::cout << line.toPostscript();
+			}
+			for (const auto& polygon : m_polygons) {
+				std::cout << polygon.toPostscript();
 			}
 			std::cout << "0 setgray\n%%%END\n";
 
@@ -176,7 +97,8 @@ namespace slm {
 		}
 
 	private:
-		std::vector<T> m_objects{};
+		std::vector<LineT<T>> m_lines{};
+		std::vector<PolygonT<T>> m_polygons{};
 	};
 
 }
