@@ -22,7 +22,7 @@ namespace slm::PostscriptInterpreter {
 		}
 
 		std::string num;
-		float lineData[4] = {0.0f, 0.0f, 0.0f, 0.0f};
+		float lineData[4]  = {0.0f, 0.0f, 0.0f, 0.0f};
 		float pointData[2] = {0.0f, 0.0f};
 		PolygonTFactory<T> polygonFactory;
 		while (fileReader.hasContents() && readingData) {
@@ -34,7 +34,12 @@ namespace slm::PostscriptInterpreter {
 				lineStream.str(currentLine);
 				for (int i = 0; i < T::getSize(); i++) {
 					std::getline(lineStream, num, ' ');
-					pointData[i] = std::stof(num);
+					if (num.empty()) {
+						i -= 1;
+					}
+					else {
+						pointData[i] = std::stof(num);
+					}
 				}
 				T point{pointData[0], pointData[1]};
 				polygonFactory.startNewPolygon();
@@ -46,7 +51,12 @@ namespace slm::PostscriptInterpreter {
 				lineStream.str(currentLine);
 				for (int i = 0; i < T::getSize(); i++) {
 					std::getline(lineStream, num, ' ');
-					pointData[i] = std::stof(num);
+					if (num.empty()) {
+						i -= 1;
+					}
+					else {
+						pointData[i] = std::stof(num);
+					}
 				}
 				T point{pointData[0], pointData[1]};
 				polygonFactory.addPoint(std::move(point));
@@ -56,12 +66,17 @@ namespace slm::PostscriptInterpreter {
 				outputScene.addPolygon(polygonFactory.exportPolygon());
 			}
 			else if (currentLine.find("Line") != std::string::npos ||
-				currentLine.find("line") != std::string::npos) {
+					 currentLine.find("line") != std::string::npos) {
 				std::istringstream lineStream;
 				lineStream.str(currentLine);
 				for (int i = 0; i < T::getSize() * 2; i++) {
 					std::getline(lineStream, num, ' ');
-					lineData[i] = std::stof(num);
+					if (num.empty()) {
+						i -= 1;
+					}
+					else {
+						lineData[i] = std::stof(num);
+					}
 				}
 				outputScene.addLine(
 					LineT<T>{T{lineData[0], lineData[1]}, T{lineData[2], lineData[3]}});

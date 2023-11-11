@@ -13,6 +13,10 @@ namespace slm {
 			return m_points.size();
 		}
 
+		const std::vector<T>& getPoints() const {
+			return m_points;
+		}
+
 		void extend(T point) {
 			m_points.push_back(std::move(point));
 		}
@@ -40,7 +44,7 @@ namespace slm {
 		}
 
 		template <class U>
-		void translate(U amount) {
+		void translate(const U& amount) {
 			for (std::size_t i = 0; i < getNumPoints(); i++) {
 				m_points[i].translate(amount);
 			}
@@ -54,6 +58,67 @@ namespace slm {
 			for (std::size_t i = 0; i < getNumPoints(); i++) {
 				m_points[i].scale(factor);
 			}
+		}
+		void scaleX(float factor) {
+			for (std::size_t i = 0; i < getNumPoints(); i++) {
+				m_points[i].scaleX(factor);
+			}
+		}
+		void scaleY(float factor) {
+			for (std::size_t i = 0; i < getNumPoints(); i++) {
+				m_points[i].scaleY(factor);
+			}
+		}
+
+		std::vector<slm::vec2i> lineCollissionPoints(const LineT<slm::vec2i>& line) const {
+			std::vector<slm::vec2i> outCollissionPoints;
+
+			LineT<slm::vec2i> polygonSide{};
+			for (std::size_t i = 0; i < m_points.size(); i++) {
+				const slm::vec2i startPoint{static_cast<int>(m_points[i].x()),
+											static_cast<int>(m_points[i].y())};
+				slm::vec2i endPoint{static_cast<int>(m_points[0].x()),
+									static_cast<int>(m_points[0].y())};
+
+				if (i != m_points.size() - 1) {
+					endPoint = slm::vec2i{static_cast<int>(m_points[i + 1].x()),
+										  static_cast<int>(m_points[i + 1].y())};
+				}
+
+				polygonSide.setStart(startPoint);
+				polygonSide.setEnd(endPoint);
+
+				auto intersectionPointOptional = line.intersectionPoint(polygonSide);
+				if (intersectionPointOptional.has_value()) {
+					auto intersectionPoint = intersectionPointOptional.value();
+
+					if (intersectionPoint == startPoint || intersectionPoint == endPoint) {
+						const auto minY =
+							startPoint.y() < endPoint.y() ? startPoint.y() : endPoint.y();
+
+						if (minY == line.getStart().y()) {
+							outCollissionPoints.push_back(intersectionPoint);
+						}
+					}
+					else {
+						outCollissionPoints.push_back(intersectionPoint);
+					}
+				}
+			}
+
+			// Sort based on X
+			std::sort(outCollissionPoints.begin(), outCollissionPoints.end(),
+					  [](const slm::vec2i& a, const slm::vec2i& b) { return a.x() < b.x(); });
+
+			for (int i = 0; i < static_cast<int>(outCollissionPoints.size()) - 1; i++) {
+				if (outCollissionPoints[i] == outCollissionPoints[i + 1]) {
+					outCollissionPoints.erase(outCollissionPoints.begin() + i,
+											  outCollissionPoints.begin() + i + 2);
+					i -= 1;
+				}
+			}
+
+			return outCollissionPoints;
 		}
 
 		template <class U>
@@ -110,7 +175,7 @@ namespace slm {
 				return ClippingStatus::Outside;
 			}
 			if (!startingPointInside) {
-				m_points.insert(m_points.begin(), m_points[m_points.size()-1]);
+				m_points.insert(m_points.begin(), m_points[m_points.size() - 1]);
 				startingPointInside = true;
 			}
 
@@ -257,6 +322,12 @@ namespace slm {
 			}
 
 			return ClippingStatus::Inside;
+		}
+
+		void verifyDifferentStartAndEnd() {
+			if (m_points[0] == m_points[m_points.size() - 1]) {
+				m_points.pop_back();
+			}
 		}
 
 	private:

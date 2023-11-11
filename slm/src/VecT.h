@@ -62,7 +62,7 @@ namespace slm {
 		}
 
 		template <class U>
-		void translate(U amount) {
+		void translate(const U& amount) {
 			*this += amount;
 		}
 		void rotate(int degreesCounterClockwise) {
@@ -79,6 +79,12 @@ namespace slm {
 		}
 		void scale(float factor) {
 			*this *= factor;
+		}
+		void scaleX(float factor) {
+			m_vals[0] *= factor;
+		}
+		void scaleY(float factor) {
+			m_vals[1] *= factor;
 		}
 		void flip() {
 			for (int i = 0; i < N; i++) {
@@ -115,6 +121,20 @@ namespace slm {
 			}
 
 			return *this;
+		}
+		template <class U>
+		bool operator==(U& rhs) {
+			if (getSize() != rhs.getSize()) {
+				return false;
+			}
+
+			for (std::size_t i = 0; i < getSize(); i++) {
+				if (operator[](i) != static_cast<T>(rhs[i])) {
+					return false;
+				}
+			}
+
+			return true;
 		}
 
 	private:

@@ -1,6 +1,8 @@
 set(slm_FILES
     "./src/Clipping.h"
     "./src/LineT.h"
+    "./src/PBMImage.h"
+    "./src/PBMImage.cpp"
     "./src/PolygonT.h"
     "./src/PostscriptInterpreter.h"
     "./src/Scene.h"

@@ -13,6 +13,12 @@ namespace slm {
 			m_end	= std::move(end);
 		}
 
+		void setStart(T start) {
+			m_start = start;
+		}
+		void setEnd(T end) {
+			m_end = end;
+		}
 		const T& getStart() const {
 			return m_start;
 		}
@@ -48,7 +54,10 @@ namespace slm {
 		}
 
 		float getSlope() const {
-			return (m_end.y() - m_start.y()) / (m_end.x() - m_start.x());
+			return (m_end.y() - m_start.y()) / m_end.x() - m_start.x();
+		}
+		bool isHorizontal() const {
+			return m_end.x() - m_start.x() == 0;
 		}
 
 		float getYAtX(float x) const {
@@ -56,6 +65,36 @@ namespace slm {
 		}
 		float getXAtY(float y) const {
 			return ((y - m_start.y()) / getSlope()) + m_start.x();
+		}
+
+		std::optional<T> intersectionPoint(LineT<T> other) const {
+			const auto x1 = static_cast<float>(m_start.x());
+			const auto y1 = static_cast<float>(m_start.y());
+			const auto x2 = static_cast<float>(m_end.x());
+			const auto y2 = static_cast<float>(m_end.y());
+			const auto x3 = static_cast<float>(other.getStart().x());
+			const auto y3 = static_cast<float>(other.getStart().y());
+			const auto x4 = static_cast<float>(other.getEnd().x());
+			const auto y4 = static_cast<float>(other.getEnd().y());
+
+			const auto denominator = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
+
+			// Lines are parallel
+			if (denominator == 0) {
+				return std::nullopt;
+			}
+
+			const auto t = ((x1 - x3) * (y3 - y4) - (y1 - y3) * (x3 - x4)) / denominator;
+			const auto u = ((x1 - x3) * (y1 - y2) - (y1 - y3) * (x1 - x2)) / denominator;
+
+			if (t < 0 || t > 1 || u < 0 || u > 1) {
+				return std::nullopt;
+			}
+
+			const auto outX = static_cast<int>(x1 + t * (x2 - x1));
+			const auto outY = static_cast<int>(y1 + t * (y2 - y1));
+
+			return T{outX, outY};
 		}
 
 		template <class U>
