@@ -161,7 +161,15 @@ namespace slm {
 	bool Vec2f::operator==(const Vec2& other) const {
 		const auto otherValues = other.getValsAsFloat();
 
-		return m_values[0] == otherValues[0] && m_values[1] == otherValues[1];
+		return *this == otherValues;
+	}
+
+	bool Vec2f::operator==(const std::array<float, 2>& other) const {
+		return m_values[0] == other[0] && m_values[1] == other[1];
+	}
+
+	bool Vec2f::operator==(const float other[2]) const {
+		return m_values[0] == other[0] && m_values[1] == other[1];
 	}
 
 	std::array<float, 2> Vec2f::getValsAsFloat() const {
@@ -326,7 +334,15 @@ namespace slm {
 	bool Vec2i::operator==(const Vec2& other) const {
 		const auto otherValues = other.getValsAsInt();
 
-		return m_values[0] == otherValues[0] && m_values[1] == otherValues[1];
+		return *this == otherValues;
+	}
+
+	bool Vec2i::operator==(const std::array<int32_t, 2>& other) const {
+		return m_values[0] == other[0] && m_values[1] == other[1];
+	}
+
+	bool Vec2i::operator==(const int32_t other[2]) const {
+		return m_values[0] == other[0] && m_values[1] == other[1];
 	}
 
 	std::array<float, 2> Vec2i::getValsAsFloat() const {

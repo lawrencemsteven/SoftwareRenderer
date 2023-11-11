@@ -49,6 +49,8 @@ namespace slm {
 		Vec2f& operator*=(const Vec2& other);
 		Vec2f& operator*=(const float factor);
 		bool operator==(const Vec2& other) const;
+		bool operator==(const std::array<float, 2>& other) const;
+		bool operator==(const float other[2]) const;
 
 		std::array<float, 2> getValsAsFloat() const override;
 		std::array<int32_t, 2> getValsAsInt() const override;
@@ -93,6 +95,8 @@ namespace slm {
 		Vec2i& operator*=(const Vec2& other);
 		Vec2i& operator*=(const float factor);
 		bool operator==(const Vec2& other) const;
+		bool operator==(const std::array<int32_t, 2>& other) const;
+		bool operator==(const int32_t other[2]) const;
 
 		std::array<float, 2> getValsAsFloat() const override;
 		std::array<int32_t, 2> getValsAsInt() const override;
