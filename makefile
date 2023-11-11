@@ -1,6 +1,7 @@
 .PHONY: main
 main:
 	cmake -B build;
-	cmake --build build --target CG_hw1 CG_hw2;
+	cmake --build build --target CG_hw1 CG_hw2 CG_hw3;
 	mv ./build/bin/CG_hw1 ./CG_hw1
 	mv ./build/bin/CG_hw2 ./CG_hw2
+	mv ./build/bin/CG_hw3 ./CG_hw3
