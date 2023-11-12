@@ -21,6 +21,7 @@ namespace slm {
 
 		virtual std::array<float, 2> getValsAsFloat() const = 0;
 		virtual std::array<int32_t, 2> getValsAsInt() const = 0;
+		virtual std::array<uint32_t, 2> getValsAsUint() const = 0;
 
 	protected:
 		std::array<float, 2> rotationHelper(const int32_t degreesCounterClockwise) const;
@@ -78,6 +79,7 @@ namespace slm {
 
 		std::array<float, 2> getValsAsFloat() const override;
 		std::array<int32_t, 2> getValsAsInt() const override;
+		std::array<uint32_t, 2> getValsAsUint() const override;
 
 	protected:
 		float m_values[2];
@@ -135,8 +137,67 @@ namespace slm {
 
 		std::array<float, 2> getValsAsFloat() const override;
 		std::array<int32_t, 2> getValsAsInt() const override;
+		std::array<uint32_t, 2> getValsAsUint() const override;
 
 	protected:
 		int32_t m_values[2];
+	};
+
+
+
+
+	///////////
+	// Vec2u //
+	///////////
+
+	class Vec2u : public Vec2 {
+	public:
+		Vec2u();
+		Vec2u(const uint32_t vals[2]);
+		Vec2u(const std::array<uint32_t, 2>& vals);
+		Vec2u(const uint32_t x, const uint32_t y);
+
+		void x(const uint32_t x);
+		void y(const uint32_t y);
+		uint32_t x() const;
+		uint32_t y() const;
+
+		void translate(const Vec2& amount);
+		void translate(const std::array<uint32_t, 2>& amount);
+		void translate(const uint32_t amount[2]);
+		void translateX(const uint32_t amount);
+		void translateY(const uint32_t amount);
+		void rotate(const int32_t degreesCounterClockwise);
+		void scale(const Vec2& amount);
+		void scale(const float factor);
+		void scale(const float factors[2]);
+		void scale(const std::array<float, 2>& factors);
+		void scaleX(const float factor);
+		void scaleY(const float factor);
+
+		uint32_t operator[](const std::size_t idx) const;
+		Vec2u& operator+=(const Vec2& other);
+		Vec2u& operator+=(const std::array<uint32_t, 2>& amount);
+		Vec2u& operator+=(const uint32_t amount[2]);
+		Vec2u& operator-=(const Vec2& other);
+		Vec2u& operator-=(const std::array<uint32_t, 2>& amount);
+		Vec2u& operator-=(const uint32_t amount[2]);
+		Vec2u& operator*=(const Vec2& other);
+		Vec2u& operator*=(const float factor);
+		Vec2u& operator*=(const std::array<float, 2>& amount);
+		Vec2u& operator*=(const float amount[2]);
+		bool operator==(const Vec2u& other) const;
+		bool operator==(const std::array<uint32_t, 2>& other) const;
+		bool operator==(const uint32_t other[2]) const;
+		bool operator!=(const Vec2u& other) const;
+		bool operator!=(const std::array<uint32_t, 2>& other) const;
+		bool operator!=(const uint32_t other[2]) const;
+
+		std::array<float, 2> getValsAsFloat() const override;
+		std::array<int32_t, 2> getValsAsInt() const override;
+		std::array<uint32_t, 2> getValsAsUint() const override;
+
+	protected:
+		uint32_t m_values[2];
 	};
 }

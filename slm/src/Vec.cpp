@@ -183,9 +183,7 @@ namespace slm {
 	}
 
 	bool Vec2f::operator==(const Vec2f& other) const {
-		const auto otherValues = other.getValsAsFloat();
-
-		return *this == otherValues;
+		return m_values[0] == other[0] && m_values[1] == other[1];
 	}
 
 	bool Vec2f::operator==(const std::array<float, 2>& other) const {
@@ -215,6 +213,11 @@ namespace slm {
 	std::array<int32_t, 2> Vec2f::getValsAsInt() const {
 		return std::array<int32_t, 2>{static_cast<int32_t>(m_values[0]),
 									  static_cast<int32_t>(m_values[1])};
+	}
+
+	std::array<uint32_t, 2> Vec2f::getValsAsUint() const {
+		return std::array<uint32_t, 2>{static_cast<uint32_t>(m_values[0]),
+									   static_cast<uint32_t>(m_values[1])};
 	}
 
 
@@ -365,7 +368,7 @@ namespace slm {
 
 	Vec2i& Vec2i::operator*=(const std::array<float, 2>& amount) {
 		scale(amount);
-		
+
 		return *this;
 	}
 
@@ -376,9 +379,7 @@ namespace slm {
 	}
 
 	bool Vec2i::operator==(const Vec2i& other) const {
-		const auto otherValues = other.getValsAsInt();
-
-		return *this == otherValues;
+		return m_values[0] == other[0] && m_values[1] == other[1];
 	}
 
 	bool Vec2i::operator==(const std::array<int32_t, 2>& other) const {
@@ -408,6 +409,207 @@ namespace slm {
 
 	std::array<int32_t, 2> Vec2i::getValsAsInt() const {
 		return std::array<int32_t, 2>{m_values[0], m_values[1]};
+	}
+
+	std::array<uint32_t, 2> Vec2i::getValsAsUint() const {
+		return std::array<uint32_t, 2>{static_cast<uint32_t>(m_values[0]),
+									   static_cast<uint32_t>(m_values[1])};
+	}
+
+
+
+
+	///////////
+	// Vec2u //
+	///////////
+
+	Vec2u::Vec2u()
+		: m_values{0u, 0u} {}
+
+	Vec2u::Vec2u(const uint32_t vals[2])
+		: m_values{vals[0], vals[1]} {}
+
+	Vec2u::Vec2u(const std::array<uint32_t, 2>& vals)
+		: m_values{vals[0], vals[1]} {}
+
+	Vec2u::Vec2u(const uint32_t x, const uint32_t y)
+		: m_values{x, y} {}
+
+	void Vec2u::x(const uint32_t x) {
+		m_values[0] = x;
+	}
+
+	void Vec2u::y(const uint32_t y) {
+		m_values[1] = y;
+	}
+
+	uint32_t Vec2u::x() const {
+		return m_values[0];
+	}
+
+	uint32_t Vec2u::y() const {
+		return m_values[1];
+	}
+
+	void Vec2u::translate(const Vec2& amount) {
+		const auto values = amount.getValsAsUint();
+		translate(values);
+	}
+
+	void Vec2u::translate(const std::array<uint32_t, 2>& amount) {
+		translateX(amount[0]);
+		translateY(amount[1]);
+	}
+
+	void Vec2u::translate(const uint32_t amount[2]) {
+		translateX(amount[0]);
+		translateY(amount[1]);
+	}
+
+	void Vec2u::translateX(const uint32_t amount) {
+		m_values[0] += amount;
+	}
+
+	void Vec2u::translateY(const uint32_t amount) {
+		m_values[1] += amount;
+	}
+
+	void Vec2u::rotate(const int32_t degreesCounterClockwise) {
+		const auto values = rotationHelper(degreesCounterClockwise);
+		m_values[0]		  = static_cast<uint32_t>(values[0]);
+		m_values[1]		  = static_cast<uint32_t>(values[1]);
+	}
+
+	void Vec2u::scale(const Vec2& amount) {
+		const auto values = amount.getValsAsFloat();
+		scale(values);
+	}
+
+	void Vec2u::scale(const float factor) {
+		scaleX(factor);
+		scaleY(factor);
+	}
+
+	void Vec2u::scale(const float factors[2]) {
+		scaleX(factors[0]);
+		scaleY(factors[1]);
+	}
+
+	void Vec2u::scale(const std::array<float, 2>& factors) {
+		scaleX(factors[0]);
+		scaleY(factors[1]);
+	}
+
+	void Vec2u::scaleX(const float factor) {
+		m_values[0] *= factor;
+	}
+
+	void Vec2u::scaleY(const float factor) {
+		m_values[1] *= factor;
+	}
+
+	uint32_t Vec2u::operator[](const std::size_t idx) const {
+		return m_values[idx];
+	}
+
+	Vec2u& Vec2u::operator+=(const Vec2& other) {
+		translate(other);
+
+		return *this;
+	}
+
+	Vec2u& Vec2u::operator+=(const std::array<uint32_t, 2>& amount) {
+		translate(amount);
+
+		return *this;
+	}
+
+	Vec2u& Vec2u::operator+=(const uint32_t amount[2]) {
+		translate(amount);
+
+		return *this;
+	}
+
+	Vec2u& Vec2u::operator-=(const Vec2& other) {
+		const auto values = other.getValsAsUint();
+
+		translate({-values[0], -values[1]});
+
+		return *this;
+	}
+
+	Vec2u& Vec2u::operator-=(const std::array<uint32_t, 2>& amount) {
+		translate({-amount[0], -amount[1]});
+
+		return *this;
+	}
+
+	Vec2u& Vec2u::operator-=(const uint32_t amount[2]) {
+		translate({-amount[0], -amount[1]});
+
+		return *this;
+	}
+
+	Vec2u& Vec2u::operator*=(const Vec2& other) {
+		scale(other);
+
+		return *this;
+	}
+
+	Vec2u& Vec2u::operator*=(const float factor) {
+		scale(factor);
+
+		return *this;
+	}
+
+	Vec2u& Vec2u::operator*=(const std::array<float, 2>& amount) {
+		scale(amount);
+
+		return *this;
+	}
+
+	Vec2u& Vec2u::operator*=(const float amount[2]) {
+		scale(amount);
+
+		return *this;
+	}
+
+	bool Vec2u::operator==(const Vec2u& other) const {
+		return m_values[0] == other[0] && m_values[1] == other[1];
+	}
+
+	bool Vec2u::operator==(const std::array<uint32_t, 2>& other) const {
+		return m_values[0] == other[0] && m_values[1] == other[1];
+	}
+
+	bool Vec2u::operator==(const uint32_t other[2]) const {
+		return m_values[0] == other[0] && m_values[1] == other[1];
+	}
+
+	bool Vec2u::operator!=(const Vec2u& other) const {
+		return !(*this == other);
+	}
+
+	bool Vec2u::operator!=(const std::array<uint32_t, 2>& other) const {
+		return !(*this == other);
+	}
+
+	bool Vec2u::operator!=(const uint32_t other[2]) const {
+		return !(*this == other);
+	}
+
+	std::array<float, 2> Vec2u::getValsAsFloat() const {
+		return std::array<float, 2>{static_cast<float>(m_values[0]),
+									static_cast<float>(m_values[1])};
+	}
+
+	std::array<int32_t, 2> Vec2u::getValsAsInt() const {
+		return std::array<int32_t, 2>{static_cast<int32_t>(m_values[0]),
+									  static_cast<int32_t>(m_values[1])};
+	}
+
+	std::array<uint32_t, 2> Vec2u::getValsAsUint() const {
+		return std::array<uint32_t, 2>{m_values[0], m_values[1]};
 	}
 
 }

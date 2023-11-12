@@ -106,7 +106,7 @@ TEST_CASE("Vec2f") {
 
 		CHECK_THAT(test.x(), Catch::Matchers::WithinAbs(150.0f, 0.0001f));
 	}
-	SECTION("y(const int32_t y) && y()") {
+	SECTION("y(const float y) && y()") {
 		Vec2f test{15.0f, 30.0f};
 
 		CHECK_THAT(test.y(), Catch::Matchers::WithinAbs(30.0f, 0.0001f));
@@ -523,6 +523,14 @@ TEST_CASE("Vec2f") {
 		CHECK(values[0] == 1);
 		CHECK(values[1] == 2);
 	}
+	SECTION("getValsAsUint()") {
+		Vec2f test{1.0f, 2.0f};
+
+		const auto values = test.getValsAsUint();
+
+		CHECK(values[0] == 1u);
+		CHECK(values[1] == 2u);
+	}
 }
 
 
@@ -714,7 +722,7 @@ TEST_CASE("Vec2i") {
 	}
 	SECTION("scale(const float factor)") {
 		Vec2i test{2, 3};
-		const float scaleAmount{3};
+		const float scaleAmount{3.0f};
 
 		test.scale(scaleAmount);
 
@@ -726,7 +734,7 @@ TEST_CASE("Vec2i") {
 	}
 	SECTION("scale(const float factors[2])") {
 		Vec2i test{2, 3};
-		const float scaleAmount[2]{3, 4};
+		const float scaleAmount[2]{3.0f, 4.0f};
 
 		test.scale(scaleAmount);
 
@@ -738,7 +746,7 @@ TEST_CASE("Vec2i") {
 	}
 	SECTION("scale(const std::array<float, 2>& factors)") {
 		Vec2i test{2, 3};
-		const std::array<float, 2> scaleAmount{3, 4};
+		const std::array<float, 2> scaleAmount{3.0f, 4.0f};
 
 		test.scale(scaleAmount);
 
@@ -750,7 +758,7 @@ TEST_CASE("Vec2i") {
 	}
 	SECTION("scaleX(const float factor)") {
 		Vec2i test{2, 3};
-		const float scaleAmount{3};
+		const float scaleAmount{3.0f};
 
 		test.scaleX(scaleAmount);
 
@@ -762,7 +770,7 @@ TEST_CASE("Vec2i") {
 	}
 	SECTION("scaleY(const float factor)") {
 		Vec2i test{2, 3};
-		const float scaleAmount{4};
+		const float scaleAmount{4.0f};
 
 		test.scaleY(scaleAmount);
 
@@ -870,7 +878,7 @@ TEST_CASE("Vec2i") {
 	}
 	SECTION("operator*=(const float factor)") {
 		Vec2i test{2, 3};
-		const float multiplyAmount{4};
+		const float multiplyAmount{4.0f};
 
 		test *= multiplyAmount;
 
@@ -882,7 +890,7 @@ TEST_CASE("Vec2i") {
 	}
 	SECTION("operator*=(const std::array<float, 2>& amount)") {
 		Vec2i test{2, 3};
-		const std::array<float, 2> multiplyAmount{4, 5};
+		const std::array<float, 2> multiplyAmount{4.0f, 5.0f};
 
 		test *= multiplyAmount;
 
@@ -1027,5 +1035,514 @@ TEST_CASE("Vec2i") {
 
 		CHECK(values[0] == 1);
 		CHECK(values[1] == 2);
+	}
+	SECTION("getValsAsUint()") {
+		Vec2i test{1, 2};
+
+		const auto values = test.getValsAsUint();
+
+		CHECK(values[0] == 1u);
+		CHECK(values[1] == 2u);
+	}
+}
+
+
+
+
+///////////
+// Vec2u //
+///////////
+
+TEST_CASE("Vec2u") {
+	SECTION("Vec2u()") {
+		Vec2u test{};
+
+		CHECK(test == std::array<uint32_t, 2>{0u, 0u});
+	}
+	SECTION("Vec2u(const uint32_t vals[2])") {
+		uint32_t testValues[2] = {0u, 0u};
+
+		Vec2u test{testValues};
+
+		CHECK(test == testValues);
+
+		testValues[0] = 1u;
+		testValues[1] = 2u;
+
+		test = Vec2u{testValues};
+
+		CHECK(test == testValues);
+
+		testValues[0] = 10u;
+		testValues[1] = 20u;
+
+		test = Vec2u{testValues};
+
+		CHECK(test == testValues);
+	}
+	SECTION("Vec2u(const std::array<uint32_t, 2>& vals)") {
+		std::array<uint32_t, 2> testValues = {0u, 0u};
+
+		Vec2u test{testValues};
+
+		CHECK(test == testValues);
+
+		testValues[0] = 1u;
+		testValues[1] = 2u;
+
+		test = Vec2u{testValues};
+
+		CHECK(test == testValues);
+
+		testValues[0] = 10u;
+		testValues[1] = 20u;
+
+		test = Vec2u{testValues};
+
+		CHECK(test == testValues);
+	}
+	SECTION("Vec2u(const uint32_t x, const uint32_t y)") {
+		uint32_t testX = 0u;
+		uint32_t testY = 0u;
+
+		Vec2u test{testX, testY};
+
+		CHECK(test == std::array<uint32_t, 2>{testX, testY});
+
+		testX = 1u;
+		testY = 2u;
+
+		test = Vec2u{testX, testY};
+
+		CHECK(test == std::array<uint32_t, 2>{testX, testY});
+
+		testX = 10u;
+		testY = 20u;
+
+		test = Vec2u{testX, testY};
+
+		CHECK(test == std::array<uint32_t, 2>{testX, testY});
+	}
+	SECTION("x(const uint32_t x) && x()") {
+		Vec2u test{15u, 30u};
+
+		CHECK(test.x() == 15u);
+
+		test.x(150u);
+
+		CHECK(test.x() == 150u);
+	}
+	SECTION("y(const uint32_t y) && y()") {
+		Vec2u test{15u, 30u};
+
+		CHECK(test.y() == 30u);
+
+		test.y(300u);
+
+		CHECK(test.y() == 300u);
+	}
+	SECTION("translate(const Vec2u& amount)") {
+		Vec2u test{1u, 2u};
+		const Vec2u translateAmount{3u, 4u};
+
+		test.translate(translateAmount);
+
+		CHECK(test == std::array<uint32_t, 2>{4u, 6u});
+
+		test.translate(translateAmount);
+
+		CHECK(test == std::array<uint32_t, 2>{7u, 10u});
+	}
+	SECTION("translate(const std::array<uint32_t, 2>& amount)") {
+		Vec2u test{1u, 2u};
+		const std::array<uint32_t, 2> translateAmount{3u, 4u};
+
+		test.translate(translateAmount);
+
+		CHECK(test == std::array<uint32_t, 2>{4u, 6u});
+
+		test.translate(translateAmount);
+
+		CHECK(test == std::array<uint32_t, 2>{7u, 10u});
+	}
+	SECTION("translate(const uint32_t amount[2])") {
+		Vec2u test{1u, 2u};
+		const uint32_t translateAmount[2]{3u, 4u};
+
+		test.translate(translateAmount);
+
+		CHECK(test == std::array<uint32_t, 2>{4u, 6u});
+
+		test.translate(translateAmount);
+
+		CHECK(test == std::array<uint32_t, 2>{7u, 10u});
+	}
+	SECTION("translateX(const uint32_t amount)") {
+		Vec2u test{1u, 2u};
+		const uint32_t translateAmount{3};
+
+		test.translateX(translateAmount);
+
+		CHECK(test == std::array<uint32_t, 2>{4u, 2u});
+
+		test.translateX(translateAmount);
+
+		CHECK(test == std::array<uint32_t, 2>{7u, 2u});
+	}
+	SECTION("translateY(const uint32_t amount)") {
+		Vec2u test{1u, 2u};
+		const uint32_t translateAmount{4u};
+
+		test.translateY(translateAmount);
+
+		CHECK(test == std::array<uint32_t, 2>{1u, 6u});
+
+		test.translateY(translateAmount);
+
+		CHECK(test == std::array<uint32_t, 2>{1u, 10u});
+	}
+	SECTION("rotate(const int32_t degreesCounterClockwise)") {
+		Vec2u test{1u, 0u};
+		int32_t rotateAmount{90};
+
+		test.rotate(rotateAmount);
+
+		CHECK(test == std::array<uint32_t, 2>{0u, 1u});
+	}
+	SECTION("scale(const Vec2& amount)") {
+		Vec2u test{2u, 3u};
+		const Vec2u scaleAmount{3u, 4u};
+
+		test.scale(scaleAmount);
+
+		CHECK(test == std::array<uint32_t, 2>{6u, 12u});
+
+		test.scale(scaleAmount);
+
+		CHECK(test == std::array<uint32_t, 2>{18u, 48u});
+	}
+	SECTION("scale(const float factor)") {
+		Vec2u test{2u, 3u};
+		const float scaleAmount{3.0f};
+
+		test.scale(scaleAmount);
+
+		CHECK(test == std::array<uint32_t, 2>{6u, 9u});
+
+		test.scale(scaleAmount);
+
+		CHECK(test == std::array<uint32_t, 2>{18u, 27u});
+	}
+	SECTION("scale(const float factors[2])") {
+		Vec2u test{2u, 3u};
+		const float scaleAmount[2]{3.0f, 4.0f};
+
+		test.scale(scaleAmount);
+
+		CHECK(test == std::array<uint32_t, 2>{6u, 12u});
+
+		test.scale(scaleAmount);
+
+		CHECK(test == std::array<uint32_t, 2>{18u, 48u});
+	}
+	SECTION("scale(const std::array<float, 2>& factors)") {
+		Vec2u test{2u, 3u};
+		const std::array<float, 2> scaleAmount{3.0f, 4.0f};
+
+		test.scale(scaleAmount);
+
+		CHECK(test == std::array<uint32_t, 2>{6u, 12u});
+
+		test.scale(scaleAmount);
+
+		CHECK(test == std::array<uint32_t, 2>{18u, 48u});
+	}
+	SECTION("scaleX(const float factor)") {
+		Vec2u test{2u, 3u};
+		const float scaleAmount{3.0f};
+
+		test.scaleX(scaleAmount);
+
+		CHECK(test == std::array<uint32_t, 2>{6u, 3u});
+
+		test.scaleX(scaleAmount);
+
+		CHECK(test == std::array<uint32_t, 2>{18u, 3u});
+	}
+	SECTION("scaleY(const float factor)") {
+		Vec2u test{2u, 3u};
+		const float scaleAmount{4.0f};
+
+		test.scaleY(scaleAmount);
+
+		CHECK(test == std::array<uint32_t, 2>{2u, 12u});
+
+		test.scaleY(scaleAmount);
+
+		CHECK(test == std::array<uint32_t, 2>{2u, 48u});
+	}
+	SECTION("operator[](const std::size_t idx)") {
+		Vec2u test{2u, 3u};
+
+		CHECK(test[0] == 2u);
+		CHECK(test[1] == 3u);
+
+		test.x(10u);
+		test.y(20u);
+
+		CHECK(test[0] == 10u);
+		CHECK(test[1] == 20u);
+	}
+	SECTION("operator+=(const Vec2& other)") {
+		Vec2u test{2u, 3u};
+		const Vec2u addAmount{4u, 5u};
+
+		test += addAmount;
+
+		CHECK(test == std::array<uint32_t, 2>{6u, 8u});
+
+		test += addAmount;
+
+		CHECK(test == std::array<uint32_t, 2>{10u, 13u});
+	}
+	SECTION("operator+=(const std::array<uint32_t, 2>& amount)") {
+		Vec2u test{2u, 3u};
+		const std::array<uint32_t, 2> addAmount{4u, 5u};
+
+		test += addAmount;
+
+		CHECK(test == std::array<uint32_t, 2>{6u, 8u});
+
+		test += addAmount;
+
+		CHECK(test == std::array<uint32_t, 2>{10u, 13u});
+	}
+	SECTION("operator+=(const uint32_t amount[2])") {
+		Vec2u test{2u, 3u};
+		const uint32_t addAmount[2]{4u, 5u};
+
+		test += addAmount;
+
+		CHECK(test == std::array<uint32_t, 2>{6u, 8u});
+
+		test += addAmount;
+
+		CHECK(test == std::array<uint32_t, 2>{10u, 13u});
+	}
+	SECTION("operator-=(const Vec2& other)") {
+		Vec2u test{20u, 30u};
+		const Vec2u subtractAmount{4u, 5u};
+
+		test -= subtractAmount;
+
+		CHECK(test == std::array<uint32_t, 2>{16u, 25u});
+
+		test -= subtractAmount;
+
+		CHECK(test == std::array<uint32_t, 2>{12u, 20u});
+	}
+	SECTION("operator-=(const std::array<uint32_t, 2>& amount)") {
+		Vec2u test{20u, 30u};
+		const std::array<uint32_t, 2> subtractAmount{4u, 5u};
+
+		test -= subtractAmount;
+
+		CHECK(test == std::array<uint32_t, 2>{16u, 25u});
+
+		test -= subtractAmount;
+
+		CHECK(test == std::array<uint32_t, 2>{12u, 20u});
+	}
+	SECTION("operator-=(const uint32_t amount[2])") {
+		Vec2u test{20u, 30u};
+		const uint32_t subtractAmount[2]{4u, 5u};
+
+		test -= subtractAmount;
+
+		CHECK(test == std::array<uint32_t, 2>{16u, 25u});
+
+		test -= subtractAmount;
+
+		CHECK(test == std::array<uint32_t, 2>{12u, 20u});
+	}
+	SECTION("operator*=(const Vec2& other)") {
+		Vec2u test{2u, 3u};
+		const Vec2u multiplyAmount{4u, 5u};
+
+		test *= multiplyAmount;
+
+		CHECK(test == std::array<uint32_t, 2>{8u, 15u});
+
+		test *= multiplyAmount;
+
+		CHECK(test == std::array<uint32_t, 2>{32u, 75u});
+	}
+	SECTION("operator*=(const float factor)") {
+		Vec2u test{2u, 3u};
+		const float multiplyAmount{4.0f};
+
+		test *= multiplyAmount;
+
+		CHECK(test == std::array<uint32_t, 2>{8u, 12u});
+
+		test *= multiplyAmount;
+
+		CHECK(test == std::array<uint32_t, 2>{32u, 48u});
+	}
+	SECTION("operator*=(const std::array<float, 2>& amount)") {
+		Vec2u test{2u, 3u};
+		const std::array<float, 2> multiplyAmount{4.0f, 5.0f};
+
+		test *= multiplyAmount;
+
+		CHECK(test == std::array<uint32_t, 2>{8u, 15u});
+
+		test *= multiplyAmount;
+
+		CHECK(test == std::array<uint32_t, 2>{32u, 75u});
+	}
+	SECTION("operator*=(const float amount[2])") {
+		Vec2u test{2u, 3u};
+		const float multiplyAmount[2]{4.0f, 5.0f};
+
+		test *= multiplyAmount;
+
+		CHECK(test == std::array<uint32_t, 2>{8u, 15u});
+
+		test *= multiplyAmount;
+
+		CHECK(test == std::array<uint32_t, 2>{32u, 75u});
+	}
+	SECTION("operator==(const Vec2u& other)") {
+		Vec2u test{1u, 2u};
+		Vec2u test2{1u, 2u};
+
+		CHECK(test == test2);
+
+		test2.x(3u);
+
+		CHECK(!(test == test2));
+
+		test.x(3u);
+
+		CHECK(test == test2);
+
+		test2.y(3u);
+
+		CHECK(!(test == test2));
+	}
+	SECTION("operator==(const std::array<uint32_t, 2>& other)") {
+		Vec2u test{1u, 2u};
+		std::array<uint32_t, 2> values{1u, 2u};
+
+		CHECK(test == values);
+
+		values[0] = 3u;
+
+		CHECK(!(test == values));
+
+		test.x(3u);
+
+		CHECK(test == values);
+
+		values[1] = 3u;
+
+		CHECK(!(test == values));
+	}
+	SECTION("operator==(const uint32_t other[2])") {
+		Vec2u test{1u, 2u};
+		uint32_t values[2]{1u, 2u};
+
+		CHECK(test == values);
+
+		values[0] = 3u;
+
+		CHECK(!(test == values));
+
+		test.x(3u);
+
+		CHECK(test == values);
+
+		values[1] = 3u;
+
+		CHECK(!(test == values));
+	}
+	SECTION("operator!=(const Vec2u& other)") {
+		Vec2u test{1u, 2u};
+		Vec2u test2{1u, 2u};
+
+		CHECK(!(test != test2));
+
+		test2.x(3u);
+
+		CHECK(test != test2);
+
+		test.x(3u);
+
+		CHECK(!(test != test2));
+
+		test2.y(3u);
+
+		CHECK(test != test2);
+	}
+	SECTION("operator!=(const std::array<uint32_t, 2>& other)") {
+		Vec2u test{1u, 2u};
+		std::array<uint32_t, 2> values{1u, 2u};
+
+		CHECK(!(test != values));
+
+		values[0] = 3u;
+
+		CHECK(test != values);
+
+		test.x(3u);
+
+		CHECK(!(test != values));
+
+		values[1] = 3u;
+
+		CHECK(test != values);
+	}
+	SECTION("operator!=(const uint32_t other[2])") {
+		Vec2u test{1u, 2u};
+		uint32_t values[2]{1u, 2u};
+
+		CHECK(!(test != values));
+
+		values[0] = 3u;
+
+		CHECK(test != values);
+
+		test.x(3u);
+
+		CHECK(!(test != values));
+
+		values[1] = 3u;
+
+		CHECK(test != values);
+	}
+	SECTION("getValsAsFloat()") {
+		Vec2u test{1u, 2u};
+
+		const auto values = test.getValsAsFloat();
+
+		CHECK_THAT(values[0], Catch::Matchers::WithinAbs(1.0f, 0.0001f));
+		CHECK_THAT(values[1], Catch::Matchers::WithinAbs(2.0f, 0.0001f));
+	}
+	SECTION("getValsAsInt()") {
+		Vec2u test{1u, 2u};
+
+		const auto values = test.getValsAsInt();
+
+		CHECK(values[0] == 1);
+		CHECK(values[1] == 2);
+	}
+	SECTION("getValsAsUint()") {
+		Vec2u test{1u, 2u};
+
+		const auto values = test.getValsAsUint();
+
+		CHECK(values[0] == 1u);
+		CHECK(values[1] == 2u);
 	}
 }
