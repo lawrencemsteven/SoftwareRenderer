@@ -4,11 +4,11 @@
 
 namespace slm {
 
-	/////////////////
-	// Primitive2D //
-	/////////////////
+	////////////////
+	// Primitive2 //
+	////////////////
 
-	class Primitive2D {
+	class Primitive2 {
 	public:
 		virtual void clip() = 0;
 	protected:
@@ -18,14 +18,14 @@ namespace slm {
 
 
 	////////////
-	// Line2D //
+	// Line2f //
 	////////////
 
-	class Line2D : public Primitive2D {
+	class Line2f : public Primitive2 {
 	public:
-		Line2D();
-		Line2D(Vec2f start, Vec2f end);
-		Line2D(const float x1, const float y1, const float x2, const float y2);
+		Line2f();
+		Line2f(Vec2f start, Vec2f end);
+		Line2f(const float x1, const float y1, const float x2, const float y2);
 
 		void setStart(Vec2f start);
 		void setEnd(Vec2f end);
@@ -38,9 +38,11 @@ namespace slm {
 		void scaleX(const float factor);
 		void scaleY(const float factor);
 
+		void clip() override;
+
 		const Vec2f& operator[](const std::size_t idx) const;
-		bool operator==(const Line2D& other) const;
-		bool operator!=(const Line2D& other) const;
+		bool operator==(const Line2f& other) const;
+		bool operator!=(const Line2f& other) const;
 	protected:
 		std::array<Vec2f, 2> m_points{};
 	};
@@ -52,7 +54,7 @@ namespace slm {
 	// Box2D //
 	///////////
 
-	class Box2D : public Primitive2D {
+	class Box2f : public Primitive2 {
 	public:
 	protected:
 	};
@@ -64,7 +66,7 @@ namespace slm {
 	// Polygon2D //
 	///////////////
 
-	class Polygon2D : public Primitive2D {
+	class Polygon2f : public Primitive2 {
 	public:
 	protected:
 	};
