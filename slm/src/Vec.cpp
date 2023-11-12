@@ -170,7 +170,19 @@ namespace slm {
 		return *this;
 	}
 
-	bool Vec2f::operator==(const Vec2& other) const {
+	Vec2f& Vec2f::operator*=(const std::array<float, 2>& amount) {
+		scale(amount);
+
+		return *this;
+	}
+
+	Vec2f& Vec2f::operator*=(const float amount[2]) {
+		scale(amount);
+
+		return *this;
+	}
+
+	bool Vec2f::operator==(const Vec2f& other) const {
 		const auto otherValues = other.getValsAsFloat();
 
 		return *this == otherValues;
@@ -182,6 +194,18 @@ namespace slm {
 
 	bool Vec2f::operator==(const float other[2]) const {
 		return m_values[0] == other[0] && m_values[1] == other[1];
+	}
+
+	bool Vec2f::operator!=(const Vec2f& other) const {
+		return !(*this == other);
+	}
+
+	bool Vec2f::operator!=(const std::array<float, 2>& other) const {
+		return !(*this == other);
+	}
+
+	bool Vec2f::operator!=(const float other[2]) const {
+		return !(*this == other);
 	}
 
 	std::array<float, 2> Vec2f::getValsAsFloat() const {
@@ -339,7 +363,19 @@ namespace slm {
 		return *this;
 	}
 
-	bool Vec2i::operator==(const Vec2& other) const {
+	Vec2i& Vec2i::operator*=(const std::array<float, 2>& amount) {
+		scale(amount);
+		
+		return *this;
+	}
+
+	Vec2i& Vec2i::operator*=(const float amount[2]) {
+		scale(amount);
+
+		return *this;
+	}
+
+	bool Vec2i::operator==(const Vec2i& other) const {
 		const auto otherValues = other.getValsAsInt();
 
 		return *this == otherValues;
@@ -351,6 +387,18 @@ namespace slm {
 
 	bool Vec2i::operator==(const int32_t other[2]) const {
 		return m_values[0] == other[0] && m_values[1] == other[1];
+	}
+
+	bool Vec2i::operator!=(const Vec2i& other) const {
+		return !(*this == other);
+	}
+
+	bool Vec2i::operator!=(const std::array<int32_t, 2>& other) const {
+		return !(*this == other);
+	}
+
+	bool Vec2i::operator!=(const int32_t other[2]) const {
+		return !(*this == other);
 	}
 
 	std::array<float, 2> Vec2i::getValsAsFloat() const {
