@@ -16,7 +16,7 @@ TEST_CASE("Line2f") {
 
 		helpers::checkLine2fValues(test, 0.0f, 0.0f, 0.0f, 0.0f);
 	}
-	SECTION("Line2f(Vec2f start, Vec2f end)"){
+	SECTION("Line2f(Vec2f start, Vec2f end)") {
 		slm::Vec2f start{1.0f, 2.0f};
 		slm::Vec2f end{3.0f, 4.0f};
 		slm::Line2f test{start, end};
@@ -93,6 +93,112 @@ TEST_CASE("Line2f") {
 	}
 	SECTION("void clip()") {
 		// TODO: CLIPPING
+	}
+	SECTION("float getXMin()") {
+		{
+			slm::Line2f test{1.0f, 2.0f, 3.0f, 4.0f};
+			helpers::checkFloatValues(test.getXMin(), 1.0f);
+		}
+		{
+			slm::Line2f test{30.0f, 20.0f, 10.0f, 40.0f};
+			helpers::checkFloatValues(test.getXMin(), 10.0f);
+		}
+	}
+	SECTION("float getXMax()") {
+		{
+			slm::Line2f test{1.0f, 2.0f, 3.0f, 4.0f};
+			helpers::checkFloatValues(test.getXMax(), 3.0f);
+		}
+		{
+			slm::Line2f test{30.0f, 20.0f, 10.0f, 40.0f};
+			helpers::checkFloatValues(test.getXMax(), 30.0f);
+		}
+	}
+	SECTION("float getYMin()") {
+		{
+			slm::Line2f test{1.0f, 2.0f, 3.0f, 4.0f};
+			helpers::checkFloatValues(test.getYMin(), 2.0f);
+		}
+		{
+			slm::Line2f test{10.0f, 40.0f, 30.0f, 20.0f};
+			helpers::checkFloatValues(test.getYMin(), 20.0f);
+		}
+	}
+	SECTION("float getYMax()") {
+		{
+			slm::Line2f test{1.0f, 2.0f, 3.0f, 4.0f};
+			helpers::checkFloatValues(test.getYMax(), 4.0f);
+		}
+		{
+			slm::Line2f test{10.0f, 40.0f, 30.0f, 20.0f};
+			helpers::checkFloatValues(test.getYMax(), 40.0f);
+		}
+	}
+	SECTION("std::optional<float> getSlope()") {
+		SECTION("Horizontal Line") {
+			const slm::Line2f test{0.0f, 0.0f, 10.0f, 0.0f};
+
+			const auto slopeOptional = test.getSlope();
+
+			REQUIRE(slopeOptional.has_value());
+			helpers::checkFloatValues(slopeOptional.value(), 0.0f);
+		}
+		SECTION("Vertical Line") {
+			const slm::Line2f test{0.0f, 0.0f, 0.0f, 10.0f};
+
+			const auto slopeOptional = test.getSlope();
+
+			REQUIRE(!slopeOptional.has_value());
+		}
+		SECTION("Same Points") {
+			const slm::Line2f test{0.0f, 0.0f, 0.0f, 0.0f};
+
+			const auto slopeOptional = test.getSlope();
+
+			REQUIRE(!slopeOptional.has_value());
+		}
+		SECTION("Actual Slope") {
+			{
+				const slm::Line2f test{0.0f, 0.0f, 1.0f, 1.0f};
+
+				const auto slopeOptional = test.getSlope();
+
+				REQUIRE(slopeOptional.has_value());
+				helpers::checkFloatValues(slopeOptional.value(), 1.0f);
+			}
+			{
+				const slm::Line2f test{1.0f, 1.0f, 0.0f, 0.0f};
+
+				const auto slopeOptional = test.getSlope();
+
+				REQUIRE(slopeOptional.has_value());
+				helpers::checkFloatValues(slopeOptional.value(), 1.0f);
+			}
+			{
+				const slm::Line2f test{-1.0f, 1.0f, 0.0f, 0.0f};
+
+				const auto slopeOptional = test.getSlope();
+
+				REQUIRE(slopeOptional.has_value());
+				helpers::checkFloatValues(slopeOptional.value(), -1.0f);
+			}
+			{
+				const slm::Line2f test{0.0f, 0.0f, 1.0f, 2.0f};
+
+				const auto slopeOptional = test.getSlope();
+
+				REQUIRE(slopeOptional.has_value());
+				helpers::checkFloatValues(slopeOptional.value(), 2.0f);
+			}
+			{
+				const slm::Line2f test{0.0f, 0.0f, 2.0f, 1.0f};
+
+				const auto slopeOptional = test.getSlope();
+
+				REQUIRE(slopeOptional.has_value());
+				helpers::checkFloatValues(slopeOptional.value(), 0.5f);
+			}
+		}
 	}
 	SECTION("const Vec2f& operator[](const std::size_t idx)") {
 		slm::Line2f test{1.0f, 2.0f, 3.0f, 4.0f};

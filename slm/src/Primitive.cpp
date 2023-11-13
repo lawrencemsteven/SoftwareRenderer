@@ -65,6 +65,32 @@ namespace slm {
 		std::cout << "Line2f::clip() STILL TO COMPLETE!!!\n";
 	}
 
+	float Line2f::getXMin() const {
+		return std::min(m_points[0].x(), m_points[1].x());
+	}
+
+	float Line2f::getXMax() const {
+		return std::max(m_points[0].x(), m_points[1].x());
+	}
+
+	float Line2f::getYMin() const {
+		return std::min(m_points[0].y(), m_points[1].y());
+	}
+
+	float Line2f::getYMax() const {
+		return std::max(m_points[0].y(), m_points[1].y());
+	}
+
+	std::optional<float> Line2f::getSlope() const {
+		const auto xDifference = m_points[1].x() - m_points[0].x();
+		if (xDifference == 0.0f) {
+			return std::nullopt;
+		}
+
+		const auto yDifference = m_points[1].y() - m_points[0].y();
+		return yDifference / xDifference;
+	}
+
 	const Vec2f& Line2f::operator[](const std::size_t idx) const {
 		return m_points[idx];
 	}

@@ -40,6 +40,12 @@ namespace slm {
 
 		void clip() override;
 
+		float getXMin() const;
+		float getXMax() const;
+		float getYMin() const;
+		float getYMax() const;
+		std::optional<float> getSlope() const;
+
 		const Vec2f& operator[](const std::size_t idx) const;
 		bool operator==(const Line2f& other) const;
 		bool operator!=(const Line2f& other) const;

@@ -80,20 +80,20 @@ TEST_CASE("Vec2f") {
 	SECTION("x(const float x) && x()") {
 		slm::Vec2f test{15.0f, 30.0f};
 
-		CHECK_THAT(test.x(), Catch::Matchers::WithinAbs(15.0f, 0.0001f));
+		helpers::checkFloatValues(test.x(), 15.0f);
 
 		test.x(150.0f);
 
-		CHECK_THAT(test.x(), Catch::Matchers::WithinAbs(150.0f, 0.0001f));
+		helpers::checkFloatValues(test.x(), 150.0f);
 	}
 	SECTION("y(const float y) && y()") {
 		slm::Vec2f test{15.0f, 30.0f};
 
-		CHECK_THAT(test.y(), Catch::Matchers::WithinAbs(30.0f, 0.0001f));
+		helpers::checkFloatValues(test.y(), 30.0f);
 
 		test.y(300.0f);
 
-		CHECK_THAT(test.y(), Catch::Matchers::WithinAbs(300.0f, 0.0001));
+		helpers::checkFloatValues(test.y(), 300.0f);
 	}
 	SECTION("translate(const Vec2f& amount)") {
 		slm::Vec2f test{1.0f, 2.0f};
@@ -250,14 +250,14 @@ TEST_CASE("Vec2f") {
 	SECTION("operator[](const std::size_t idx)") {
 		slm::Vec2f test{2.0f, 3.0f};
 
-		CHECK_THAT(test[0], Catch::Matchers::WithinAbs(2.0f, 0.0001f));
-		CHECK_THAT(test[1], Catch::Matchers::WithinAbs(3.0f, 0.0001f));
+		helpers::checkFloatValues(test[0], 2.0f);
+		helpers::checkFloatValues(test[1], 3.0f);
 
 		test.x(10.0f);
 		test.y(20.0f);
 
-		CHECK_THAT(test[0], Catch::Matchers::WithinAbs(10.0f, 0.0001f));
-		CHECK_THAT(test[1], Catch::Matchers::WithinAbs(20.0f, 0.0001f));
+		helpers::checkFloatValues(test[0], 10.0f);
+		helpers::checkFloatValues(test[1], 20.0f);
 	}
 	SECTION("operator+=(const Vec2& other)") {
 		slm::Vec2f test{2.0f, 3.0f};
@@ -492,8 +492,8 @@ TEST_CASE("Vec2f") {
 
 		const auto values = test.getValsAsFloat();
 
-		CHECK_THAT(values[0], Catch::Matchers::WithinAbs(1.0f, 0.0001f));
-		CHECK_THAT(values[1], Catch::Matchers::WithinAbs(2.0f, 0.0001f));
+		helpers::checkFloatValues(values[0], 1.0f);
+		helpers::checkFloatValues(values[1], 2.0f);
 	}
 	SECTION("getValsAsInt()") {
 		slm::Vec2f test{1.0f, 2.0f};
@@ -1005,8 +1005,8 @@ TEST_CASE("Vec2i") {
 
 		const auto values = test.getValsAsFloat();
 
-		CHECK_THAT(values[0], Catch::Matchers::WithinAbs(1.0f, 0.0001f));
-		CHECK_THAT(values[1], Catch::Matchers::WithinAbs(2.0f, 0.0001f));
+		helpers::checkFloatValues(values[0], 1.0f);
+		helpers::checkFloatValues(values[1], 2.0f);
 	}
 	SECTION("getValsAsInt()") {
 		slm::Vec2i test{1, 2};
@@ -1506,8 +1506,8 @@ TEST_CASE("Vec2u") {
 
 		const auto values = test.getValsAsFloat();
 
-		CHECK_THAT(values[0], Catch::Matchers::WithinAbs(1.0f, 0.0001f));
-		CHECK_THAT(values[1], Catch::Matchers::WithinAbs(2.0f, 0.0001f));
+		helpers::checkFloatValues(values[0], 1.0f);
+		helpers::checkFloatValues(values[1], 2.0f);
 	}
 	SECTION("getValsAsInt()") {
 		slm::Vec2u test{1u, 2u};
