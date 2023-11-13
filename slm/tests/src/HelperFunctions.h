@@ -5,6 +5,16 @@
 namespace helpers {
 
 	///////////
+	// float //
+	///////////
+
+	const float FLOATING_POINT_ERROR_MARGIN = 0.0001f;
+	void checkFloatValues(const float float1, const float float2);
+
+
+
+
+	///////////
 	// Vec2f //
 	///////////
 

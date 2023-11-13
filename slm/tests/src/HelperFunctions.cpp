@@ -6,24 +6,35 @@
 namespace helpers {
 
 	///////////
+	// float //
+	///////////
+
+	void checkFloatValues(const float float1, const float float2) {
+		CHECK_THAT(float1, Catch::Matchers::WithinAbs(float2, FLOATING_POINT_ERROR_MARGIN));
+	}
+
+
+
+
+	///////////
 	// Vec2f //
 	///////////
 
 	void checkVec2fValues(const slm::Vec2f& vec, const slm::Vec2f& otherVec) {
 		for (std::size_t i = 0; i < 2; i++) {
-			CHECK_THAT(vec[i], Catch::Matchers::WithinAbs(otherVec[i], 0.0001f));
+			checkFloatValues(vec[i], otherVec[i]);
 		}
 	}
 
 	void checkVec2fValues(const slm::Vec2f& vec, const std::array<float, 2>& values) {
 		for (std::size_t i = 0; i < 2; i++) {
-			CHECK_THAT(vec[i], Catch::Matchers::WithinAbs(values[i], 0.0001f));
+			checkFloatValues(vec[i], values[i]);
 		}
 	}
 
 	void checkVec2fValues(const slm::Vec2f& vec, const float x, const float y) {
-		CHECK_THAT(vec.x(), Catch::Matchers::WithinAbs(x, 0.0001f));
-		CHECK_THAT(vec.y(), Catch::Matchers::WithinAbs(y, 0.0001f));
+		checkFloatValues(vec.x(), x);
+		checkFloatValues(vec.y(), y);
 	}
 
 
