@@ -225,3 +225,160 @@ TEST_CASE("Line2f") {
 		CHECK(test != test4);
 	}
 }
+
+
+
+
+//////////////////////
+// AxisAlignedBox2u //
+//////////////////////
+
+TEST_CASE("AxisAlignedBox2u") {
+	SECTION("AxisAlignedBox2u()") {
+		slm::AxisAlignedBox2u test{};
+
+		helpers::checkAxisAlignedBox2uValues(test, 0u, 0u, 0u, 0u);
+	}
+	SECTION("AxisAlignedBox2u(Vec2u bottomLeft, Vec2u topRight)") {
+		slm::AxisAlignedBox2u test{slm::Vec2u{1u, 2u}, slm::Vec2u{3u, 4u}};
+
+		helpers::checkAxisAlignedBox2uValues(test, 1u, 2u, 3u, 4u);
+	}
+	SECTION("AxisAlignedBox2u(uint32_t x1, uint32_t y1, uint32_t x2, uint32_t y2)") {
+		slm::AxisAlignedBox2u test{1u, 2u, 3u, 4u};
+
+		helpers::checkAxisAlignedBox2uValues(test, 1u, 2u, 3u, 4u);
+	}
+	SECTION("void setBottomLeft(Vec2u bottomLeft)") {
+		slm::AxisAlignedBox2u test{1u, 2u, 5u, 6u};
+
+		test.setBottomLeft(slm::Vec2u{3u, 4u});
+
+		helpers::checkAxisAlignedBox2uValues(test, 3u, 4u, 5u, 6u);
+	}
+	SECTION("void setTopRight(Vec2u topRight)") {
+		slm::AxisAlignedBox2u test{1u, 2u, 3u, 4u};
+
+		test.setTopRight(slm::Vec2u{5u, 6u});
+
+		helpers::checkAxisAlignedBox2uValues(test, 1u, 2u, 5u, 6u);
+	}
+	SECTION("void setBottom(const uint32_t bottom)") {
+		slm::AxisAlignedBox2u test{1u, 2u, 3u, 4u};
+
+		test.setBottom(0u);
+
+		helpers::checkAxisAlignedBox2uValues(test, 1u, 0u, 3u, 4u);
+	}
+	SECTION("void setLeft(const uint32_t left)") {
+		slm::AxisAlignedBox2u test{1u, 2u, 3u, 4u};
+
+		test.setLeft(0u);
+
+		helpers::checkAxisAlignedBox2uValues(test, 0u, 2u, 3u, 4u);
+	}
+	SECTION("void setTop(const uint32_t top)") {
+		slm::AxisAlignedBox2u test{1u, 2u, 3u, 4u};
+
+		test.setTop(5u);
+
+		helpers::checkAxisAlignedBox2uValues(test, 1u, 2u, 3u, 5u);
+	}
+	SECTION("void setRight(const uint32_t right)") {
+		slm::AxisAlignedBox2u test{1u, 2u, 3u, 4u};
+
+		test.setRight(5u);
+
+		helpers::checkAxisAlignedBox2uValues(test, 1u, 2u, 5u, 4u);
+	}
+	SECTION("const Vec2u& getBottomLeft() const") {
+		slm::AxisAlignedBox2u test{1u, 2u, 3u, 4u};
+
+		const auto bottomLeft = test.getBottomLeft();
+
+		helpers::checkVec2uValues(bottomLeft, 1u, 2u);
+	}
+	SECTION("const Vec2u& getTopRight() const") {
+		slm::AxisAlignedBox2u test{1u, 2u, 3u, 4u};
+
+		const auto topRight = test.getTopRight();
+
+		helpers::checkVec2uValues(topRight, 3u, 4u);
+	}
+	SECTION("uint32_t getBottom() const") {
+		slm::AxisAlignedBox2u test{1u, 2u, 3u, 4u};
+
+		const auto bottom = test.getBottom();
+
+		helpers::checkUint32_tValues(bottom, 2u);
+	}
+	SECTION("uint32_t getLeft() const") {
+		slm::AxisAlignedBox2u test{1u, 2u, 3u, 4u};
+
+		const auto left = test.getLeft();
+
+		helpers::checkUint32_tValues(left, 1u);
+	}
+	SECTION("uint32_t getTop() const") {
+		slm::AxisAlignedBox2u test{1u, 2u, 3u, 4u};
+
+		const auto top = test.getTop();
+
+		helpers::checkUint32_tValues(top, 4u);
+	}
+	SECTION("uint32_t getRight() const") {
+		slm::AxisAlignedBox2u test{1u, 2u, 3u, 4u};
+
+		const auto right = test.getRight();
+
+		helpers::checkUint32_tValues(right, 3u);
+	}
+	SECTION("void translate(const Vec2& amount)") {
+		slm::AxisAlignedBox2u test{1u, 2u, 3u, 4u};
+
+		test.translate(slm::Vec2u{5u, 6u});
+
+		helpers::checkAxisAlignedBox2uValues(test, 6u, 8u, 8u, 10u);
+	}
+	SECTION("void rotate(const int32_t degreesCounterClockwise)") {
+		slm::AxisAlignedBox2u test {1u, 0u, 2u, 0u};
+
+		test.rotate(90);
+
+		helpers::checkAxisAlignedBox2uValues(test, 0u, 1u, 0u, 2u);
+	}
+	SECTION("void scale(const float factor)") {
+		slm::AxisAlignedBox2u test{1u, 2u, 3u, 4u};
+
+		test.scale(3.0f);
+
+		helpers::checkAxisAlignedBox2uValues(test, 3u, 6u, 9u, 12u);
+	}
+	SECTION("void scaleX(const float factor)") {
+		slm::AxisAlignedBox2u test{1u, 2u, 3u, 4u};
+
+		test.scaleX(4.0f);
+
+		helpers::checkAxisAlignedBox2uValues(test, 4u, 2u, 12u, 4u);
+	}
+	SECTION("void scaleY(const float factor)") {
+		slm::AxisAlignedBox2u test{1u, 2u, 3u, 4u};
+
+		test.scaleY(4.0f);
+
+		helpers::checkAxisAlignedBox2uValues(test, 1u, 8u, 3u, 16u);
+	}
+	SECTION("void clip() override") {
+		// TODO: Clipping
+	}
+	SECTION("const Vec2u& operator[](const std::size_t idx) const") {
+		slm::AxisAlignedBox2u test{1u, 2u, 3u, 4u};
+
+		helpers::checkVec2uValues(test[0], 1u, 2u);
+	}
+	SECTION("bool operator==(const AxisAlignedBox2u& other) const") {}
+	SECTION("bool operator!=(const AxisAlignedBox2u& other) const") {}
+	SECTION("void checkDimensions()") {}
+	SECTION("void checkXDimensions()") {}
+	SECTION("void checkYDimensions()") {}
+}

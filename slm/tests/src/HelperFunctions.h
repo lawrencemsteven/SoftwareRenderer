@@ -14,6 +14,15 @@ namespace helpers {
 
 
 
+	//////////////
+	// uint32_t //
+	//////////////
+	
+	void checkUint32_tValues(const uint32_t uint1, const uint32_t uint2);
+
+
+
+
 	///////////
 	// Vec2f //
 	///////////
@@ -25,10 +34,34 @@ namespace helpers {
 
 
 
+	///////////
+	// Vec2u //
+	///////////
+
+	void checkVec2uValues(const slm::Vec2u& vec, const slm::Vec2u& otherVec);
+	void checkVec2uValues(const slm::Vec2u& vec, const std::array<uint32_t, 2>& values);
+	void checkVec2uValues(const slm::Vec2u& vec, const uint32_t x, const uint32_t y);
+
+
+
+
 	////////////
 	// Line2f //
 	////////////
 
 	void checkLine2fValues(const slm::Line2f& line, const slm::Vec2f& start, const slm::Vec2f& end);
-	void checkLine2fValues(const slm::Line2f& line, float x1, float y1, float x2, float y2);
+	void checkLine2fValues(const slm::Line2f& line, const float x1, const float y1, const float x2, const float y2);
+
+
+
+
+	//////////////////////
+	// AxisAlignedBox2u //
+	//////////////////////
+
+	void checkAxisAlignedBox2uValues(const slm::AxisAlignedBox2u& axisAlignedBox,
+									 const slm::Vec2u& bottomLeft, const slm::Vec2u& topRight);
+	void checkAxisAlignedBox2uValues(const slm::AxisAlignedBox2u& axisAlignedBox,
+									 const uint32_t left, const uint32_t bottom,
+									 const uint32_t right, const uint32_t top);
 }

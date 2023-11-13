@@ -16,6 +16,17 @@ namespace helpers {
 
 
 
+	//////////////
+	// uint32_t //
+	//////////////
+
+	void checkUint32_tValues(const uint32_t uint1, const uint32_t uint2) {
+		CHECK(uint1 == uint2);
+	}
+
+
+
+
 	///////////
 	// Vec2f //
 	///////////
@@ -40,6 +51,30 @@ namespace helpers {
 
 
 
+	///////////
+	// Vec2u //
+	///////////
+
+	void checkVec2uValues(const slm::Vec2u& vec, const slm::Vec2u& otherVec) {
+		for (std::size_t i = 0; i < 2; i++) {
+			checkUint32_tValues(vec[i], otherVec[i]);
+		}
+	}
+
+	void checkVec2uValues(const slm::Vec2u& vec, const std::array<uint32_t, 2>& values) {
+		for (std::size_t i = 0; i < 2; i++) {
+			checkUint32_tValues(vec[i], values[i]);
+		}
+	}
+
+	void checkVec2uValues(const slm::Vec2u& vec, const uint32_t x, const uint32_t y) {
+		checkUint32_tValues(vec.x(), x);
+		checkUint32_tValues(vec.y(), y);
+	}
+
+
+
+
 	////////////
 	// Line2f //
 	////////////
@@ -50,8 +85,26 @@ namespace helpers {
 		checkVec2fValues(line.getEnd(), end);
 	}
 
-	void checkLine2fValues(const slm::Line2f& line, float x1, float y1, float x2, float y2) {
+	void checkLine2fValues(const slm::Line2f& line, const float x1, const float y1, const float x2, const float y2) {
 		checkVec2fValues(line.getStart(), x1, y1);
 		checkVec2fValues(line.getEnd(), x2, y2);
+	}
+
+
+
+
+	//////////////////////
+	// AxisAlignedBox2u //
+	//////////////////////
+	
+	void checkAxisAlignedBox2uValues(const slm::AxisAlignedBox2u& axisAlignedBox,
+									 const slm::Vec2u& bottomLeft, const slm::Vec2u& topRight) {
+		checkVec2uValues(axisAlignedBox.getBottomLeft(), bottomLeft);
+	}
+	void checkAxisAlignedBox2uValues(const slm::AxisAlignedBox2u& axisAlignedBox,
+									 const uint32_t left, const uint32_t bottom,
+									 const uint32_t right, const uint32_t top) {
+		checkVec2uValues(axisAlignedBox.getBottomLeft(), left, bottom);
+		checkVec2uValues(axisAlignedBox.getTopRight(), right, top);
 	}
 }

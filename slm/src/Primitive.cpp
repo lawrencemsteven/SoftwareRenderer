@@ -103,4 +103,150 @@ namespace slm {
 		return !(*this == other);
 	}
 
+
+
+
+	//////////////////////
+	// AxisAlignedBox2u //
+	//////////////////////
+	
+	AxisAlignedBox2u::AxisAlignedBox2u()
+		: m_points{Vec2u{}, Vec2u{}} {}
+
+	AxisAlignedBox2u::AxisAlignedBox2u(Vec2u bottomLeft, Vec2u topRight)
+		: m_points{std::move(bottomLeft), std::move(topRight)} {
+		checkDimensions();
+	}
+
+	AxisAlignedBox2u::AxisAlignedBox2u(uint32_t left, uint32_t bottom, uint32_t right, uint32_t top)
+		: m_points{Vec2u{left, bottom}, Vec2u{right, top}} {
+		checkDimensions();
+	}
+
+	void AxisAlignedBox2u::setBottomLeft(Vec2u bottomLeft) {
+		m_points[0] = std::move(bottomLeft);
+		checkDimensions();
+	}
+
+	void AxisAlignedBox2u::setTopRight(Vec2u topRight) {
+		m_points[1] = std::move(topRight);
+		checkDimensions();
+	}
+
+	void AxisAlignedBox2u::setBottom(const uint32_t bottom) {
+		m_points[0].y(bottom);
+		checkDimensions();
+	}
+
+	void AxisAlignedBox2u::setLeft(const uint32_t left) {
+		m_points[0].x(left);
+		checkDimensions();
+	}
+
+	void AxisAlignedBox2u::setTop(const uint32_t top) {
+		m_points[1].y(top);
+		checkDimensions();
+	}
+
+	void AxisAlignedBox2u::setRight(const uint32_t right) {
+		m_points[1].x(right);
+		checkDimensions();
+	}
+
+	const Vec2u& AxisAlignedBox2u::getBottomLeft() const {
+		return m_points[0];
+	}
+
+	const Vec2u& AxisAlignedBox2u::getTopRight() const {
+		return m_points[1];
+	}
+
+	uint32_t AxisAlignedBox2u::getBottom() const {
+		return m_points[0].y();
+	}
+
+	uint32_t AxisAlignedBox2u::getLeft() const {
+		return m_points[0].x();
+	}
+
+	uint32_t AxisAlignedBox2u::getTop() const {
+		return m_points[1].y();
+	}
+
+	uint32_t AxisAlignedBox2u::getRight() const {
+		return m_points[1].x();
+	}
+
+	void AxisAlignedBox2u::translate(const Vec2& amount) {
+		for (auto& point : m_points) {
+			point.translate(amount);
+		}
+		checkDimensions();
+	}
+
+	void AxisAlignedBox2u::rotate(const int32_t degreesCounterClockwise) {
+		for (auto& point : m_points) {
+			point.rotate(degreesCounterClockwise);
+		}
+		checkDimensions();
+	}
+
+	void AxisAlignedBox2u::scale(const float factor) {
+		for (auto& point : m_points) {
+			point.scale(factor);
+		}
+		checkDimensions();
+	}
+
+	void AxisAlignedBox2u::scaleX(const float factor) {
+		for (auto& point : m_points) {
+			point.scaleX(factor);
+		}
+		checkXDimensions();
+	}
+
+	void AxisAlignedBox2u::scaleY(const float factor) {
+		for (auto& point : m_points) {
+			point.scaleY(factor);
+		}
+		checkYDimensions();
+	}
+
+	void AxisAlignedBox2u::clip() {
+		std::cout << "AxisAlignedBox2u::clip() STILL TO COMPLETE!!!\n";
+	}
+
+	const Vec2u& AxisAlignedBox2u::operator[](const std::size_t idx) const {
+		return m_points[idx];
+	}
+
+	bool AxisAlignedBox2u::operator==(const AxisAlignedBox2u& other) const {
+		return m_points[0] == other[0] && m_points[1] == other[1];
+	}
+
+	bool AxisAlignedBox2u::operator!=(const AxisAlignedBox2u& other) const {
+		return !(*this == other);
+	}
+
+	void AxisAlignedBox2u::checkDimensions() {
+		checkXDimensions();
+		checkYDimensions();
+	}
+
+	void AxisAlignedBox2u::checkXDimensions() {
+		if (getLeft() > getRight()) {
+			const auto temp = m_points[0].x();
+			m_points[0].x(m_points[1].x());
+			m_points[1].x(temp);
+		}
+	}
+
+	void AxisAlignedBox2u::checkYDimensions() {
+		if (getBottom() > getTop()) {
+			const auto temp = m_points[0].y();
+			m_points[0].y(m_points[1].y());
+			m_points[1].y(temp);
+		}
+	}
+
 }
