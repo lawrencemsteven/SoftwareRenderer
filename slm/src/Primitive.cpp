@@ -13,7 +13,7 @@ namespace slm {
 		: m_points{std::move(start), std::move(end)} {}
 
 	Line2f::Line2f(const float x1, const float y1, const float x2, const float y2)
-		: m_points{Vec2f{x1, y2}, Vec2f{x2, y2}} {}
+		: m_points{Vec2f{x1, y1}, Vec2f{x2, y2}} {}
 
 	void Line2f::setStart(Vec2f start) {
 		m_points[0] = std::move(start);
