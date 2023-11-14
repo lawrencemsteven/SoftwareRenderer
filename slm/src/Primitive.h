@@ -57,7 +57,7 @@ namespace slm {
 
 
 	//////////////////////
-	// AxisAlignedAxisAlignedBox2u //
+	// AxisAlignedBox2u //
 	//////////////////////
 
 	class AxisAlignedBox2u : public Primitive2 {
@@ -93,9 +93,13 @@ namespace slm {
 	protected:
 		std::array<Vec2u, 2> m_points{};
 
-		void checkDimensions();
-		void checkXDimensions();
-		void checkYDimensions();
+		void checkDimensionSwap();
+		void swapBottomAndTop();
+		void swapLeftAndRight();
+		void checkAndMoveLeft();
+		void checkAndMoveRight();
+		void checkAndMoveBottom();
+		void checkAndMoveTop();
 	};
 
 

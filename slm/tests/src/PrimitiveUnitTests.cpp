@@ -341,7 +341,7 @@ TEST_CASE("AxisAlignedBox2u") {
 		helpers::checkAxisAlignedBox2uValues(test, 6u, 8u, 8u, 10u);
 	}
 	SECTION("void rotate(const int32_t degreesCounterClockwise)") {
-		slm::AxisAlignedBox2u test {1u, 0u, 2u, 0u};
+		slm::AxisAlignedBox2u test{1u, 0u, 2u, 0u};
 
 		test.rotate(90);
 
@@ -376,9 +376,32 @@ TEST_CASE("AxisAlignedBox2u") {
 
 		helpers::checkVec2uValues(test[0], 1u, 2u);
 	}
-	SECTION("bool operator==(const AxisAlignedBox2u& other) const") {}
-	SECTION("bool operator!=(const AxisAlignedBox2u& other) const") {}
-	SECTION("void checkDimensions()") {}
-	SECTION("void checkXDimensions()") {}
-	SECTION("void checkYDimensions()") {}
+	SECTION("bool operator==(const AxisAlignedBox2u& other) const") {
+		slm::AxisAlignedBox2u test1{1u, 2u, 3u, 4u};
+		slm::AxisAlignedBox2u test2{1u, 2u, 3u, 4u};
+
+		CHECK(test1 == test2);
+
+		test2.setBottom(0u);
+
+		CHECK(!(test1 == test2));
+
+		test1.setBottom(0u);
+
+		CHECK(test1 == test2);
+	}
+	SECTION("bool operator!=(const AxisAlignedBox2u& other) const") {
+		slm::AxisAlignedBox2u test1{1u, 2u, 3u, 4u};
+		slm::AxisAlignedBox2u test2{1u, 2u, 3u, 4u};
+
+		CHECK(!(test1 != test2));
+
+		test2.setBottom(0u);
+
+		CHECK(test1 != test2);
+
+		test1.setBottom(0u);
+
+		CHECK(!(test1 != test2));
+	}
 }

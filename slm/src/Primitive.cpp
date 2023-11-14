@@ -115,42 +115,44 @@ namespace slm {
 
 	AxisAlignedBox2u::AxisAlignedBox2u(Vec2u bottomLeft, Vec2u topRight)
 		: m_points{std::move(bottomLeft), std::move(topRight)} {
-		checkDimensions();
+		checkDimensionSwap();
 	}
 
 	AxisAlignedBox2u::AxisAlignedBox2u(uint32_t left, uint32_t bottom, uint32_t right, uint32_t top)
 		: m_points{Vec2u{left, bottom}, Vec2u{right, top}} {
-		checkDimensions();
+		checkDimensionSwap();
 	}
 
 	void AxisAlignedBox2u::setBottomLeft(Vec2u bottomLeft) {
 		m_points[0] = std::move(bottomLeft);
-		checkDimensions();
+		checkAndMoveRight();
+		checkAndMoveTop();
 	}
 
 	void AxisAlignedBox2u::setTopRight(Vec2u topRight) {
 		m_points[1] = std::move(topRight);
-		checkDimensions();
+		checkAndMoveLeft();
+		checkAndMoveBottom();
 	}
 
 	void AxisAlignedBox2u::setBottom(const uint32_t bottom) {
 		m_points[0].y(bottom);
-		checkDimensions();
+		checkAndMoveTop();
 	}
 
 	void AxisAlignedBox2u::setLeft(const uint32_t left) {
 		m_points[0].x(left);
-		checkDimensions();
+		checkAndMoveRight();
 	}
 
 	void AxisAlignedBox2u::setTop(const uint32_t top) {
 		m_points[1].y(top);
-		checkDimensions();
+		checkAndMoveBottom();
 	}
 
 	void AxisAlignedBox2u::setRight(const uint32_t right) {
 		m_points[1].x(right);
-		checkDimensions();
+		checkAndMoveLeft();
 	}
 
 	const Vec2u& AxisAlignedBox2u::getBottomLeft() const {
@@ -181,35 +183,34 @@ namespace slm {
 		for (auto& point : m_points) {
 			point.translate(amount);
 		}
-		checkDimensions();
 	}
 
 	void AxisAlignedBox2u::rotate(const int32_t degreesCounterClockwise) {
 		for (auto& point : m_points) {
 			point.rotate(degreesCounterClockwise);
 		}
-		checkDimensions();
+		checkDimensionSwap();
 	}
 
 	void AxisAlignedBox2u::scale(const float factor) {
 		for (auto& point : m_points) {
 			point.scale(factor);
 		}
-		checkDimensions();
+		checkDimensionSwap();
 	}
 
 	void AxisAlignedBox2u::scaleX(const float factor) {
 		for (auto& point : m_points) {
 			point.scaleX(factor);
 		}
-		checkXDimensions();
+		checkDimensionSwap();
 	}
 
 	void AxisAlignedBox2u::scaleY(const float factor) {
 		for (auto& point : m_points) {
 			point.scaleY(factor);
 		}
-		checkYDimensions();
+		checkDimensionSwap();
 	}
 
 	void AxisAlignedBox2u::clip() {
@@ -228,24 +229,48 @@ namespace slm {
 		return !(*this == other);
 	}
 
-	void AxisAlignedBox2u::checkDimensions() {
-		checkXDimensions();
-		checkYDimensions();
-	}
-
-	void AxisAlignedBox2u::checkXDimensions() {
+	void AxisAlignedBox2u::checkDimensionSwap() {
 		if (getLeft() > getRight()) {
-			const auto temp = m_points[0].x();
-			m_points[0].x(m_points[1].x());
-			m_points[1].x(temp);
+			swapLeftAndRight();
+		}
+		if (getBottom() > getTop()) {
+			swapBottomAndTop();
 		}
 	}
 
-	void AxisAlignedBox2u::checkYDimensions() {
+	void AxisAlignedBox2u::swapBottomAndTop() {
+		const auto temp = m_points[0].x();
+		m_points[0].x(m_points[1].x());
+		m_points[1].x(temp);
+	}
+
+	void AxisAlignedBox2u::swapLeftAndRight() {
+		const auto temp = m_points[0].y();
+		m_points[0].y(m_points[1].y());
+		m_points[1].y(temp);
+	}
+
+	void AxisAlignedBox2u::checkAndMoveLeft() {
+		if (getRight() < getLeft()) {
+			m_points[0].x(getRight());
+		}
+	}
+
+	void AxisAlignedBox2u::checkAndMoveRight() {
+		if (getLeft() > getRight()) {
+			m_points[1].x(getLeft());
+		}
+	}
+
+	void AxisAlignedBox2u::checkAndMoveBottom() {
+		if (getTop() < getBottom()) {
+			m_points[0].y(getTop());
+		}
+	}
+
+	void AxisAlignedBox2u::checkAndMoveTop() {
 		if (getBottom() > getTop()) {
-			const auto temp = m_points[0].y();
-			m_points[0].y(m_points[1].y());
-			m_points[1].y(temp);
+			m_points[1].y(getBottom());
 		}
 	}
 
