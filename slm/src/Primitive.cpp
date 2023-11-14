@@ -22,7 +22,7 @@ namespace slm {
 	void Line2f::setEnd(Vec2f end) {
 		m_points[1] = std::move(end);
 	}
-		
+
 	const Vec2f& Line2f::getStart() const {
 		return m_points[0];
 	}
@@ -109,7 +109,7 @@ namespace slm {
 	//////////////////////
 	// AxisAlignedBox2u //
 	//////////////////////
-	
+
 	AxisAlignedBox2u::AxisAlignedBox2u()
 		: m_points{Vec2u{}, Vec2u{}} {}
 

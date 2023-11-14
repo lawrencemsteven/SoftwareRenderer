@@ -19,8 +19,8 @@ namespace slm {
 	public:
 		static std::size_t getSize();
 
-		virtual std::array<float, 2> getValsAsFloat() const = 0;
-		virtual std::array<int32_t, 2> getValsAsInt() const = 0;
+		virtual std::array<float, 2> getValsAsFloat() const	  = 0;
+		virtual std::array<int32_t, 2> getValsAsInt() const	  = 0;
 		virtual std::array<uint32_t, 2> getValsAsUint() const = 0;
 
 	protected:

@@ -17,7 +17,7 @@ namespace helpers {
 	//////////////
 	// uint32_t //
 	//////////////
-	
+
 	void checkValues(const uint32_t uint1, const uint32_t uint2);
 
 
@@ -60,9 +60,8 @@ namespace helpers {
 	// AxisAlignedBox2u //
 	//////////////////////
 
-	void checkValues(const slm::AxisAlignedBox2u& axisAlignedBox,
-									 const slm::Vec2u& bottomLeft, const slm::Vec2u& topRight);
-	void checkValues(const slm::AxisAlignedBox2u& axisAlignedBox,
-									 const uint32_t left, const uint32_t bottom,
-									 const uint32_t right, const uint32_t top);
+	void checkValues(const slm::AxisAlignedBox2u& axisAlignedBox, const slm::Vec2u& bottomLeft,
+					 const slm::Vec2u& topRight);
+	void checkValues(const slm::AxisAlignedBox2u& axisAlignedBox, const uint32_t left,
+					 const uint32_t bottom, const uint32_t right, const uint32_t top);
 }

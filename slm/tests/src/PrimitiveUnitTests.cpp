@@ -244,7 +244,8 @@ TEST_CASE("AxisAlignedBox2u") {
 
 		helpers::checkValues(test, 1u, 2u, 3u, 4u);
 	}
-	SECTION("AxisAlignedBox2u(const uint32_t x1, const uint32_t y1, const uint32_t x2, const uint32_t y2)") {
+	SECTION("AxisAlignedBox2u(const uint32_t x1, const uint32_t y1, const uint32_t x2, const "
+			"uint32_t y2)") {
 		slm::AxisAlignedBox2u test{1u, 2u, 3u, 4u};
 
 		helpers::checkValues(test, 1u, 2u, 3u, 4u);

@@ -90,8 +90,7 @@ namespace helpers {
 	// Line2f //
 	////////////
 
-	void checkValues(const slm::Line2f& line, const slm::Vec2f& start,
-						   const slm::Vec2f& end) {
+	void checkValues(const slm::Line2f& line, const slm::Vec2f& start, const slm::Vec2f& end) {
 		checkValues(line.getStart(), start);
 		checkValues(line.getEnd(), end);
 	}
@@ -108,14 +107,13 @@ namespace helpers {
 	//////////////////////
 	// AxisAlignedBox2u //
 	//////////////////////
-	
-	void checkValues(const slm::AxisAlignedBox2u& axisAlignedBox,
-									 const slm::Vec2u& bottomLeft, const slm::Vec2u& topRight) {
+
+	void checkValues(const slm::AxisAlignedBox2u& axisAlignedBox, const slm::Vec2u& bottomLeft,
+					 const slm::Vec2u& topRight) {
 		checkValues(axisAlignedBox.getBottomLeft(), bottomLeft);
 	}
-	void checkValues(const slm::AxisAlignedBox2u& axisAlignedBox,
-									 const uint32_t left, const uint32_t bottom,
-									 const uint32_t right, const uint32_t top) {
+	void checkValues(const slm::AxisAlignedBox2u& axisAlignedBox, const uint32_t left,
+					 const uint32_t bottom, const uint32_t right, const uint32_t top) {
 		checkValues(axisAlignedBox.getBottomLeft(), left, bottom);
 		checkValues(axisAlignedBox.getTopRight(), right, top);
 	}
