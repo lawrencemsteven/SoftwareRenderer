@@ -405,3 +405,20 @@ TEST_CASE("AxisAlignedBox2u") {
 		CHECK(!(test1 != test2));
 	}
 }
+
+
+
+
+//////////////
+// SMFModel //
+//////////////
+
+TEST_CASE("SMFModel") {
+	SECTION("SMFModel()") {}
+	SECTION("uint32_t getVertexCount() const") {}
+	SECTION("uint32_t getFaceCount() const") {}
+	SECTION("const slm::Vec3f& getVertex(std::size_t idx) const") {}
+	SECTION("const std::array<slm::Vec3f&, 3> getFaceVertices(std::size_t faceIdx) const") {}
+	SECTION("void addVertex(slm::Vec3f vertex)") {}
+	SECTION("void addFace(slm::Vec3i face)") {}
+}

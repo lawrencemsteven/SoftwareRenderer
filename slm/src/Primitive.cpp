@@ -22,7 +22,7 @@ namespace slm {
 	void Line2f::setEnd(Vec2f end) {
 		m_points[1] = std::move(end);
 	}
-		
+
 	const Vec2f& Line2f::getStart() const {
 		return m_points[0];
 	}
@@ -109,7 +109,7 @@ namespace slm {
 	//////////////////////
 	// AxisAlignedBox2u //
 	//////////////////////
-	
+
 	AxisAlignedBox2u::AxisAlignedBox2u()
 		: m_points{Vec2u{}, Vec2u{}} {}
 
@@ -272,6 +272,56 @@ namespace slm {
 		if (getBottom() > getTop()) {
 			m_points[1].y(getBottom());
 		}
+	}
+
+
+
+
+	//////////////
+	// SMFModel //
+	//////////////
+
+	SMFModel::SMFModel() {}
+
+	uint32_t SMFModel::getVertexCount() const {
+		return m_vertices.size();
+	}
+
+	uint32_t SMFModel::getFaceCount() const {
+		return m_faces.size();
+	}
+
+	const slm::Vec3f& SMFModel::getVertex(std::size_t idx) const {
+		return m_vertices[idx];
+	}
+
+	const std::array<slm::Vec3f&, 3> SMFModel::getFaceVertices(std::size_t faceIdx) const {
+		std::array<slm::Vec3f&, 3> faceVertices;
+		const auto& face = m_faces[faceIdx];
+
+		for (std::size_t i = 0; i < 3; i++) {
+			std::size_t vertexIndex = face[i] - 1;
+			faceVertices[i]			= getVertex(vertexIndex);
+		}
+
+		return faceVertices;
+	}
+
+	void SMFModel::addVertex(slm::Vec3f vertex) {
+		m_vertices.push_back(std::move(vertex));
+	}
+
+	void SMFModel::addFace(slm::Vec3i face) {
+		if (notEnoughVertices(face)) {
+			std::cerr <<"Attempted to add face for insufficient vertices!";
+		}
+
+		m_faces.push_back(std::move(face));
+	}
+
+	bool SMFModel::notEnoughVertices(const slm::Vec3i& face) {
+		return face[0] > getVertexCount() || face[1] > getVertexCount() ||
+			   face[2] > getVertexCount();
 	}
 
 }
