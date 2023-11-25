@@ -297,9 +297,9 @@ namespace slm {
 		void x(const int32_t x);
 		void y(const int32_t y);
 		void z(const int32_t z);
-		float x() const;
-		float y() const;
-		float z() const;
+		int32_t x() const;
+		int32_t y() const;
+		int32_t z() const;
 
 		void translate(const Vec3& amount);
 		void translate(const std::array<int32_t, 3>& amount);
@@ -315,7 +315,7 @@ namespace slm {
 		void scaleY(const float factor);
 		void scaleZ(const float factor);
 
-		float operator[](const std::size_t idx) const;
+		int32_t operator[](const std::size_t idx) const;
 		Vec3i& operator+=(const Vec3& other);
 		Vec3i& operator+=(const std::array<int32_t, 3>& amount);
 		Vec3i& operator+=(const int32_t amount[3]);

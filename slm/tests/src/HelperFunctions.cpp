@@ -90,22 +90,22 @@ namespace helpers {
 	// Vec3f //
 	///////////
 
-	void checkVec3fValues(const slm::Vec3f& vec, const slm::Vec3f& otherVec) {
+	void checkValues(const slm::Vec3f& vec, const slm::Vec3f& otherVec) {
 		for (std::size_t i = 0; i < 3; i++) {
-			checkFloatValues(vec[i], otherVec[i]);
+			checkValues(vec[i], otherVec[i]);
 		}
 	}
 
-	void checkVec3fValues(const slm::Vec3f& vec, const std::array<float, 3>& values) {
+	void checkValues(const slm::Vec3f& vec, const std::array<float, 3>& values) {
 		for (std::size_t i = 0; i < 3; i++) {
-			checkFloatValues(vec[i], values[i]);
+			checkValues(vec[i], values[i]);
 		}
 	}
 
-	void checkVec3fValues(const slm::Vec3f& vec, const float x, const float y, const float z) {
-		checkFloatValues(vec.x(), x);
-		checkFloatValues(vec.y(), y);
-		checkFloatValues(vec.z(), z);
+	void checkValues(const slm::Vec3f& vec, const float x, const float y, const float z) {
+		checkValues(vec.x(), x);
+		checkValues(vec.y(), y);
+		checkValues(vec.z(), z);
 	}
 
 
@@ -115,23 +115,23 @@ namespace helpers {
 	// Vec3i //
 	///////////
 
-	void checkVec3iValues(const slm::Vec3i& vec, const slm::Vec3i& otherVec) {
+	void checkValues(const slm::Vec3i& vec, const slm::Vec3i& otherVec) {
 		for (std::size_t i = 0; i < 3; i++) {
-			checkInt32_tValues(vec[i], otherVec[i]);
+			checkValues(vec[i], otherVec[i]);
 		}
 	}
 
-	void checkVec3iValues(const slm::Vec3i& vec, const std::array<int32_t, 3>& values) {
+	void checkValues(const slm::Vec3i& vec, const std::array<int32_t, 3>& values) {
 		for (std::size_t i = 0; i < 3; i++) {
-			checkInt32_tValues(vec[i], values[i]);
+			checkValues(vec[i], values[i]);
 		}
 	}
 
-	void checkVec3iValues(const slm::Vec3i& vec, const int32_t x, const int32_t y,
+	void checkValues(const slm::Vec3i& vec, const int32_t x, const int32_t y,
 						  const int32_t z) {
-		checkInt32_tValues(vec.x(), x);
-		checkInt32_tValues(vec.y(), y);
-		checkInt32_tValues(vec.z(), z);
+		checkValues(vec.x(), x);
+		checkValues(vec.y(), y);
+		checkValues(vec.z(), z);
 	}
 
 

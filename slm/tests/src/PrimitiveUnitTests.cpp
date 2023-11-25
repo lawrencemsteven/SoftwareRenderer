@@ -415,11 +415,209 @@ TEST_CASE("AxisAlignedBox2u") {
 //////////////
 
 TEST_CASE("SMFModel") {
-	SECTION("SMFModel()") {}
-	SECTION("uint32_t getVertexCount() const") {}
-	SECTION("uint32_t getFaceCount() const") {}
-	SECTION("const slm::Vec3f& getVertex(std::size_t idx) const") {}
-	SECTION("const std::array<slm::Vec3f&, 3> getFaceVertices(std::size_t faceIdx) const") {}
-	SECTION("void addVertex(slm::Vec3f vertex)") {}
-	SECTION("void addFace(slm::Vec3i face)") {}
+	SECTION("SMFModel()") {
+		slm::SMFModel test{};
+
+		helpers::checkValues(test.getVertexCount(), 0);
+		helpers::checkValues(test.getFaceCount(), 0);
+	}
+	SECTION("uint32_t getVertexCount() const") {
+		slm::SMFModel test{};
+
+		test.addVertex({0.0f, 0.0f, 0.0f});
+
+		helpers::checkValues(test.getVertexCount(), 1);
+
+		test.addVertex({1.0f, 1.0f, 1.0f});
+
+		helpers::checkValues(test.getVertexCount(), 2);
+	}
+	SECTION("uint32_t getFaceCount() const") {
+		slm::SMFModel test{};
+
+		test.addVertex({0.0f, 0.0f, 0.0f});
+		test.addVertex({1.0f, 1.0f, 1.0f});
+		test.addVertex({2.0f, 2.0f, 2.0f});
+
+		helpers::checkValues(test.getFaceCount(), 0);
+		test.addFace({1, 1, 1});
+
+		helpers::checkValues(test.getFaceCount(), 1);
+
+		test.addFace({2, 2, 2});
+
+		helpers::checkValues(test.getFaceCount(), 2);
+	}
+	SECTION("const slm::Vec3f& getVertex(std::size_t idx) const") {
+		slm::SMFModel test{};
+
+		test.addVertex({0.0f, 1.0f, 2.0f});
+		test.addVertex({3.0f, 4.0f, 5.0f});
+		test.addVertex({6.0f, 7.0f, 8.0f});
+
+		helpers::checkValues(test.getVertex(0), 0.0f, 1.0f, 2.0f);
+		helpers::checkValues(test.getVertex(1), 3.0f, 4.0f, 5.0f);
+		helpers::checkValues(test.getVertex(2), 6.0f, 7.0f, 8.0f);
+	}
+	SECTION("const std::array<slm::Vec3f&, 3> getFaceVertices(std::size_t faceIdx) const") {
+		slm::SMFModel test{};
+
+		test.addVertex({0.0f, 1.0f, 2.0f});
+		test.addVertex({3.0f, 4.0f, 5.0f});
+		test.addVertex({6.0f, 7.0f, 8.0f});
+
+		test.addFace({1, 2, 3});
+
+		const auto faceVertices = test.getFaceVertices(0);
+
+		helpers::checkValues(*faceVertices[0], 0.0f, 1.0f, 2.0f);
+		helpers::checkValues(*faceVertices[1], 3.0f, 4.0f, 5.0f);
+		helpers::checkValues(*faceVertices[2], 6.0f, 7.0f, 8.0f);
+	}
+	SECTION("void addVertex(slm::Vec3f vertex)") {
+		slm::SMFModel test{};
+
+		test.addVertex(slm::Vec3f{0.0f, 1.0f, 2.0f});
+
+		helpers::checkValues(test.getVertexCount(), 1);
+
+		test.addVertex(slm::Vec3f{3.0f, 4.0f, 5.0f});
+
+		helpers::checkValues(test.getVertexCount(), 2);
+
+		test.addVertex(slm::Vec3f{6.0f, 7.0f, 8.0f});
+
+		helpers::checkValues(test.getVertexCount(), 3);
+	}
+	SECTION("void addVertex(const float x, const float y, const float z)") {
+		slm::SMFModel test{};
+
+		test.addVertex(0.0f, 1.0f, 2.0f);
+
+		helpers::checkValues(test.getVertexCount(), 1);
+
+		test.addVertex(3.0f, 4.0f, 5.0f);
+
+		helpers::checkValues(test.getVertexCount(), 2);
+
+		test.addVertex(6.0f, 7.0f, 8.0f);
+
+		helpers::checkValues(test.getVertexCount(), 3);
+	}
+	SECTION("void addFace(slm::Vec3i face)") {
+		{
+			slm::SMFModel test{};
+
+			test.addVertex({0.0f, 1.0f, 2.0f});
+			test.addVertex({3.0f, 4.0f, 5.0f});
+			test.addVertex({6.0f, 7.0f, 8.0f});
+
+			test.addFace(slm::Vec3i{1, 2, 3});
+
+			helpers::checkValues(test.getFaceCount(), 1);
+
+			test.addFace(slm::Vec3i{1, 2, 3});
+
+			helpers::checkValues(test.getFaceCount(), 2);
+
+			test.addFace(slm::Vec3i{1, 2, 3});
+
+			helpers::checkValues(test.getFaceCount(), 3);
+		}
+		{
+			slm::SMFModel test{};
+
+			test.addVertex({0.0f, 1.0f, 2.0f});
+			test.addVertex({3.0f, 4.0f, 5.0f});
+			test.addVertex({6.0f, 7.0f, 8.0f});
+
+			try {
+				test.addFace(slm::Vec3i{4, 2, 3});
+				REQUIRE(false);
+			}
+			catch (...) {
+				REQUIRE(true);
+			}
+
+			helpers::checkValues(test.getFaceCount(), 0);
+
+			try {
+				test.addFace(slm::Vec3i{1, 4, 3});
+				REQUIRE(false);
+			}
+			catch (...) {
+				REQUIRE(true);
+			}
+
+			helpers::checkValues(test.getFaceCount(), 0);
+
+			try {
+				test.addFace(slm::Vec3i{1, 2, 4});
+				REQUIRE(false);
+			}
+			catch (...) {
+				REQUIRE(true);
+			}
+
+			helpers::checkValues(test.getFaceCount(), 0);
+		}
+	}
+	SECTION("void addFace(const int32_t vertex1, const int32_t vertex2, const int32_t vertex3)") {
+		{
+			slm::SMFModel test{};
+
+			test.addVertex({0.0f, 1.0f, 2.0f});
+			test.addVertex({3.0f, 4.0f, 5.0f});
+			test.addVertex({6.0f, 7.0f, 8.0f});
+
+			test.addFace(1, 2, 3);
+
+			helpers::checkValues(test.getFaceCount(), 1);
+
+			test.addFace(1, 2, 3);
+
+			helpers::checkValues(test.getFaceCount(), 2);
+
+			test.addFace(1, 2, 3);
+
+			helpers::checkValues(test.getFaceCount(), 3);
+		}
+		{
+			slm::SMFModel test{};
+
+			test.addVertex({0.0f, 1.0f, 2.0f});
+			test.addVertex({3.0f, 4.0f, 5.0f});
+			test.addVertex({6.0f, 7.0f, 8.0f});
+
+			try {
+				test.addFace(4, 2, 3);
+				REQUIRE(false);
+			}
+			catch (...) {
+				REQUIRE(true);
+			}
+
+			helpers::checkValues(test.getFaceCount(), 0);
+
+			try {
+				test.addFace(1, 4, 3);
+				REQUIRE(false);
+			}
+			catch (...) {
+				REQUIRE(true);
+			}
+
+			helpers::checkValues(test.getFaceCount(), 0);
+
+			try {
+				test.addFace(1, 2, 4);
+				REQUIRE(false);
+			}
+			catch (...) {
+				REQUIRE(true);
+			}
+
+			helpers::checkValues(test.getFaceCount(), 0);
+		}
+	}
 }

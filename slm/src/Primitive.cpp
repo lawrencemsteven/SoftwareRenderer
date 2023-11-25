@@ -283,11 +283,11 @@ namespace slm {
 
 	SMFModel::SMFModel() {}
 
-	uint32_t SMFModel::getVertexCount() const {
+	std::size_t SMFModel::getVertexCount() const {
 		return m_vertices.size();
 	}
 
-	uint32_t SMFModel::getFaceCount() const {
+	std::size_t SMFModel::getFaceCount() const {
 		return m_faces.size();
 	}
 
@@ -295,13 +295,13 @@ namespace slm {
 		return m_vertices[idx];
 	}
 
-	const std::array<slm::Vec3f&, 3> SMFModel::getFaceVertices(std::size_t faceIdx) const {
-		std::array<slm::Vec3f&, 3> faceVertices;
+	const std::array<const slm::Vec3f*, 3> SMFModel::getFaceVertices(std::size_t faceIdx) const {
+		std::array<const slm::Vec3f*, 3> faceVertices;
 		const auto& face = m_faces[faceIdx];
 
 		for (std::size_t i = 0; i < 3; i++) {
 			std::size_t vertexIndex = face[i] - 1;
-			faceVertices[i]			= getVertex(vertexIndex);
+			faceVertices[i]			= &getVertex(vertexIndex);
 		}
 
 		return faceVertices;
@@ -311,12 +311,20 @@ namespace slm {
 		m_vertices.push_back(std::move(vertex));
 	}
 
+	void SMFModel::addVertex(const float x, const float y, const float z) {
+		addVertex(slm::Vec3f{x, y, z});
+	}
+
 	void SMFModel::addFace(slm::Vec3i face) {
 		if (notEnoughVertices(face)) {
-			std::cerr <<"Attempted to add face for insufficient vertices!";
+			throw std::runtime_error("Attempted to add face for insufficient vertices!");
 		}
 
 		m_faces.push_back(std::move(face));
+	}
+
+	void SMFModel::addFace(const int32_t vertex1, const int32_t vertex2, const int32_t vertex3) {
+		addFace(slm::Vec3i{vertex1, vertex2, vertex3});
 	}
 
 	bool SMFModel::notEnoughVertices(const slm::Vec3i& face) {

@@ -867,15 +867,15 @@ namespace slm {
 		m_values[2] = z;
 	}
 
-	float Vec3i::x() const {
+	int32_t Vec3i::x() const {
 		return m_values[0];
 	}
 
-	float Vec3i::y() const {
+	int32_t Vec3i::y() const {
 		return m_values[1];
 	}
 
-	float Vec3i::z() const {
+	int32_t Vec3i::z() const {
 		return m_values[2];
 	}
 
@@ -943,7 +943,7 @@ namespace slm {
 		m_values[2] *= factor;
 	}
 
-	float Vec3i::operator[](const std::size_t idx) const {
+	int32_t Vec3i::operator[](const std::size_t idx) const {
 		return m_values[idx];
 	}
 

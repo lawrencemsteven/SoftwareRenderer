@@ -129,15 +129,17 @@ namespace slm {
 	public:
 		SMFModel();
 
-		uint32_t getVertexCount() const;
-		uint32_t getFaceCount() const;
+		std::size_t getVertexCount() const;
+		std::size_t getFaceCount() const;
 
 		const slm::Vec3f& getVertex(std::size_t idx) const;
 
-		const std::array<slm::Vec3f&, 3> getFaceVertices(std::size_t faceIdx) const;
+		const std::array<const slm::Vec3f*, 3> getFaceVertices(std::size_t faceIdx) const;
 
 		void addVertex(slm::Vec3f vertex);
+		void addVertex(const float x, const float y, const float z);
 		void addFace(slm::Vec3i face);
+		void addFace(const int32_t vertex1, const int32_t vertex2, const int32_t vertex3);
 	protected:
 		std::vector<slm::Vec3f> m_vertices{};
 		std::vector<slm::Vec3i> m_faces{};
