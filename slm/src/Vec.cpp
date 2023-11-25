@@ -27,6 +27,17 @@ namespace slm {
 
 
 
+	//////////
+	// Vec3 //
+	//////////
+
+	std::size_t Vec3::getSize() {
+		return 3;
+	}
+
+
+
+
 	///////////
 	// Vec2f //
 	///////////
@@ -610,6 +621,432 @@ namespace slm {
 
 	std::array<uint32_t, 2> Vec2u::getValsAsUint() const {
 		return std::array<uint32_t, 2>{m_values[0], m_values[1]};
+	}
+
+
+
+
+	///////////
+	// Vec3f //
+	///////////
+
+	Vec3f::Vec3f()
+		: m_values{0.0f, 0.0f, 0.0f} {}
+
+	Vec3f::Vec3f(const float vals[3])
+		: m_values{vals[0], vals[1], vals[2]} {}
+
+	Vec3f::Vec3f(const std::array<float, 3>& vals)
+		: m_values{vals[0], vals[1], vals[2]} {}
+
+	Vec3f::Vec3f(const float x, const float y, const float z)
+		: m_values{x, y, z} {}
+
+	void Vec3f::x(const float x) {
+		m_values[0] = x;
+	}
+
+	void Vec3f::y(const float y) {
+		m_values[1] = y;
+	}
+
+	void Vec3f::z(const float z) {
+		m_values[2] = z;
+	}
+
+	float Vec3f::x() const {
+		return m_values[0];
+	}
+
+	float Vec3f::y() const {
+		return m_values[1];
+	}
+
+	float Vec3f::z() const {
+		return m_values[2];
+	}
+
+	void Vec3f::translate(const Vec3& amount) {
+		const auto values = amount.getValsAsFloat();
+		translate(values);
+	}
+
+	void Vec3f::translate(const std::array<float, 3>& amount) {
+		translateX(amount[0]);
+		translateY(amount[1]);
+		translateZ(amount[2]);
+	}
+
+	void Vec3f::translate(const float amount[3]) {
+		translateX(amount[0]);
+		translateY(amount[1]);
+		translateZ(amount[2]);
+	}
+
+	void Vec3f::translateX(const float amount) {
+		m_values[0] += amount;
+	}
+
+	void Vec3f::translateY(const float amount) {
+		m_values[1] += amount;
+	}
+
+	void Vec3f::translateZ(const float amount) {
+		m_values[2] += amount;
+	}
+
+	void Vec3f::scale(const Vec3& amount) {
+		const auto values = amount.getValsAsFloat();
+		scale(values);
+	}
+
+	void Vec3f::scale(const float factor) {
+		scaleX(factor);
+		scaleY(factor);
+		scaleZ(factor);
+	}
+
+	void Vec3f::scale(const float factors[3]) {
+		scaleX(factors[0]);
+		scaleY(factors[1]);
+		scaleZ(factors[2]);
+	}
+
+	void Vec3f::scale(const std::array<float, 3>& factors) {
+		scaleX(factors[0]);
+		scaleY(factors[1]);
+		scaleZ(factors[2]);
+	}
+
+	void Vec3f::scaleX(const float factor) {
+		m_values[0] *= factor;
+	}
+
+	void Vec3f::scaleY(const float factor) {
+		m_values[1] *= factor;
+	}
+
+	void Vec3f::scaleZ(const float factor) {
+		m_values[2] *= factor;
+	}
+
+	float Vec3f::operator[](const std::size_t idx) const {
+		return m_values[idx];
+	}
+
+	Vec3f& Vec3f::operator+=(const Vec3& other) {
+		translate(other);
+
+		return *this;
+	}
+
+	Vec3f& Vec3f::operator+=(const std::array<float, 3>& amount) {
+		translate(amount);
+
+		return *this;
+	}
+
+	Vec3f& Vec3f::operator+=(const float amount[3]) {
+		translate(amount);
+
+		return *this;
+	}
+
+	Vec3f& Vec3f::operator-=(const Vec3& other) {
+		const auto values = other.getValsAsFloat();
+
+		translate({-values[0], -values[1], -values[2]});
+
+		return *this;
+	}
+
+	Vec3f& Vec3f::operator-=(const std::array<float, 3>& amount) {
+		translate({-amount[0], -amount[1], -amount[2]});
+
+		return *this;
+	}
+
+	Vec3f& Vec3f::operator-=(const float amount[3]) {
+		translate({-amount[0], -amount[1], -amount[2]});
+
+		return *this;
+	}
+
+	Vec3f& Vec3f::operator*=(const Vec3& other) {
+		scale(other);
+
+		return *this;
+	}
+
+	Vec3f& Vec3f::operator*=(const float factor) {
+		scale(factor);
+
+		return *this;
+	}
+
+	Vec3f& Vec3f::operator*=(const std::array<float, 3>& amount) {
+		scale(amount);
+
+		return *this;
+	}
+
+	Vec3f& Vec3f::operator*=(const float amount[3]) {
+		scale(amount);
+
+		return *this;
+	}
+
+	bool Vec3f::operator==(const Vec3f& other) const {
+		return m_values[0] == other[0] && m_values[1] == other[1] && m_values[2] == other[2];
+	}
+
+	bool Vec3f::operator==(const std::array<float, 3>& other) const {
+		return m_values[0] == other[0] && m_values[1] == other[1] && m_values[2] == other[2];
+	}
+
+	bool Vec3f::operator==(const float other[3]) const {
+		return m_values[0] == other[0] && m_values[1] == other[1] && m_values[2] == other[2];
+	}
+
+	bool Vec3f::operator!=(const Vec3f& other) const {
+		return !(*this == other);
+	}
+
+	bool Vec3f::operator!=(const std::array<float, 3>& other) const {
+		return !(*this == other);
+	}
+
+	bool Vec3f::operator!=(const float other[3]) const {
+		return !(*this == other);
+	}
+
+	std::array<float, 3> Vec3f::getValsAsFloat() const {
+		return std::array<float, 3>{m_values[0], m_values[1], m_values[2]};
+	}
+
+	std::array<int32_t, 3> Vec3f::getValsAsInt() const {
+		return std::array<int32_t, 3>{static_cast<int32_t>(m_values[0]),
+									  static_cast<int32_t>(m_values[1]),
+									  static_cast<int32_t>(m_values[2])};
+	}
+
+	std::array<uint32_t, 3> Vec3f::getValsAsUint() const {
+		return std::array<uint32_t, 3>{static_cast<uint32_t>(m_values[0]),
+									   static_cast<uint32_t>(m_values[1]),
+									   static_cast<uint32_t>(m_values[2])};
+	}
+
+
+
+
+	///////////
+	// Vec3i //
+	///////////
+
+	Vec3i::Vec3i()
+		: m_values{0, 0, 0} {}
+
+	Vec3i::Vec3i(const int32_t vals[3])
+		: m_values{vals[0], vals[1], vals[2]} {}
+
+	Vec3i::Vec3i(const std::array<int32_t, 3>& vals)
+		: m_values{vals[0], vals[1], vals[2]} {}
+
+	Vec3i::Vec3i(const int32_t x, const int32_t y, const int32_t z)
+		: m_values{x, y, z} {}
+
+	void Vec3i::x(const int32_t x) {
+		m_values[0] = x;
+	}
+
+	void Vec3i::y(const int32_t y) {
+		m_values[1] = y;
+	}
+
+	void Vec3i::z(const int32_t z) {
+		m_values[2] = z;
+	}
+
+	float Vec3i::x() const {
+		return m_values[0];
+	}
+
+	float Vec3i::y() const {
+		return m_values[1];
+	}
+
+	float Vec3i::z() const {
+		return m_values[2];
+	}
+
+	void Vec3i::translate(const Vec3& amount) {
+		const auto values = amount.getValsAsInt();
+		translate(values);
+	}
+
+	void Vec3i::translate(const std::array<int32_t, 3>& amount) {
+		translateX(amount[0]);
+		translateY(amount[1]);
+		translateZ(amount[2]);
+	}
+
+	void Vec3i::translate(const int32_t amount[3]) {
+		translateX(amount[0]);
+		translateY(amount[1]);
+		translateZ(amount[2]);
+	}
+
+	void Vec3i::translateX(const int32_t amount) {
+		m_values[0] += amount;
+	}
+
+	void Vec3i::translateY(const int32_t amount) {
+		m_values[1] += amount;
+	}
+
+	void Vec3i::translateZ(const int32_t amount) {
+		m_values[2] += amount;
+	}
+
+	void Vec3i::scale(const Vec3& amount) {
+		const auto values = amount.getValsAsFloat();
+		scale(values);
+	}
+
+	void Vec3i::scale(const float factor) {
+		scaleX(factor);
+		scaleY(factor);
+		scaleZ(factor);
+	}
+
+	void Vec3i::scale(const float factors[3]) {
+		scaleX(factors[0]);
+		scaleY(factors[1]);
+		scaleZ(factors[2]);
+	}
+
+	void Vec3i::scale(const std::array<float, 3>& factors) {
+		scaleX(factors[0]);
+		scaleY(factors[1]);
+		scaleZ(factors[2]);
+	}
+
+	void Vec3i::scaleX(const float factor) {
+		m_values[0] *= factor;
+	}
+
+	void Vec3i::scaleY(const float factor) {
+		m_values[1] *= factor;
+	}
+
+	void Vec3i::scaleZ(const float factor) {
+		m_values[2] *= factor;
+	}
+
+	float Vec3i::operator[](const std::size_t idx) const {
+		return m_values[idx];
+	}
+
+	Vec3i& Vec3i::operator+=(const Vec3& other) {
+		translate(other);
+
+		return *this;
+	}
+
+	Vec3i& Vec3i::operator+=(const std::array<int32_t, 3>& amount) {
+		translate(amount);
+
+		return *this;
+	}
+
+	Vec3i& Vec3i::operator+=(const int32_t amount[3]) {
+		translate(amount);
+
+		return *this;
+	}
+
+	Vec3i& Vec3i::operator-=(const Vec3& other) {
+		const auto values = other.getValsAsInt();
+
+		translate({-values[0], -values[1], -values[2]});
+
+		return *this;
+	}
+
+	Vec3i& Vec3i::operator-=(const std::array<int32_t, 3>& amount) {
+		translate({-amount[0], -amount[1], -amount[2]});
+
+		return *this;
+	}
+
+	Vec3i& Vec3i::operator-=(const int32_t amount[3]) {
+		translate({-amount[0], -amount[1], -amount[2]});
+
+		return *this;
+	}
+
+	Vec3i& Vec3i::operator*=(const Vec3& other) {
+		scale(other);
+
+		return *this;
+	}
+
+	Vec3i& Vec3i::operator*=(const float factor) {
+		scale(factor);
+
+		return *this;
+	}
+
+	Vec3i& Vec3i::operator*=(const std::array<float, 3>& amount) {
+		scale(amount);
+
+		return *this;
+	}
+
+	Vec3i& Vec3i::operator*=(const float amount[3]) {
+		scale(amount);
+
+		return *this;
+	}
+
+	bool Vec3i::operator==(const Vec3i& other) const {
+		return m_values[0] == other[0] && m_values[1] == other[1] && m_values[2] == other[2];
+	}
+
+	bool Vec3i::operator==(const std::array<int32_t, 3>& other) const {
+		return m_values[0] == other[0] && m_values[1] == other[1] && m_values[2] == other[2];
+	}
+
+	bool Vec3i::operator==(const int32_t other[3]) const {
+		return m_values[0] == other[0] && m_values[1] == other[1] && m_values[2] == other[2];
+	}
+
+	bool Vec3i::operator!=(const Vec3i& other) const {
+		return !(*this == other);
+	}
+
+	bool Vec3i::operator!=(const std::array<int32_t, 3>& other) const {
+		return !(*this == other);
+	}
+
+	bool Vec3i::operator!=(const int32_t other[3]) const {
+		return !(*this == other);
+	}
+
+	std::array<float, 3> Vec3i::getValsAsFloat() const {
+		return std::array<float, 3>{static_cast<float>(m_values[0]),
+									static_cast<float>(m_values[1]),
+									static_cast<float>(m_values[2])};
+	}
+
+	std::array<int32_t, 3> Vec3i::getValsAsInt() const {
+		return std::array<int32_t, 3>{m_values[0], m_values[1], m_values[2]};
+	}
+
+	std::array<uint32_t, 3> Vec3i::getValsAsUint() const {
+		return std::array<uint32_t, 3>{static_cast<uint32_t>(m_values[0]),
+									   static_cast<uint32_t>(m_values[1]),
+									   static_cast<uint32_t>(m_values[2])};
 	}
 
 }

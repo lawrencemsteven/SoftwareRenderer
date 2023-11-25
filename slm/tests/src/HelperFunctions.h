@@ -14,10 +14,19 @@ namespace helpers {
 
 
 
+	/////////////
+	// int32_t //
+	/////////////
+
+	void checkInt32_tValues(const int32_t int1, const int32_t int2);
+
+
+
+
 	//////////////
 	// uint32_t //
 	//////////////
-	
+
 	void checkUint32_tValues(const uint32_t uint1, const uint32_t uint2);
 
 
@@ -41,6 +50,28 @@ namespace helpers {
 	void checkVec2uValues(const slm::Vec2u& vec, const slm::Vec2u& otherVec);
 	void checkVec2uValues(const slm::Vec2u& vec, const std::array<uint32_t, 2>& values);
 	void checkVec2uValues(const slm::Vec2u& vec, const uint32_t x, const uint32_t y);
+
+
+
+
+	///////////
+	// Vec3f //
+	///////////
+
+	void checkVec3fValues(const slm::Vec3f& vec, const slm::Vec3f& otherVec);
+	void checkVec3fValues(const slm::Vec3f& vec, const std::array<float, 3>& values);
+	void checkVec3fValues(const slm::Vec3f& vec, const float x, const float y, const float z);
+
+
+
+
+	///////////
+	// Vec3i //
+	///////////
+
+	void checkVec3iValues(const slm::Vec3i& vec, const slm::Vec3i& otherVec);
+	void checkVec3iValues(const slm::Vec3i& vec, const std::array<int32_t, 3>& values);
+	void checkVec3iValues(const slm::Vec3i& vec, const int32_t x, const int32_t y, const int32_t z);
 
 
 
