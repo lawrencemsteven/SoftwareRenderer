@@ -9,6 +9,8 @@ set(slm_FILES
     "./src/Scene.h"
     "./src/slm.h"
     "./src/slmPCH.h"
+    "./src/SMFInterpreter.cpp"
+    "./src/SMFInterpreter.h"
     "./src/Vec.cpp"
     "./src/Vec.h"
 )
