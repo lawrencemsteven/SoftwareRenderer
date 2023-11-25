@@ -18,42 +18,42 @@ TEST_CASE("Vec2f") {
 
 		slm::Vec2f test{testValues};
 
-		helpers::checkVec2fValues(test, testValues);
+		helpers::checkValues(test, testValues);
 
 		testValues[0] = 1.0f;
 		testValues[1] = 2.0f;
 
 		test = slm::Vec2f{testValues};
 
-		helpers::checkVec2fValues(test, testValues);
+		helpers::checkValues(test, testValues);
 
 		testValues[0] = -1.0f;
 		testValues[1] = -2.0f;
 
 		test = slm::Vec2f{testValues};
 
-		helpers::checkVec2fValues(test, testValues);
+		helpers::checkValues(test, testValues);
 	}
 	SECTION("Vec2f(const std::array<float, 2>& vals)") {
 		std::array<float, 2> testValues = {0.0f, 0.0f};
 
 		slm::Vec2f test{testValues};
 
-		helpers::checkVec2fValues(test, testValues);
+		helpers::checkValues(test, testValues);
 
 		testValues[0] = 1.0f;
 		testValues[1] = 2.0f;
 
 		test = slm::Vec2f{testValues};
 
-		helpers::checkVec2fValues(test, testValues);
+		helpers::checkValues(test, testValues);
 
 		testValues[0] = -1.0f;
 		testValues[1] = -2.0f;
 
 		test = slm::Vec2f{testValues};
 
-		helpers::checkVec2fValues(test, testValues);
+		helpers::checkValues(test, testValues);
 	}
 	SECTION("Vec2f(const float x, const float y)") {
 		float testX = 0.0f;
@@ -61,131 +61,155 @@ TEST_CASE("Vec2f") {
 
 		slm::Vec2f test{testX, testY};
 
-		helpers::checkVec2fValues(test, std::array<float, 2>{testX, testY});
+		helpers::checkValues(test, std::array<float, 2>{testX, testY});
 
 		testX = 1.0f;
 		testY = 2.0f;
 
 		test = slm::Vec2f{testX, testY};
 
-		helpers::checkVec2fValues(test, std::array<float, 2>{testX, testY});
+		helpers::checkValues(test, std::array<float, 2>{testX, testY});
 
 		testX = -1.0f;
 		testY = -2.0f;
 
 		test = slm::Vec2f{testX, testY};
 
-		helpers::checkVec2fValues(test, std::array<float, 2>{testX, testY});
+		helpers::checkValues(test, std::array<float, 2>{testX, testY});
 	}
-	SECTION("x(const float x) && x()") {
+	SECTION("void x(const float x)") {
 		slm::Vec2f test{15.0f, 30.0f};
 
-		helpers::checkFloatValues(test.x(), 15.0f);
+		helpers::checkValues(test, 15.0f, 30.0f);
 
 		test.x(150.0f);
 
-		helpers::checkFloatValues(test.x(), 150.0f);
+		helpers::checkValues(test, 150.0f, 30.0f);
 	}
-	SECTION("y(const float y) && y()") {
+	SECTION("void y(const float y)") {
 		slm::Vec2f test{15.0f, 30.0f};
 
-		helpers::checkFloatValues(test.y(), 30.0f);
+		helpers::checkValues(test.y(), 30.0f);
 
 		test.y(300.0f);
 
-		helpers::checkFloatValues(test.y(), 300.0f);
+		helpers::checkValues(test.y(), 300.0f);
 	}
-	SECTION("translate(const Vec2f& amount)") {
+	SECTION("float x() const") {
+		{
+			slm::Vec2f test{15.0f, 30.0f};
+
+			helpers::checkValues(test.x(), 15.0f);
+		}
+		{
+			slm::Vec2f test{150.0f, 30.0f};
+
+			helpers::checkValues(test.x(), 150.0f);
+		}
+	}
+	SECTION("float y() const") {
+		{
+			slm::Vec2f test{15.0f, 30.0f};
+
+			helpers::checkValues(test.y(), 30.0f);
+		}
+		{
+			slm::Vec2f test{15.0f, 300.0f};
+
+			helpers::checkValues(test.y(), 300.0f);
+		}
+	}
+	SECTION("void translate(const Vec2f& amount)") {
 		slm::Vec2f test{1.0f, 2.0f};
 		const slm::Vec2f translateAmount{3.0f, 4.0f};
 
 		test.translate(translateAmount);
 
-		helpers::checkVec2fValues(test, std::array<float, 2>{4.0f, 6.0f});
+		helpers::checkValues(test, std::array<float, 2>{4.0f, 6.0f});
 
 		test.translate(translateAmount);
 
-		helpers::checkVec2fValues(test, std::array<float, 2>{7.0f, 10.0f});
+		helpers::checkValues(test, std::array<float, 2>{7.0f, 10.0f});
 	}
-	SECTION("translate(const std::array<float, 2>& amount)") {
+	SECTION("void translate(const std::array<float, 2>& amount)") {
 		slm::Vec2f test{1.0f, 2.0f};
 		const std::array<float, 2> translateAmount{3.0f, 4.0f};
 
 		test.translate(translateAmount);
 
-		helpers::checkVec2fValues(test, std::array<float, 2>{4.0f, 6.0f});
+		helpers::checkValues(test, std::array<float, 2>{4.0f, 6.0f});
 
 		test.translate(translateAmount);
 
-		helpers::checkVec2fValues(test, std::array<float, 2>{7.0f, 10.0f});
+		helpers::checkValues(test, std::array<float, 2>{7.0f, 10.0f});
 	}
-	SECTION("translate(const float amount[2])") {
+	SECTION("void translate(const float amount[2])") {
 		slm::Vec2f test{1.0f, 2.0f};
 		const float translateAmount[2]{3.0f, 4.0f};
 
 		test.translate(translateAmount);
 
-		helpers::checkVec2fValues(test, std::array<float, 2>{4.0f, 6.0f});
+		helpers::checkValues(test, std::array<float, 2>{4.0f, 6.0f});
 
 		test.translate(translateAmount);
 
-		helpers::checkVec2fValues(test, std::array<float, 2>{7.0f, 10.0f});
+		helpers::checkValues(test, std::array<float, 2>{7.0f, 10.0f});
 	}
-	SECTION("translateX(const float amount)") {
+	SECTION("void translateX(const float amount)") {
 		slm::Vec2f test{1.0f, 2.0f};
 		const float translateAmount{3.0f};
 
 		test.translateX(translateAmount);
 
-		helpers::checkVec2fValues(test, std::array<float, 2>{4.0f, 2.0f});
+		helpers::checkValues(test, std::array<float, 2>{4.0f, 2.0f});
 
 		test.translateX(translateAmount);
 
-		helpers::checkVec2fValues(test, std::array<float, 2>{7.0f, 2.0f});
+		helpers::checkValues(test, std::array<float, 2>{7.0f, 2.0f});
 	}
-	SECTION("translateY(const float amount)") {
+	SECTION("void translateY(const float amount)") {
 		slm::Vec2f test{1.0f, 2.0f};
 		const float translateAmount{4.0f};
 
 		test.translateY(translateAmount);
 
-		helpers::checkVec2fValues(test, std::array<float, 2>{1.0f, 6.0f});
+		helpers::checkValues(test, std::array<float, 2>{1.0f, 6.0f});
 
 		test.translateY(translateAmount);
 
-		helpers::checkVec2fValues(test, std::array<float, 2>{1.0f, 10.0f});
+		helpers::checkValues(test, std::array<float, 2>{1.0f, 10.0f});
 	}
-	SECTION("rotate(const int32_t degreesCounterClockwise)") {
+	SECTION("void rotate(const int32_t degreesCounterClockwise)") {
 		slm::Vec2f test{1.0f, 0.0f};
 		int32_t rotateAmount{90};
 
 		test.rotate(rotateAmount);
 
-		helpers::checkVec2fValues(test, std::array<float, 2>{0.0f, 1.0f});
+		helpers::checkValues(test, std::array<float, 2>{0.0f, 1.0f});
 
 		test.rotate(rotateAmount);
 
-		helpers::checkVec2fValues(test, std::array<float, 2>{-1.0f, 0.0f});
+		helpers::checkValues(test, std::array<float, 2>{-1.0f, 0.0f});
 
 		test.rotate(rotateAmount);
 
-		helpers::checkVec2fValues(test, std::array<float, 2>{0.0f, -1.0f});
+		helpers::checkValues(test, std::array<float, 2>{0.0f, -1.0f});
 
 		test.rotate(rotateAmount);
 
-		helpers::checkVec2fValues(test, std::array<float, 2>{1.0f, 0.0f});
+		helpers::checkValues(test, std::array<float, 2>{1.0f, 0.0f});
 	}
-	SECTION("scale(const Vec2& amount)") {
+	SECTION("void scale(const Vec2& amount)") {
 		slm::Vec2f test{2.0f, 3.0f};
 		const slm::Vec2f scaleAmount{3.0f, 4.0f};
 
 		test.scale(scaleAmount);
 
-		helpers::checkVec2fValues(test, std::array<float, 2>{6.0f, 12.0f});
+		helpers::checkValues(test, std::array<float, 2>{6.0f, 12.0f});
 
 		test.scale(scaleAmount);
 
-		helpers::checkVec2fValues(test, std::array<float, 2>{18.0f, 48.0f});
+		helpers::checkValues(test, std::array<float, 2>{18.0f, 48.0f});
 	}
 	SECTION("scale(const float factor)") {
 		slm::Vec2f test{2.0f, 3.0f};
@@ -193,193 +217,193 @@ TEST_CASE("Vec2f") {
 
 		test.scale(scaleAmount);
 
-		helpers::checkVec2fValues(test, std::array<float, 2>{6.0f, 9.0f});
+		helpers::checkValues(test, std::array<float, 2>{6.0f, 9.0f});
 
 		test.scale(scaleAmount);
 
-		helpers::checkVec2fValues(test, std::array<float, 2>{18.0f, 27.0f});
+		helpers::checkValues(test, std::array<float, 2>{18.0f, 27.0f});
 	}
-	SECTION("scale(const float factors[2])") {
+	SECTION("void scale(const float factors[2])") {
 		slm::Vec2f test{2.0f, 3.0f};
 		const float scaleAmount[2]{3.0f, 4.0f};
 
 		test.scale(scaleAmount);
 
-		helpers::checkVec2fValues(test, std::array<float, 2>{6.0f, 12.0f});
+		helpers::checkValues(test, std::array<float, 2>{6.0f, 12.0f});
 
 		test.scale(scaleAmount);
 
-		helpers::checkVec2fValues(test, std::array<float, 2>{18.0f, 48.0f});
+		helpers::checkValues(test, std::array<float, 2>{18.0f, 48.0f});
 	}
-	SECTION("scale(const std::array<float, 2>& factors)") {
+	SECTION("void scale(const std::array<float, 2>& factors)") {
 		slm::Vec2f test{2.0f, 3.0f};
 		const std::array<float, 2> scaleAmount{3.0f, 4.0f};
 
 		test.scale(scaleAmount);
 
-		helpers::checkVec2fValues(test, std::array<float, 2>{6.0f, 12.0f});
+		helpers::checkValues(test, std::array<float, 2>{6.0f, 12.0f});
 
 		test.scale(scaleAmount);
 
-		helpers::checkVec2fValues(test, std::array<float, 2>{18.0f, 48.0f});
+		helpers::checkValues(test, std::array<float, 2>{18.0f, 48.0f});
 	}
-	SECTION("scaleX(const float factor)") {
+	SECTION("void scaleX(const float factor)") {
 		slm::Vec2f test{2.0f, 3.0f};
 		const float scaleAmount{3.0f};
 
 		test.scaleX(scaleAmount);
 
-		helpers::checkVec2fValues(test, std::array<float, 2>{6.0f, 3.0f});
+		helpers::checkValues(test, std::array<float, 2>{6.0f, 3.0f});
 
 		test.scaleX(scaleAmount);
 
-		helpers::checkVec2fValues(test, std::array<float, 2>{18.0f, 3.0f});
+		helpers::checkValues(test, std::array<float, 2>{18.0f, 3.0f});
 	}
-	SECTION("scaleY(const float factor)") {
+	SECTION("void scaleY(const float factor)") {
 		slm::Vec2f test{2.0f, 3.0f};
 		const float scaleAmount{4.0f};
 
 		test.scaleY(scaleAmount);
 
-		helpers::checkVec2fValues(test, std::array<float, 2>{2, 12});
+		helpers::checkValues(test, std::array<float, 2>{2, 12});
 
 		test.scaleY(scaleAmount);
 
-		helpers::checkVec2fValues(test, std::array<float, 2>{2, 48});
+		helpers::checkValues(test, std::array<float, 2>{2, 48});
 	}
-	SECTION("operator[](const std::size_t idx)") {
+	SECTION("float operator[](const std::size_t idx) const") {
 		slm::Vec2f test{2.0f, 3.0f};
 
-		helpers::checkFloatValues(test[0], 2.0f);
-		helpers::checkFloatValues(test[1], 3.0f);
+		helpers::checkValues(test[0], 2.0f);
+		helpers::checkValues(test[1], 3.0f);
 
 		test.x(10.0f);
 		test.y(20.0f);
 
-		helpers::checkFloatValues(test[0], 10.0f);
-		helpers::checkFloatValues(test[1], 20.0f);
+		helpers::checkValues(test[0], 10.0f);
+		helpers::checkValues(test[1], 20.0f);
 	}
-	SECTION("operator+=(const Vec2& other)") {
+	SECTION("Vec2f& operator+=(const Vec2& other)") {
 		slm::Vec2f test{2.0f, 3.0f};
 		const slm::Vec2f addAmount{4.0f, 5.0f};
 
 		test += addAmount;
 
-		helpers::checkVec2fValues(test, std::array<float, 2>{6.0f, 8.0f});
+		helpers::checkValues(test, std::array<float, 2>{6.0f, 8.0f});
 
 		test += addAmount;
 
-		helpers::checkVec2fValues(test, std::array<float, 2>{10.0f, 13.0f});
+		helpers::checkValues(test, std::array<float, 2>{10.0f, 13.0f});
 	}
-	SECTION("operator+=(const std::array<float, 2>& amount)") {
+	SECTION("Vec2f& operator+=(const std::array<float, 2>& amount)") {
 		slm::Vec2f test{2.0f, 3.0f};
 		const std::array<float, 2> addAmount{4.0f, 5.0f};
 
 		test += addAmount;
 
-		helpers::checkVec2fValues(test, std::array<float, 2>{6.0f, 8.0f});
+		helpers::checkValues(test, std::array<float, 2>{6.0f, 8.0f});
 
 		test += addAmount;
 
-		helpers::checkVec2fValues(test, std::array<float, 2>{10.0f, 13.0f});
+		helpers::checkValues(test, std::array<float, 2>{10.0f, 13.0f});
 	}
-	SECTION("operator+=(const float amount[2])") {
+	SECTION("Vec2f& operator+=(const float amount[2])") {
 		slm::Vec2f test{2.0f, 3.0f};
 		const float addAmount[2]{4.0f, 5.0f};
 
 		test += addAmount;
 
-		helpers::checkVec2fValues(test, std::array<float, 2>{6.0f, 8.0f});
+		helpers::checkValues(test, std::array<float, 2>{6.0f, 8.0f});
 
 		test += addAmount;
 
-		helpers::checkVec2fValues(test, std::array<float, 2>{10.0f, 13.0f});
+		helpers::checkValues(test, std::array<float, 2>{10.0f, 13.0f});
 	}
-	SECTION("operator-=(const Vec2& other)") {
+	SECTION("Vec2f& operator-=(const Vec2& other)") {
 		slm::Vec2f test{2.0f, 3.0f};
 		const slm::Vec2f subtractAmount{4.0f, 5.0f};
 
 		test -= subtractAmount;
 
-		helpers::checkVec2fValues(test, std::array<float, 2>{-2.0f, -2.0f});
+		helpers::checkValues(test, std::array<float, 2>{-2.0f, -2.0f});
 
 		test -= subtractAmount;
 
-		helpers::checkVec2fValues(test, std::array<float, 2>{-6.0f, -7.0f});
+		helpers::checkValues(test, std::array<float, 2>{-6.0f, -7.0f});
 	}
-	SECTION("operator-=(const std::array<float, 2>& amount)") {
+	SECTION("Vec2f& operator-=(const std::array<float, 2>& amount)") {
 		slm::Vec2f test{2.0f, 3.0f};
 		const std::array<float, 2> subtractAmount{4.0f, 5.0f};
 
 		test -= subtractAmount;
 
-		helpers::checkVec2fValues(test, std::array<float, 2>{-2.0f, -2.0f});
+		helpers::checkValues(test, std::array<float, 2>{-2.0f, -2.0f});
 
 		test -= subtractAmount;
 
-		helpers::checkVec2fValues(test, std::array<float, 2>{-6.0f, -7.0f});
+		helpers::checkValues(test, std::array<float, 2>{-6.0f, -7.0f});
 	}
-	SECTION("operator-=(const float amount[2])") {
+	SECTION("Vec2f& operator-=(const float amount[2])") {
 		slm::Vec2f test{2.0f, 3.0f};
 		const float subtractAmount[2]{4.0f, 5.0f};
 
 		test -= subtractAmount;
 
-		helpers::checkVec2fValues(test, std::array<float, 2>{-2.0f, -2.0f});
+		helpers::checkValues(test, std::array<float, 2>{-2.0f, -2.0f});
 
 		test -= subtractAmount;
 
-		helpers::checkVec2fValues(test, std::array<float, 2>{-6.0f, -7.0f});
+		helpers::checkValues(test, std::array<float, 2>{-6.0f, -7.0f});
 	}
-	SECTION("operator*=(const Vec2& other)") {
+	SECTION("Vec2f& operator*=(const Vec2& other)") {
 		slm::Vec2f test{2.0f, 3.0f};
 		const slm::Vec2f multiplyAmount{4.0f, 5.0f};
 
 		test *= multiplyAmount;
 
-		helpers::checkVec2fValues(test, std::array<float, 2>{8.0f, 15.0f});
+		helpers::checkValues(test, std::array<float, 2>{8.0f, 15.0f});
 
 		test *= multiplyAmount;
 
-		helpers::checkVec2fValues(test, std::array<float, 2>{32.0f, 75.0f});
+		helpers::checkValues(test, std::array<float, 2>{32.0f, 75.0f});
 	}
-	SECTION("operator*=(const float factor)") {
+	SECTION("Vec2f& operator*=(const float factor)") {
 		slm::Vec2f test{2.0f, 3.0f};
 		const float multiplyAmount{4.0f};
 
 		test *= multiplyAmount;
 
-		helpers::checkVec2fValues(test, std::array<float, 2>{8.0f, 12.0f});
+		helpers::checkValues(test, std::array<float, 2>{8.0f, 12.0f});
 
 		test *= multiplyAmount;
 
-		helpers::checkVec2fValues(test, std::array<float, 2>{32.0f, 48.0f});
+		helpers::checkValues(test, std::array<float, 2>{32.0f, 48.0f});
 	}
-	SECTION("operator*=(const std::array<float, 2>& amount)") {
+	SECTION("Vec2f& operator*=(const std::array<float, 2>& amount)") {
 		slm::Vec2f test{2.0f, 3.0f};
 		const std::array<float, 2> multiplyAmount{4.0f, 5.0f};
 
 		test *= multiplyAmount;
 
-		helpers::checkVec2fValues(test, std::array<float, 2>{8.0f, 15.0f});
+		helpers::checkValues(test, std::array<float, 2>{8.0f, 15.0f});
 
 		test *= multiplyAmount;
 
-		helpers::checkVec2fValues(test, std::array<float, 2>{32.0f, 75.0f});
+		helpers::checkValues(test, std::array<float, 2>{32.0f, 75.0f});
 	}
-	SECTION("operator*=(const float amount[2])") {
+	SECTION("Vec2f& operator*=(const float amount[2])") {
 		slm::Vec2f test{2.0f, 3.0f};
 		const float multiplyAmount[2]{4.0f, 5.0f};
 
 		test *= multiplyAmount;
 
-		helpers::checkVec2fValues(test, std::array<float, 2>{8.0f, 15.0f});
+		helpers::checkValues(test, std::array<float, 2>{8.0f, 15.0f});
 
 		test *= multiplyAmount;
 
-		helpers::checkVec2fValues(test, std::array<float, 2>{32.0f, 75.0f});
+		helpers::checkValues(test, std::array<float, 2>{32.0f, 75.0f});
 	}
-	SECTION("operator==(const Vec2f& other)") {
+	SECTION("bool operator==(const Vec2f& other) const") {
 		slm::Vec2f test{1.0f, 2.0f};
 		slm::Vec2f test2{1.0f, 2.0f};
 
@@ -397,7 +421,7 @@ TEST_CASE("Vec2f") {
 
 		CHECK(!(test == test2));
 	}
-	SECTION("operator==(const std::array<float, 2>& other)") {
+	SECTION("bool operator==(const std::array<float, 2>& other) const") {
 		slm::Vec2f test{1.0f, 2.0f};
 		std::array<float, 2> values{1.0f, 2.0f};
 
@@ -415,7 +439,7 @@ TEST_CASE("Vec2f") {
 
 		CHECK(!(test == values));
 	}
-	SECTION("operator==(const float other[2])") {
+	SECTION("bool operator==(const float other[2]) const") {
 		slm::Vec2f test{1.0f, 2.0f};
 		float values[2]{1.0f, 2.0f};
 
@@ -433,7 +457,7 @@ TEST_CASE("Vec2f") {
 
 		CHECK(!(test == values));
 	}
-	SECTION("operator!=(const Vec2f& other)") {
+	SECTION("bool operator!=(const Vec2f& other) const") {
 		slm::Vec2f test{1.0f, 2.0f};
 		slm::Vec2f test2{1.0f, 2.0f};
 
@@ -451,7 +475,7 @@ TEST_CASE("Vec2f") {
 
 		CHECK(test != test2);
 	}
-	SECTION("operator!=(const std::array<float, 2>& other)") {
+	SECTION("bool operator!=(const std::array<float, 2>& other) const") {
 		slm::Vec2f test{1.0f, 2.0f};
 		std::array<float, 2> values{1.0f, 2.0f};
 
@@ -469,7 +493,7 @@ TEST_CASE("Vec2f") {
 
 		CHECK(test != values);
 	}
-	SECTION("operator!=(const float other[2])") {
+	SECTION("bool operator!=(const float other[2]) const") {
 		slm::Vec2f test{1.0f, 2.0f};
 		float values[2]{1.0f, 2.0f};
 
@@ -487,15 +511,15 @@ TEST_CASE("Vec2f") {
 
 		CHECK(test != values);
 	}
-	SECTION("getValsAsFloat()") {
+	SECTION("std::array<float, 2> getValsAsFloat() const override") {
 		slm::Vec2f test{1.0f, 2.0f};
 
 		const auto values = test.getValsAsFloat();
 
-		helpers::checkFloatValues(values[0], 1.0f);
-		helpers::checkFloatValues(values[1], 2.0f);
+		helpers::checkValues(values[0], 1.0f);
+		helpers::checkValues(values[1], 2.0f);
 	}
-	SECTION("getValsAsInt()") {
+	SECTION("std::array<int32_t, 2> getValsAsInt() const override") {
 		slm::Vec2f test{1.0f, 2.0f};
 
 		const auto values = test.getValsAsInt();
@@ -503,7 +527,7 @@ TEST_CASE("Vec2f") {
 		CHECK(values[0] == 1);
 		CHECK(values[1] == 2);
 	}
-	SECTION("getValsAsUint()") {
+	SECTION("std::array<uint32_t, 2> getValsAsUint() const override") {
 		slm::Vec2f test{1.0f, 2.0f};
 
 		const auto values = test.getValsAsUint();
@@ -590,7 +614,7 @@ TEST_CASE("Vec2i") {
 
 		CHECK(test == std::array<int32_t, 2>{testX, testY});
 	}
-	SECTION("x(const int32_t x) && x()") {
+	SECTION("void x(const int32_t x)") {
 		slm::Vec2i test{15, 30};
 
 		CHECK(test.x() == 15);
@@ -599,7 +623,7 @@ TEST_CASE("Vec2i") {
 
 		CHECK(test.x() == 150);
 	}
-	SECTION("y(const int32_t y) && y()") {
+	SECTION("void y(const int32_t y)") {
 		slm::Vec2i test{15, 30};
 
 		CHECK(test.y() == 30);
@@ -608,7 +632,31 @@ TEST_CASE("Vec2i") {
 
 		CHECK(test.y() == 300);
 	}
-	SECTION("translate(const Vec2i& amount)") {
+	SECTION("int32_t x() const") {
+		{
+			slm::Vec2i test{15, 30};
+
+			CHECK(test.x() == 15);
+		}
+		{
+			slm::Vec2i test{150, 30};
+
+			CHECK(test.x() == 150);
+		}
+	}
+	SECTION("int32_t y() const") {
+		{
+			slm::Vec2i test{15, 30};
+
+			CHECK(test.y() == 30);
+		}
+		{
+			slm::Vec2i test{15, 300};
+
+			CHECK(test.y() == 300);
+		}
+	}
+	SECTION("void translate(const Vec2i& amount)") {
 		slm::Vec2i test{1, 2};
 		const slm::Vec2i translateAmount{3, 4};
 
@@ -620,7 +668,7 @@ TEST_CASE("Vec2i") {
 
 		CHECK(test == std::array<int32_t, 2>{7, 10});
 	}
-	SECTION("translate(const std::array<int32_t, 2>& amount)") {
+	SECTION("void translate(const std::array<int32_t, 2>& amount)") {
 		slm::Vec2i test{1, 2};
 		const std::array<int32_t, 2> translateAmount{3, 4};
 
@@ -632,7 +680,7 @@ TEST_CASE("Vec2i") {
 
 		CHECK(test == std::array<int32_t, 2>{7, 10});
 	}
-	SECTION("translate(const int32_t amount[2])") {
+	SECTION("void translate(const int32_t amount[2])") {
 		slm::Vec2i test{1, 2};
 		const int32_t translateAmount[2]{3, 4};
 
@@ -644,7 +692,7 @@ TEST_CASE("Vec2i") {
 
 		CHECK(test == std::array<int32_t, 2>{7, 10});
 	}
-	SECTION("translateX(const int32_t amount)") {
+	SECTION("void translateX(const int32_t amount)") {
 		slm::Vec2i test{1, 2};
 		const int32_t translateAmount{3};
 
@@ -656,7 +704,7 @@ TEST_CASE("Vec2i") {
 
 		CHECK(test == std::array<int32_t, 2>{7, 2});
 	}
-	SECTION("translateY(const int32_t amount)") {
+	SECTION("void translateY(const int32_t amount)") {
 		slm::Vec2i test{1, 2};
 		const int32_t translateAmount{4};
 
@@ -668,7 +716,7 @@ TEST_CASE("Vec2i") {
 
 		CHECK(test == std::array<int32_t, 2>{1, 10});
 	}
-	SECTION("rotate(const int32_t degreesCounterClockwise)") {
+	SECTION("void rotate(const int32_t degreesCounterClockwise)") {
 		slm::Vec2i test{1, 0};
 		int32_t rotateAmount{90};
 
@@ -688,7 +736,7 @@ TEST_CASE("Vec2i") {
 
 		CHECK(test == std::array<int32_t, 2>{1, 0});
 	}
-	SECTION("scale(const Vec2& amount)") {
+	SECTION("void scale(const Vec2& amount)") {
 		slm::Vec2i test{2, 3};
 		const slm::Vec2i scaleAmount{3, 4};
 
@@ -700,7 +748,7 @@ TEST_CASE("Vec2i") {
 
 		CHECK(test == std::array<int32_t, 2>{18, 48});
 	}
-	SECTION("scale(const float factor)") {
+	SECTION("void scale(const float factor)") {
 		slm::Vec2i test{2, 3};
 		const float scaleAmount{3.0f};
 
@@ -712,7 +760,7 @@ TEST_CASE("Vec2i") {
 
 		CHECK(test == std::array<int32_t, 2>{18, 27});
 	}
-	SECTION("scale(const float factors[2])") {
+	SECTION("void scale(const float factors[2])") {
 		slm::Vec2i test{2, 3};
 		const float scaleAmount[2]{3.0f, 4.0f};
 
@@ -724,7 +772,7 @@ TEST_CASE("Vec2i") {
 
 		CHECK(test == std::array<int32_t, 2>{18, 48});
 	}
-	SECTION("scale(const std::array<float, 2>& factors)") {
+	SECTION("void scale(const std::array<float, 2>& factors)") {
 		slm::Vec2i test{2, 3};
 		const std::array<float, 2> scaleAmount{3.0f, 4.0f};
 
@@ -736,7 +784,7 @@ TEST_CASE("Vec2i") {
 
 		CHECK(test == std::array<int32_t, 2>{18, 48});
 	}
-	SECTION("scaleX(const float factor)") {
+	SECTION("void scaleX(const float factor)") {
 		slm::Vec2i test{2, 3};
 		const float scaleAmount{3.0f};
 
@@ -748,7 +796,7 @@ TEST_CASE("Vec2i") {
 
 		CHECK(test == std::array<int32_t, 2>{18, 3});
 	}
-	SECTION("scaleY(const float factor)") {
+	SECTION("void scaleY(const float factor)") {
 		slm::Vec2i test{2, 3};
 		const float scaleAmount{4.0f};
 
@@ -760,7 +808,7 @@ TEST_CASE("Vec2i") {
 
 		CHECK(test == std::array<int32_t, 2>{2, 48});
 	}
-	SECTION("operator[](const std::size_t idx)") {
+	SECTION("int32_t operator[](const std::size_t idx) const") {
 		slm::Vec2i test{2, 3};
 
 		CHECK(test[0] == 2);
@@ -772,7 +820,7 @@ TEST_CASE("Vec2i") {
 		CHECK(test[0] == 10);
 		CHECK(test[1] == 20);
 	}
-	SECTION("operator+=(const Vec2& other)") {
+	SECTION("Vec2i& operator+=(const Vec2& other)") {
 		slm::Vec2i test{2, 3};
 		const slm::Vec2i addAmount{4, 5};
 
@@ -784,7 +832,7 @@ TEST_CASE("Vec2i") {
 
 		CHECK(test == std::array<int32_t, 2>{10, 13});
 	}
-	SECTION("operator+=(const std::array<int32_t, 2>& amount)") {
+	SECTION("Vec2i& operator+=(const std::array<int32_t, 2>& amount)") {
 		slm::Vec2i test{2, 3};
 		const std::array<int32_t, 2> addAmount{4, 5};
 
@@ -796,7 +844,7 @@ TEST_CASE("Vec2i") {
 
 		CHECK(test == std::array<int32_t, 2>{10, 13});
 	}
-	SECTION("operator+=(const int32_t amount[2])") {
+	SECTION("Vec2i& operator+=(const int32_t amount[2])") {
 		slm::Vec2i test{2, 3};
 		const int32_t addAmount[2]{4, 5};
 
@@ -808,7 +856,7 @@ TEST_CASE("Vec2i") {
 
 		CHECK(test == std::array<int32_t, 2>{10, 13});
 	}
-	SECTION("operator-=(const Vec2& other)") {
+	SECTION("Vec2i& operator-=(const Vec2& other)") {
 		slm::Vec2i test{2, 3};
 		const slm::Vec2i subtractAmount{4, 5};
 
@@ -820,7 +868,7 @@ TEST_CASE("Vec2i") {
 
 		CHECK(test == std::array<int32_t, 2>{-6, -7});
 	}
-	SECTION("operator-=(const std::array<int32_t, 2>& amount)") {
+	SECTION("Vec2i& operator-=(const std::array<int32_t, 2>& amount)") {
 		slm::Vec2i test{2, 3};
 		const std::array<int32_t, 2> subtractAmount{4, 5};
 
@@ -832,7 +880,7 @@ TEST_CASE("Vec2i") {
 
 		CHECK(test == std::array<int32_t, 2>{-6, -7});
 	}
-	SECTION("operator-=(const int32_t amount[2])") {
+	SECTION("Vec2i& operator-=(const int32_t amount[2])") {
 		slm::Vec2i test{2, 3};
 		const int32_t subtractAmount[2]{4, 5};
 
@@ -844,7 +892,7 @@ TEST_CASE("Vec2i") {
 
 		CHECK(test == std::array<int32_t, 2>{-6, -7});
 	}
-	SECTION("operator*=(const Vec2& other)") {
+	SECTION("Vec2i& operator*=(const Vec2& other)") {
 		slm::Vec2i test{2, 3};
 		const slm::Vec2i multiplyAmount{4, 5};
 
@@ -856,7 +904,7 @@ TEST_CASE("Vec2i") {
 
 		CHECK(test == std::array<int32_t, 2>{32, 75});
 	}
-	SECTION("operator*=(const float factor)") {
+	SECTION("Vec2i& operator*=(const float factor)") {
 		slm::Vec2i test{2, 3};
 		const float multiplyAmount{4.0f};
 
@@ -868,7 +916,7 @@ TEST_CASE("Vec2i") {
 
 		CHECK(test == std::array<int32_t, 2>{32, 48});
 	}
-	SECTION("operator*=(const std::array<float, 2>& amount)") {
+	SECTION("Vec2i& operator*=(const std::array<float, 2>& amount)") {
 		slm::Vec2i test{2, 3};
 		const std::array<float, 2> multiplyAmount{4.0f, 5.0f};
 
@@ -880,7 +928,7 @@ TEST_CASE("Vec2i") {
 
 		CHECK(test == std::array<int32_t, 2>{32, 75});
 	}
-	SECTION("operator*=(const float amount[2])") {
+	SECTION("Vec2i& operator*=(const float amount[2])") {
 		slm::Vec2i test{2, 3};
 		const float multiplyAmount[2]{4, 5};
 
@@ -892,7 +940,7 @@ TEST_CASE("Vec2i") {
 
 		CHECK(test == std::array<int32_t, 2>{32, 75});
 	}
-	SECTION("operator==(const Vec2i& other)") {
+	SECTION("bool operator==(const Vec2i& other) const") {
 		slm::Vec2i test{1, 2};
 		slm::Vec2i test2{1, 2};
 
@@ -910,7 +958,7 @@ TEST_CASE("Vec2i") {
 
 		CHECK(!(test == test2));
 	}
-	SECTION("operator==(const std::array<int32_t, 2>& other)") {
+	SECTION("bool operator==(const std::array<int32_t, 2>& other) const") {
 		slm::Vec2i test{1, 2};
 		std::array<int32_t, 2> values{1, 2};
 
@@ -928,7 +976,7 @@ TEST_CASE("Vec2i") {
 
 		CHECK(!(test == values));
 	}
-	SECTION("operator==(const int32_t other[2])") {
+	SECTION("bool operator==(const int32_t other[2]) const") {
 		slm::Vec2i test{1, 2};
 		int32_t values[2]{1, 2};
 
@@ -946,7 +994,7 @@ TEST_CASE("Vec2i") {
 
 		CHECK(!(test == values));
 	}
-	SECTION("operator!=(const Vec2i& other)") {
+	SECTION("bool operator!=(const Vec2i& other) const") {
 		slm::Vec2i test{1, 2};
 		slm::Vec2i test2{1, 2};
 
@@ -964,7 +1012,7 @@ TEST_CASE("Vec2i") {
 
 		CHECK(test != test2);
 	}
-	SECTION("operator!=(const std::array<int32_t, 2>& other)") {
+	SECTION("bool operator!=(const std::array<int32_t, 2>& other) const") {
 		slm::Vec2i test{1, 2};
 		std::array<int32_t, 2> values{1, 2};
 
@@ -982,7 +1030,7 @@ TEST_CASE("Vec2i") {
 
 		CHECK(test != values);
 	}
-	SECTION("operator!=(const int32_t other[2])") {
+	SECTION("bool operator!=(const int32_t other[2]) const") {
 		slm::Vec2i test{1, 2};
 		int32_t values[2]{1, 2};
 
@@ -1000,15 +1048,15 @@ TEST_CASE("Vec2i") {
 
 		CHECK(test != values);
 	}
-	SECTION("getValsAsFloat()") {
+	SECTION("std::array<float, 2> getValsAsFloat() const override") {
 		slm::Vec2i test{1, 2};
 
 		const auto values = test.getValsAsFloat();
 
-		helpers::checkFloatValues(values[0], 1.0f);
-		helpers::checkFloatValues(values[1], 2.0f);
+		helpers::checkValues(values[0], 1.0f);
+		helpers::checkValues(values[1], 2.0f);
 	}
-	SECTION("getValsAsInt()") {
+	SECTION("std::array<int32_t, 2> getValsAsInt() const override") {
 		slm::Vec2i test{1, 2};
 
 		const auto values = test.getValsAsInt();
@@ -1016,7 +1064,7 @@ TEST_CASE("Vec2i") {
 		CHECK(values[0] == 1);
 		CHECK(values[1] == 2);
 	}
-	SECTION("getValsAsUint()") {
+	SECTION("std::array<uint32_t, 2> getValsAsUint() const override") {
 		slm::Vec2i test{1, 2};
 
 		const auto values = test.getValsAsUint();
@@ -1103,7 +1151,7 @@ TEST_CASE("Vec2u") {
 
 		CHECK(test == std::array<uint32_t, 2>{testX, testY});
 	}
-	SECTION("x(const uint32_t x) && x()") {
+	SECTION("void x(const uint32_t x)") {
 		slm::Vec2u test{15u, 30u};
 
 		CHECK(test.x() == 15u);
@@ -1112,7 +1160,7 @@ TEST_CASE("Vec2u") {
 
 		CHECK(test.x() == 150u);
 	}
-	SECTION("y(const uint32_t y) && y()") {
+	SECTION("void y(const uint32_t y)") {
 		slm::Vec2u test{15u, 30u};
 
 		CHECK(test.y() == 30u);
@@ -1121,7 +1169,31 @@ TEST_CASE("Vec2u") {
 
 		CHECK(test.y() == 300u);
 	}
-	SECTION("translate(const Vec2u& amount)") {
+	SECTION("uint32_t x() const") {
+		{
+			slm::Vec2u test{15u, 30u};
+
+			CHECK(test.x() == 15u);
+		}
+		{
+			slm::Vec2u test{150u, 30u};
+
+			CHECK(test.x() == 150u);
+		}
+	}
+	SECTION("uint32_t y() const") {
+		{
+			slm::Vec2u test{15u, 30u};
+
+			CHECK(test.y() == 30u);
+		}
+		{
+			slm::Vec2u test{15u, 300u};
+
+			CHECK(test.y() == 300u);
+		}
+	}
+	SECTION("void translate(const Vec2u& amount)") {
 		slm::Vec2u test{1u, 2u};
 		const slm::Vec2u translateAmount{3u, 4u};
 
@@ -1133,7 +1205,7 @@ TEST_CASE("Vec2u") {
 
 		CHECK(test == std::array<uint32_t, 2>{7u, 10u});
 	}
-	SECTION("translate(const std::array<uint32_t, 2>& amount)") {
+	SECTION("void translate(const std::array<uint32_t, 2>& amount)") {
 		slm::Vec2u test{1u, 2u};
 		const std::array<uint32_t, 2> translateAmount{3u, 4u};
 
@@ -1145,7 +1217,7 @@ TEST_CASE("Vec2u") {
 
 		CHECK(test == std::array<uint32_t, 2>{7u, 10u});
 	}
-	SECTION("translate(const uint32_t amount[2])") {
+	SECTION("void translate(const uint32_t amount[2])") {
 		slm::Vec2u test{1u, 2u};
 		const uint32_t translateAmount[2]{3u, 4u};
 
@@ -1157,7 +1229,7 @@ TEST_CASE("Vec2u") {
 
 		CHECK(test == std::array<uint32_t, 2>{7u, 10u});
 	}
-	SECTION("translateX(const uint32_t amount)") {
+	SECTION("void translateX(const uint32_t amount)") {
 		slm::Vec2u test{1u, 2u};
 		const uint32_t translateAmount{3};
 
@@ -1169,7 +1241,7 @@ TEST_CASE("Vec2u") {
 
 		CHECK(test == std::array<uint32_t, 2>{7u, 2u});
 	}
-	SECTION("translateY(const uint32_t amount)") {
+	SECTION("void translateY(const uint32_t amount)") {
 		slm::Vec2u test{1u, 2u};
 		const uint32_t translateAmount{4u};
 
@@ -1181,7 +1253,7 @@ TEST_CASE("Vec2u") {
 
 		CHECK(test == std::array<uint32_t, 2>{1u, 10u});
 	}
-	SECTION("rotate(const int32_t degreesCounterClockwise)") {
+	SECTION("void rotate(const int32_t degreesCounterClockwise)") {
 		slm::Vec2u test{1u, 0u};
 		int32_t rotateAmount{90};
 
@@ -1189,7 +1261,7 @@ TEST_CASE("Vec2u") {
 
 		CHECK(test == std::array<uint32_t, 2>{0u, 1u});
 	}
-	SECTION("scale(const Vec2& amount)") {
+	SECTION("void scale(const Vec2& amount)") {
 		slm::Vec2u test{2u, 3u};
 		const slm::Vec2u scaleAmount{3u, 4u};
 
@@ -1201,7 +1273,7 @@ TEST_CASE("Vec2u") {
 
 		CHECK(test == std::array<uint32_t, 2>{18u, 48u});
 	}
-	SECTION("scale(const float factor)") {
+	SECTION("void scale(const float factor)") {
 		slm::Vec2u test{2u, 3u};
 		const float scaleAmount{3.0f};
 
@@ -1213,7 +1285,7 @@ TEST_CASE("Vec2u") {
 
 		CHECK(test == std::array<uint32_t, 2>{18u, 27u});
 	}
-	SECTION("scale(const float factors[2])") {
+	SECTION("void scale(const float factors[2])") {
 		slm::Vec2u test{2u, 3u};
 		const float scaleAmount[2]{3.0f, 4.0f};
 
@@ -1225,7 +1297,7 @@ TEST_CASE("Vec2u") {
 
 		CHECK(test == std::array<uint32_t, 2>{18u, 48u});
 	}
-	SECTION("scale(const std::array<float, 2>& factors)") {
+	SECTION("void scale(const std::array<float, 2>& factors)") {
 		slm::Vec2u test{2u, 3u};
 		const std::array<float, 2> scaleAmount{3.0f, 4.0f};
 
@@ -1237,7 +1309,7 @@ TEST_CASE("Vec2u") {
 
 		CHECK(test == std::array<uint32_t, 2>{18u, 48u});
 	}
-	SECTION("scaleX(const float factor)") {
+	SECTION("void scaleX(const float factor)") {
 		slm::Vec2u test{2u, 3u};
 		const float scaleAmount{3.0f};
 
@@ -1249,7 +1321,7 @@ TEST_CASE("Vec2u") {
 
 		CHECK(test == std::array<uint32_t, 2>{18u, 3u});
 	}
-	SECTION("scaleY(const float factor)") {
+	SECTION("void scaleY(const float factor)") {
 		slm::Vec2u test{2u, 3u};
 		const float scaleAmount{4.0f};
 
@@ -1261,7 +1333,7 @@ TEST_CASE("Vec2u") {
 
 		CHECK(test == std::array<uint32_t, 2>{2u, 48u});
 	}
-	SECTION("operator[](const std::size_t idx)") {
+	SECTION("uint32_t operator[](const std::size_t idx) const") {
 		slm::Vec2u test{2u, 3u};
 
 		CHECK(test[0] == 2u);
@@ -1273,7 +1345,7 @@ TEST_CASE("Vec2u") {
 		CHECK(test[0] == 10u);
 		CHECK(test[1] == 20u);
 	}
-	SECTION("operator+=(const Vec2& other)") {
+	SECTION("Vec2u& operator+=(const Vec2& other)") {
 		slm::Vec2u test{2u, 3u};
 		const slm::Vec2u addAmount{4u, 5u};
 
@@ -1285,7 +1357,7 @@ TEST_CASE("Vec2u") {
 
 		CHECK(test == std::array<uint32_t, 2>{10u, 13u});
 	}
-	SECTION("operator+=(const std::array<uint32_t, 2>& amount)") {
+	SECTION("Vec2u& operator+=(const std::array<uint32_t, 2>& amount)") {
 		slm::Vec2u test{2u, 3u};
 		const std::array<uint32_t, 2> addAmount{4u, 5u};
 
@@ -1297,7 +1369,7 @@ TEST_CASE("Vec2u") {
 
 		CHECK(test == std::array<uint32_t, 2>{10u, 13u});
 	}
-	SECTION("operator+=(const uint32_t amount[2])") {
+	SECTION("Vec2u& operator+=(const uint32_t amount[2])") {
 		slm::Vec2u test{2u, 3u};
 		const uint32_t addAmount[2]{4u, 5u};
 
@@ -1309,7 +1381,7 @@ TEST_CASE("Vec2u") {
 
 		CHECK(test == std::array<uint32_t, 2>{10u, 13u});
 	}
-	SECTION("operator-=(const Vec2& other)") {
+	SECTION("Vec2u& operator-=(const Vec2& other)") {
 		slm::Vec2u test{20u, 30u};
 		const slm::Vec2u subtractAmount{4u, 5u};
 
@@ -1321,7 +1393,7 @@ TEST_CASE("Vec2u") {
 
 		CHECK(test == std::array<uint32_t, 2>{12u, 20u});
 	}
-	SECTION("operator-=(const std::array<uint32_t, 2>& amount)") {
+	SECTION("Vec2u& operator-=(const std::array<uint32_t, 2>& amount)") {
 		slm::Vec2u test{20u, 30u};
 		const std::array<uint32_t, 2> subtractAmount{4u, 5u};
 
@@ -1333,7 +1405,7 @@ TEST_CASE("Vec2u") {
 
 		CHECK(test == std::array<uint32_t, 2>{12u, 20u});
 	}
-	SECTION("operator-=(const uint32_t amount[2])") {
+	SECTION("Vec2u& operator-=(const uint32_t amount[2])") {
 		slm::Vec2u test{20u, 30u};
 		const uint32_t subtractAmount[2]{4u, 5u};
 
@@ -1345,7 +1417,7 @@ TEST_CASE("Vec2u") {
 
 		CHECK(test == std::array<uint32_t, 2>{12u, 20u});
 	}
-	SECTION("operator*=(const Vec2& other)") {
+	SECTION("Vec2u& operator*=(const Vec2& other)") {
 		slm::Vec2u test{2u, 3u};
 		const slm::Vec2u multiplyAmount{4u, 5u};
 
@@ -1357,7 +1429,7 @@ TEST_CASE("Vec2u") {
 
 		CHECK(test == std::array<uint32_t, 2>{32u, 75u});
 	}
-	SECTION("operator*=(const float factor)") {
+	SECTION("Vec2u& operator*=(const float factor)") {
 		slm::Vec2u test{2u, 3u};
 		const float multiplyAmount{4.0f};
 
@@ -1369,7 +1441,7 @@ TEST_CASE("Vec2u") {
 
 		CHECK(test == std::array<uint32_t, 2>{32u, 48u});
 	}
-	SECTION("operator*=(const std::array<float, 2>& amount)") {
+	SECTION("Vec2u& operator*=(const std::array<float, 2>& amount)") {
 		slm::Vec2u test{2u, 3u};
 		const std::array<float, 2> multiplyAmount{4.0f, 5.0f};
 
@@ -1381,7 +1453,7 @@ TEST_CASE("Vec2u") {
 
 		CHECK(test == std::array<uint32_t, 2>{32u, 75u});
 	}
-	SECTION("operator*=(const float amount[2])") {
+	SECTION("Vec2u& operator*=(const float amount[2])") {
 		slm::Vec2u test{2u, 3u};
 		const float multiplyAmount[2]{4.0f, 5.0f};
 
@@ -1393,7 +1465,7 @@ TEST_CASE("Vec2u") {
 
 		CHECK(test == std::array<uint32_t, 2>{32u, 75u});
 	}
-	SECTION("operator==(const Vec2u& other)") {
+	SECTION("bool operator==(const Vec2u& other) const") {
 		slm::Vec2u test{1u, 2u};
 		slm::Vec2u test2{1u, 2u};
 
@@ -1411,7 +1483,7 @@ TEST_CASE("Vec2u") {
 
 		CHECK(!(test == test2));
 	}
-	SECTION("operator==(const std::array<uint32_t, 2>& other)") {
+	SECTION("bool operator==(const std::array<uint32_t, 2>& other) const") {
 		slm::Vec2u test{1u, 2u};
 		std::array<uint32_t, 2> values{1u, 2u};
 
@@ -1429,7 +1501,7 @@ TEST_CASE("Vec2u") {
 
 		CHECK(!(test == values));
 	}
-	SECTION("operator==(const uint32_t other[2])") {
+	SECTION("bool operator==(const uint32_t other[2]) const") {
 		slm::Vec2u test{1u, 2u};
 		uint32_t values[2]{1u, 2u};
 
@@ -1447,7 +1519,7 @@ TEST_CASE("Vec2u") {
 
 		CHECK(!(test == values));
 	}
-	SECTION("operator!=(const Vec2u& other)") {
+	SECTION("bool operator!=(const Vec2u& other) const") {
 		slm::Vec2u test{1u, 2u};
 		slm::Vec2u test2{1u, 2u};
 
@@ -1465,7 +1537,7 @@ TEST_CASE("Vec2u") {
 
 		CHECK(test != test2);
 	}
-	SECTION("operator!=(const std::array<uint32_t, 2>& other)") {
+	SECTION("bool operator!=(const std::array<uint32_t, 2>& other) const") {
 		slm::Vec2u test{1u, 2u};
 		std::array<uint32_t, 2> values{1u, 2u};
 
@@ -1483,7 +1555,7 @@ TEST_CASE("Vec2u") {
 
 		CHECK(test != values);
 	}
-	SECTION("operator!=(const uint32_t other[2])") {
+	SECTION("bool operator!=(const uint32_t other[2]) const") {
 		slm::Vec2u test{1u, 2u};
 		uint32_t values[2]{1u, 2u};
 
@@ -1501,15 +1573,15 @@ TEST_CASE("Vec2u") {
 
 		CHECK(test != values);
 	}
-	SECTION("getValsAsFloat()") {
+	SECTION("std::array<float, 2> getValsAsFloat() const override") {
 		slm::Vec2u test{1u, 2u};
 
 		const auto values = test.getValsAsFloat();
 
-		helpers::checkFloatValues(values[0], 1.0f);
-		helpers::checkFloatValues(values[1], 2.0f);
+		helpers::checkValues(values[0], 1.0f);
+		helpers::checkValues(values[1], 2.0f);
 	}
-	SECTION("getValsAsInt()") {
+	SECTION("std::array<int32_t, 2> getValsAsInt() const override") {
 		slm::Vec2u test{1u, 2u};
 
 		const auto values = test.getValsAsInt();
@@ -1517,7 +1589,7 @@ TEST_CASE("Vec2u") {
 		CHECK(values[0] == 1);
 		CHECK(values[1] == 2);
 	}
-	SECTION("getValsAsUint()") {
+	SECTION("std::array<uint32_t, 2> getValsAsUint() const override") {
 		slm::Vec2u test{1u, 2u};
 
 		const auto values = test.getValsAsUint();

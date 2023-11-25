@@ -9,7 +9,7 @@ namespace helpers {
 	///////////
 
 	const float FLOATING_POINT_ERROR_MARGIN = 0.0001f;
-	void checkFloatValues(const float float1, const float float2);
+	void checkValues(const float float1, const float float2);
 
 
 
@@ -27,7 +27,7 @@ namespace helpers {
 	// uint32_t //
 	//////////////
 
-	void checkUint32_tValues(const uint32_t uint1, const uint32_t uint2);
+	void checkValues(const uint32_t uint1, const uint32_t uint2);
 
 
 
@@ -36,9 +36,9 @@ namespace helpers {
 	// Vec2f //
 	///////////
 
-	void checkVec2fValues(const slm::Vec2f& vec, const slm::Vec2f& otherVec);
-	void checkVec2fValues(const slm::Vec2f& vec, const std::array<float, 2>& values);
-	void checkVec2fValues(const slm::Vec2f& vec, const float x, const float y);
+	void checkValues(const slm::Vec2f& vec, const slm::Vec2f& otherVec);
+	void checkValues(const slm::Vec2f& vec, const std::array<float, 2>& values);
+	void checkValues(const slm::Vec2f& vec, const float x, const float y);
 
 
 
@@ -47,9 +47,9 @@ namespace helpers {
 	// Vec2u //
 	///////////
 
-	void checkVec2uValues(const slm::Vec2u& vec, const slm::Vec2u& otherVec);
-	void checkVec2uValues(const slm::Vec2u& vec, const std::array<uint32_t, 2>& values);
-	void checkVec2uValues(const slm::Vec2u& vec, const uint32_t x, const uint32_t y);
+	void checkValues(const slm::Vec2u& vec, const slm::Vec2u& otherVec);
+	void checkValues(const slm::Vec2u& vec, const std::array<uint32_t, 2>& values);
+	void checkValues(const slm::Vec2u& vec, const uint32_t x, const uint32_t y);
 
 
 
@@ -80,8 +80,9 @@ namespace helpers {
 	// Line2f //
 	////////////
 
-	void checkLine2fValues(const slm::Line2f& line, const slm::Vec2f& start, const slm::Vec2f& end);
-	void checkLine2fValues(const slm::Line2f& line, const float x1, const float y1, const float x2, const float y2);
+	void checkValues(const slm::Line2f& line, const slm::Vec2f& start, const slm::Vec2f& end);
+	void checkValues(const slm::Line2f& line, const float x1, const float y1, const float x2,
+					 const float y2);
 
 
 
@@ -90,9 +91,8 @@ namespace helpers {
 	// AxisAlignedBox2u //
 	//////////////////////
 
-	void checkAxisAlignedBox2uValues(const slm::AxisAlignedBox2u& axisAlignedBox,
-									 const slm::Vec2u& bottomLeft, const slm::Vec2u& topRight);
-	void checkAxisAlignedBox2uValues(const slm::AxisAlignedBox2u& axisAlignedBox,
-									 const uint32_t left, const uint32_t bottom,
-									 const uint32_t right, const uint32_t top);
+	void checkValues(const slm::AxisAlignedBox2u& axisAlignedBox, const slm::Vec2u& bottomLeft,
+					 const slm::Vec2u& topRight);
+	void checkValues(const slm::AxisAlignedBox2u& axisAlignedBox, const uint32_t left,
+					 const uint32_t bottom, const uint32_t right, const uint32_t top);
 }

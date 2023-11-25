@@ -11,6 +11,7 @@ namespace slm {
 	class Primitive2 {
 	public:
 		virtual void clip() = 0;
+
 	protected:
 	};
 
@@ -49,6 +50,7 @@ namespace slm {
 		const Vec2f& operator[](const std::size_t idx) const;
 		bool operator==(const Line2f& other) const;
 		bool operator!=(const Line2f& other) const;
+
 	protected:
 		std::array<Vec2f, 2> m_points{};
 	};
@@ -64,7 +66,8 @@ namespace slm {
 	public:
 		AxisAlignedBox2u();
 		AxisAlignedBox2u(Vec2u bottomLeft, Vec2u topRight);
-		AxisAlignedBox2u(const uint32_t x1, const uint32_t y1, const uint32_t x2, const uint32_t y2);
+		AxisAlignedBox2u(const uint32_t x1, const uint32_t y1, const uint32_t x2,
+						 const uint32_t y2);
 
 		void setBottomLeft(Vec2u bottomLeft);
 		void setTopRight(Vec2u topRight);
@@ -90,6 +93,7 @@ namespace slm {
 		const Vec2u& operator[](const std::size_t idx) const;
 		bool operator==(const AxisAlignedBox2u& other) const;
 		bool operator!=(const AxisAlignedBox2u& other) const;
+
 	protected:
 		std::array<Vec2u, 2> m_points{};
 
