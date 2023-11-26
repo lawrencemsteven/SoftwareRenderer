@@ -119,32 +119,67 @@ TEST_CASE("Vec2f") {
 			helpers::checkValues(test.y(), 300.0f);
 		}
 	}
-	SECTION("bool insideBox(const AxisAlignedBox2u& box) const") {
+	SECTION("BitLocation insideBox(const AxisAlignedBox2u& box) const") {
 		slm::AxisAlignedBox2u testBox{1u, 1u, 3u, 3u};
 
 		slm::Vec2f test{2.0f, 2.0f};
-		CHECK(test.insideBox(testBox));
+		slm::BitLocation loc = test.insideBox(testBox);
+		CHECK(loc.inside());
+		helpers::checkValues(loc, false, false, false, false);
 
 		test.x(4.0f);
-		CHECK(!test.insideBox(testBox));
+		test.y(2.0f);
+		loc = test.insideBox(testBox);
+		CHECK(loc.outside());
+		helpers::checkValues(loc, false, false, false, true);
 
 		test.x(0.0f);
-		CHECK(!test.insideBox(testBox));
+		test.y(2.0f);
+		loc = test.insideBox(testBox);
+		CHECK(loc.outside());
+		helpers::checkValues(loc, false, false, true, false);
 
 		test.x(2.0f);
 		test.y(4.0f);
-		CHECK(!test.insideBox(testBox));
+		loc = test.insideBox(testBox);
+		CHECK(loc.outside());
+		helpers::checkValues(loc, true, false, false, false);
 
+		test.x(2.0f);
 		test.y(0.0f);
-		CHECK(!test.insideBox(testBox));
+		loc = test.insideBox(testBox);
+		CHECK(loc.outside());
+		helpers::checkValues(loc, false, true, false, false);
 
 		test.x(0.0f);
 		test.y(0.0f);
-		CHECK(!test.insideBox(testBox));
+		loc = test.insideBox(testBox);
+		CHECK(loc.outside());
+		helpers::checkValues(loc, false, true, true, false);
+
+		test.x(0.0f);
+		test.y(4.0f);
+		loc = test.insideBox(testBox);
+		CHECK(loc.outside());
+		helpers::checkValues(loc, true, false, true, false);
+
+		test.x(4.0f);
+		test.y(4.0f);
+		loc = test.insideBox(testBox);
+		CHECK(loc.outside());
+		helpers::checkValues(loc, true, false, false, true);
+
+		test.x(4.0f);
+		test.y(0.0f);
+		loc = test.insideBox(testBox);
+		CHECK(loc.outside());
+		helpers::checkValues(loc, false, true, false, true);
 
 		test.x(2.0f);
 		test.y(2.0f);
-		CHECK(test.insideBox(testBox));
+		loc = test.insideBox(testBox);
+		CHECK(loc.inside());
+		helpers::checkValues(loc, false, false, false, false);
 	}
 	SECTION("void translate(const Vec2f& amount)") {
 		slm::Vec2f test{1.0f, 2.0f};

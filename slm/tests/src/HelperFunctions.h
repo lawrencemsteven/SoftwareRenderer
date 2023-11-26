@@ -32,6 +32,17 @@ namespace helpers {
 
 
 
+	/////////////////
+	// BitLocation //
+	/////////////////
+
+	void checkValues(const slm::BitLocation& loc, const bool above, const bool below,
+					 const bool left, const bool right);
+	void checkValues(const slm::BitLocation& loc1, const slm::BitLocation& loc2);
+
+
+
+
 	///////////
 	// Vec2f //
 	///////////

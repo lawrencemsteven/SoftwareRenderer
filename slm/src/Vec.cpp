@@ -72,11 +72,15 @@ namespace slm {
 		return m_values[1];
 	}
 
-	bool Vec2f::insideBox(const AxisAlignedBox2u& box) const {
-		const bool horizontalCheck = x() >= box.getLeft() && x() <= box.getRight();
-		const bool verticalCheck   = y() >= box.getBottom() && y() <= box.getTop();
+	BitLocation Vec2f::insideBox(const AxisAlignedBox2u& box) const {
+		BitLocation loc{};
 
-		return horizontalCheck && verticalCheck;
+		loc.left = x() < box.getLeft();
+		loc.right = x() > box.getRight();
+		loc.above = y() > box.getTop();
+		loc.below = y() < box.getBottom();
+
+		return loc;
 	}
 
 	void Vec2f::translate(const Vec2& amount) {

@@ -38,6 +38,28 @@ namespace helpers {
 
 
 
+	/////////////////
+	// BitLocation //
+	/////////////////
+
+	void checkValues(const slm::BitLocation& loc, const bool above, const bool below,
+					 const bool left, const bool right) {
+		CHECK(loc.above == above);
+		CHECK(loc.below == below);
+		CHECK(loc.left == left);
+		CHECK(loc.right == right);
+	}
+
+	void checkValues(const slm::BitLocation& loc1, const slm::BitLocation& loc2) {
+		CHECK(loc1.above == loc2.above);
+		CHECK(loc1.below == loc2.below);
+		CHECK(loc1.left == loc2.left);
+		CHECK(loc1.right == loc2.right);
+	}
+
+
+
+
 	///////////
 	// Vec2f //
 	///////////

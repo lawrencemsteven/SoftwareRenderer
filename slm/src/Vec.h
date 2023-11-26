@@ -4,6 +4,20 @@ namespace slm {
 
 	class AxisAlignedBox2u;
 
+	struct BitLocation {
+		bool above : 1;
+		bool below : 1;
+		bool right : 1;
+		bool left : 1;
+
+		bool outside() const {
+			return above || below || right || left;
+		}
+		bool inside() const {
+			return !outside();
+		}
+	};
+
 	/////////
 	// Vec //
 	/////////
@@ -66,7 +80,7 @@ namespace slm {
 		float x() const;
 		float y() const;
 
-		bool insideBox(const AxisAlignedBox2u& box) const;
+		BitLocation insideBox(const AxisAlignedBox2u& box) const;
 
 		void translate(const Vec2& amount);
 		void translate(const std::array<float, 2>& amount);
