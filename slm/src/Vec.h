@@ -4,19 +4,42 @@ namespace slm {
 
 	class AxisAlignedBox2u;
 
-	struct BitLocation {
-		bool above : 1;
-		bool below : 1;
-		bool right : 1;
-		bool left : 1;
+	/////////////////
+	// BitLocation //
+	/////////////////
 
-		bool outside() const {
-			return above || below || right || left;
-		}
-		bool inside() const {
-			return !outside();
-		}
+	class BitLocation {
+	public:
+		struct BIT_LOCATIONS {
+			enum : unsigned char { NONE = 0b0000, ABOVE = 0b1000, BELOW = 0b0100, RIGHT = 0b0010, LEFT = 0b0001 };
+		};
+		struct BIT_LOCATIONS_INVERTED {
+			enum : unsigned char { ABOVE = 0b0111, BELOW = 0b1011, RIGHT = 0b1101, LEFT = 0b1110 };
+		};
+
+		BitLocation();
+		BitLocation(bool above, bool below, bool left, bool right);
+
+		void setLocation(unsigned char location);
+		void setAbove(bool above);
+		void setBelow(bool below);
+		void setLeft(bool left);
+		void setRight(bool right);
+
+		unsigned char getLocation() const;
+		bool getAbove() const;
+		bool getBelow() const;
+		bool getLeft() const;
+		bool getRight() const;
+		bool getInside() const;
+		bool getOutside() const;
+
+	protected:
+		unsigned char m_location : 4 = 0b0000;
 	};
+
+
+
 
 	/////////
 	// Vec //

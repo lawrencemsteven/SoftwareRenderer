@@ -3,6 +3,172 @@
 
 #include "HelperFunctions.h"
 
+/////////////////
+// BitLocation //
+/////////////////
+
+TEST_CASE("BitLocation") {
+	typedef slm::BitLocation::BIT_LOCATIONS BIT_LOCATIONS;
+	SECTION("BitLocation()") {
+		slm::BitLocation test{};
+
+		CHECK(test.getLocation() == BIT_LOCATIONS::NONE);
+	}
+	SECTION("BitLocation(bool above, bool below, bool left, bool right)") {
+		slm::BitLocation test{true, true, true, true};
+
+		CHECK(test.getLocation() == (BIT_LOCATIONS::ABOVE | BIT_LOCATIONS::BELOW |
+									 BIT_LOCATIONS::LEFT | BIT_LOCATIONS::RIGHT));
+	}
+	SECTION("void setLocation(unsigned char location)") {
+		slm::BitLocation test{};
+
+		test.setLocation(BIT_LOCATIONS::ABOVE);
+		CHECK(test.getLocation() == BIT_LOCATIONS::ABOVE);
+		test.setLocation(BIT_LOCATIONS::BELOW);
+		CHECK(test.getLocation() == BIT_LOCATIONS::BELOW);
+		test.setLocation(BIT_LOCATIONS::RIGHT);
+		CHECK(test.getLocation() == BIT_LOCATIONS::RIGHT);
+		test.setLocation(BIT_LOCATIONS::LEFT);
+		CHECK(test.getLocation() == BIT_LOCATIONS::LEFT);
+		test.setLocation(BIT_LOCATIONS::ABOVE | BIT_LOCATIONS::BELOW | BIT_LOCATIONS::LEFT |
+						 BIT_LOCATIONS::RIGHT);
+		CHECK(test.getLocation() == (BIT_LOCATIONS::ABOVE | BIT_LOCATIONS::BELOW |
+									 BIT_LOCATIONS::LEFT | BIT_LOCATIONS::RIGHT));
+	}
+	SECTION("void setAbove(bool above)") {
+		slm::BitLocation test{};
+
+		test.setAbove(true);
+		CHECK(test.getLocation() == BIT_LOCATIONS::ABOVE);
+		test.setAbove(false);
+		CHECK(test.getLocation() == BIT_LOCATIONS::NONE);
+	}
+	SECTION("void setBelow(bool below)") {
+		slm::BitLocation test{};
+
+		test.setBelow(true);
+		CHECK(test.getLocation() == BIT_LOCATIONS::BELOW);
+		test.setBelow(false);
+		CHECK(test.getLocation() == BIT_LOCATIONS::NONE);
+	}
+	SECTION("void setLeft(bool left)") {
+		slm::BitLocation test{};
+
+		test.setLeft(true);
+		CHECK(test.getLocation() == BIT_LOCATIONS::LEFT);
+		test.setLeft(false);
+		CHECK(test.getLocation() == BIT_LOCATIONS::NONE);
+	}
+	SECTION("void setRight(bool right)") {
+		slm::BitLocation test{};
+
+		test.setRight(true);
+		CHECK(test.getLocation() == BIT_LOCATIONS::RIGHT);
+		test.setRight(false);
+		CHECK(test.getLocation() == BIT_LOCATIONS::NONE);
+	}
+	SECTION("unsigned char getLocation() const") {
+		slm::BitLocation test{};
+
+		test.setLocation(BIT_LOCATIONS::ABOVE | BIT_LOCATIONS::RIGHT);
+		CHECK(test.getLocation() == (BIT_LOCATIONS::ABOVE | BIT_LOCATIONS::RIGHT));
+	}
+	SECTION("bool getAbove() const") {
+		slm::BitLocation test{};
+
+		CHECK(!test.getAbove());
+		test.setAbove(true);
+		CHECK(test.getAbove());
+		test.setAbove(false);
+		CHECK(!test.getAbove());
+	}
+	SECTION("bool getBelow() const") {
+		slm::BitLocation test{};
+
+		CHECK(!test.getBelow());
+		test.setBelow(true);
+		CHECK(test.getBelow());
+		test.setBelow(false);
+		CHECK(!test.getBelow());
+	}
+	SECTION("bool getLeft() const") {
+		slm::BitLocation test{};
+
+		CHECK(!test.getLeft());
+		test.setLeft(true);
+		CHECK(test.getLeft());
+		test.setLeft(false);
+		CHECK(!test.getLeft());
+	}
+	SECTION("bool getRight() const") {
+		slm::BitLocation test{};
+
+		CHECK(!test.getRight());
+		test.setRight(true);
+		CHECK(test.getRight());
+		test.setRight(false);
+		CHECK(!test.getRight());
+	}
+	SECTION("bool getInside() const") {
+		slm::BitLocation test{};
+
+		CHECK(test.getInside());
+		test.setAbove(true);
+		CHECK(!test.getInside());
+		test.setAbove(false);
+		CHECK(test.getInside());
+
+		CHECK(test.getInside());
+		test.setBelow(true);
+		CHECK(!test.getInside());
+		test.setBelow(false);
+		CHECK(test.getInside());
+
+		CHECK(test.getInside());
+		test.setLeft(true);
+		CHECK(!test.getInside());
+		test.setLeft(false);
+		CHECK(test.getInside());
+
+		CHECK(test.getInside());
+		test.setRight(true);
+		CHECK(!test.getInside());
+		test.setRight(false);
+		CHECK(test.getInside());
+	}
+	SECTION("bool getOutside() const") {
+		slm::BitLocation test{};
+
+		CHECK(!test.getOutside());
+		test.setAbove(true);
+		CHECK(test.getOutside());
+		test.setAbove(false);
+		CHECK(!test.getOutside());
+
+		CHECK(!test.getOutside());
+		test.setBelow(true);
+		CHECK(test.getOutside());
+		test.setBelow(false);
+		CHECK(!test.getOutside());
+
+		CHECK(!test.getOutside());
+		test.setLeft(true);
+		CHECK(test.getOutside());
+		test.setLeft(false);
+		CHECK(!test.getOutside());
+
+		CHECK(!test.getOutside());
+		test.setRight(true);
+		CHECK(test.getOutside());
+		test.setRight(false);
+		CHECK(!test.getOutside());
+	}
+}
+
+
+
+
 ///////////
 // Vec2f //
 ///////////
@@ -124,61 +290,61 @@ TEST_CASE("Vec2f") {
 
 		slm::Vec2f test{2.0f, 2.0f};
 		slm::BitLocation loc = test.insideBox(testBox);
-		CHECK(loc.inside());
+		CHECK(loc.getInside());
 		helpers::checkValues(loc, false, false, false, false);
 
 		test.x(4.0f);
 		test.y(2.0f);
 		loc = test.insideBox(testBox);
-		CHECK(loc.outside());
+		CHECK(loc.getOutside());
 		helpers::checkValues(loc, false, false, false, true);
 
 		test.x(0.0f);
 		test.y(2.0f);
 		loc = test.insideBox(testBox);
-		CHECK(loc.outside());
+		CHECK(loc.getOutside());
 		helpers::checkValues(loc, false, false, true, false);
 
 		test.x(2.0f);
 		test.y(4.0f);
 		loc = test.insideBox(testBox);
-		CHECK(loc.outside());
+		CHECK(loc.getOutside());
 		helpers::checkValues(loc, true, false, false, false);
 
 		test.x(2.0f);
 		test.y(0.0f);
 		loc = test.insideBox(testBox);
-		CHECK(loc.outside());
+		CHECK(loc.getOutside());
 		helpers::checkValues(loc, false, true, false, false);
 
 		test.x(0.0f);
 		test.y(0.0f);
 		loc = test.insideBox(testBox);
-		CHECK(loc.outside());
+		CHECK(loc.getOutside());
 		helpers::checkValues(loc, false, true, true, false);
 
 		test.x(0.0f);
 		test.y(4.0f);
 		loc = test.insideBox(testBox);
-		CHECK(loc.outside());
+		CHECK(loc.getOutside());
 		helpers::checkValues(loc, true, false, true, false);
 
 		test.x(4.0f);
 		test.y(4.0f);
 		loc = test.insideBox(testBox);
-		CHECK(loc.outside());
+		CHECK(loc.getOutside());
 		helpers::checkValues(loc, true, false, false, true);
 
 		test.x(4.0f);
 		test.y(0.0f);
 		loc = test.insideBox(testBox);
-		CHECK(loc.outside());
+		CHECK(loc.getOutside());
 		helpers::checkValues(loc, false, true, false, true);
 
 		test.x(2.0f);
 		test.y(2.0f);
 		loc = test.insideBox(testBox);
-		CHECK(loc.inside());
+		CHECK(loc.getInside());
 		helpers::checkValues(loc, false, false, false, false);
 	}
 	SECTION("void translate(const Vec2f& amount)") {

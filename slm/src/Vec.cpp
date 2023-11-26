@@ -4,6 +4,70 @@
 
 namespace slm {
 
+	/////////////////
+	// BitLocation //
+	/////////////////
+
+	BitLocation::BitLocation() {}
+
+	BitLocation::BitLocation(bool above, bool below, bool left, bool right) {
+		setAbove(above);
+		setBelow(below);
+		setLeft(left);
+		setRight(right);
+	}
+
+	void BitLocation::setLocation(unsigned char location) {
+		m_location = std::move(location);
+	}
+
+	void BitLocation::setAbove(bool above) {
+		m_location = above ? m_location | BIT_LOCATIONS::ABOVE : m_location & BIT_LOCATIONS_INVERTED::ABOVE;
+	}
+
+	void BitLocation::setBelow(bool below) {
+		m_location = below ? m_location | BIT_LOCATIONS::BELOW : m_location & BIT_LOCATIONS_INVERTED::BELOW;
+	}
+
+	void BitLocation::setLeft(bool left) {
+		m_location = left ? m_location | BIT_LOCATIONS::LEFT : m_location & BIT_LOCATIONS_INVERTED::LEFT;
+	}
+
+	void BitLocation::setRight(bool right) {
+		m_location = right ? m_location | BIT_LOCATIONS::RIGHT : m_location & BIT_LOCATIONS_INVERTED::RIGHT;
+	}
+
+	unsigned char BitLocation::getLocation() const {
+		return m_location;
+	}
+
+	bool BitLocation::getAbove() const {
+		return m_location & BIT_LOCATIONS::ABOVE;
+	}
+
+	bool BitLocation::getBelow() const {
+		return m_location & BIT_LOCATIONS::BELOW;
+	}
+
+	bool BitLocation::getLeft() const {
+		return m_location & BIT_LOCATIONS::LEFT;
+	}
+
+	bool BitLocation::getRight() const {
+		return m_location & BIT_LOCATIONS::RIGHT;
+	}
+
+	bool BitLocation::getInside() const {
+		return !m_location;
+	}
+
+	bool BitLocation::getOutside() const {
+		return m_location;
+	}
+
+
+
+
 	//////////
 	// Vec2 //
 	//////////
@@ -75,10 +139,10 @@ namespace slm {
 	BitLocation Vec2f::insideBox(const AxisAlignedBox2u& box) const {
 		BitLocation loc{};
 
-		loc.left = x() < box.getLeft();
-		loc.right = x() > box.getRight();
-		loc.above = y() > box.getTop();
-		loc.below = y() < box.getBottom();
+		loc.setLeft(x() < box.getLeft());
+		loc.setRight(x() > box.getRight());
+		loc.setAbove(y() > box.getTop());
+		loc.setBelow(y() < box.getBottom());
 
 		return loc;
 	}

@@ -4,13 +4,25 @@
 
 namespace slm {
 
+	////////////////////
+	// ClippingStatus //
+	////////////////////
+
+	enum class ClippingStatus {
+		Inside,
+		Modified,
+		Outside
+	};
+
+
+
+
 	////////////////
 	// Primitive2 //
 	////////////////
 
 	class Primitive2 {
 	public:
-		virtual void clip() = 0;
 
 	protected:
 	};
@@ -39,13 +51,14 @@ namespace slm {
 		void scaleX(const float factor);
 		void scaleY(const float factor);
 
-		void clip() override;
+		ClippingStatus clip(const AxisAlignedBox2u& clippingBox);
 
 		float getXMin() const;
 		float getXMax() const;
 		float getYMin() const;
 		float getYMax() const;
 		std::optional<float> getSlope() const;
+		std::optional<slm::Vec2f> getIntersectionPoint(const Line2f& other) const;
 
 		const Vec2f& operator[](const std::size_t idx) const;
 		bool operator==(const Line2f& other) const;
@@ -87,8 +100,6 @@ namespace slm {
 		void scale(const float factor);
 		void scaleX(const float factor);
 		void scaleY(const float factor);
-
-		void clip() override;
 
 		const Vec2u& operator[](const std::size_t idx) const;
 		bool operator==(const AxisAlignedBox2u& other) const;

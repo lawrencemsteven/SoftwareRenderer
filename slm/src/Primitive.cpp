@@ -61,8 +61,19 @@ namespace slm {
 		}
 	}
 
-	void Line2f::clip() {
-		std::cout << "Line2f::clip() STILL TO COMPLETE!!!\n";
+	ClippingStatus Line2f::clip(const AxisAlignedBox2u& clippingBox) {
+		const auto point1Status = m_points[0].insideBox(clippingBox);
+		const auto point2Status = m_points[1].insideBox(clippingBox);
+
+		/*if (point1Status.inside() && point2Status.inside()) {
+			return ClippingStatus::Inside;
+		}
+
+		if (point1Status.outside() && point2Status.outside()) {
+			return ClippingStatus::Outside;
+		}*/
+
+		return ClippingStatus::Outside;
 	}
 
 	float Line2f::getXMin() const {
@@ -89,6 +100,35 @@ namespace slm {
 
 		const auto yDifference = m_points[1].y() - m_points[0].y();
 		return yDifference / xDifference;
+	}
+
+	std::optional<slm::Vec2f> Line2f::getIntersectionPoint(const Line2f& other) const {
+		const auto x1 = m_points[0][0];
+		const auto x2 = m_points[1][0];
+		const auto x3 = other[0][0];
+		const auto x4 = other[1][0];
+		const auto y1 = m_points[0][1];
+		const auto y2 = m_points[1][1];
+		const auto y3 = other[0][1];
+		const auto y4 = other[1][1];
+
+		const auto denominator = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
+
+		if (denominator == 0.0f) {
+			return std::nullopt;
+		}
+
+		const auto t = ((x1 - x3) * (y3 - y4) - (y1 - y3) * (x3 - x4)) / denominator;
+		const auto u = ((x1 - x3) * (y1 - y2) - (y1 - y3) * (x1 - x2)) / denominator;
+
+		if (t >= 0 && t <= 1 && u >= 0 && u <= 1) {
+			const auto outX = x1 + t * (x2 - x1);
+			const auto outY = y1 + t * (y2 - y1);
+
+			return slm::Vec2f{outX, outY};
+		}
+
+		return std::nullopt;
 	}
 
 	const Vec2f& Line2f::operator[](const std::size_t idx) const {
@@ -211,10 +251,6 @@ namespace slm {
 			point.scaleY(factor);
 		}
 		checkDimensionSwap();
-	}
-
-	void AxisAlignedBox2u::clip() {
-		std::cout << "AxisAlignedBox2u::clip() STILL TO COMPLETE!!!\n";
 	}
 
 	const Vec2u& AxisAlignedBox2u::operator[](const std::size_t idx) const {
