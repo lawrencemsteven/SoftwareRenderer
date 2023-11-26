@@ -2,6 +2,8 @@
 
 namespace slm {
 
+	class AxisAlignedBox2u;
+
 	/////////
 	// Vec //
 	/////////
@@ -63,6 +65,8 @@ namespace slm {
 		void y(const float y);
 		float x() const;
 		float y() const;
+
+		bool insideBox(const AxisAlignedBox2u& box) const;
 
 		void translate(const Vec2& amount);
 		void translate(const std::array<float, 2>& amount);

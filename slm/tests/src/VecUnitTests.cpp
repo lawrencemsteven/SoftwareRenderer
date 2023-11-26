@@ -119,6 +119,33 @@ TEST_CASE("Vec2f") {
 			helpers::checkValues(test.y(), 300.0f);
 		}
 	}
+	SECTION("bool insideBox(const AxisAlignedBox2u& box) const") {
+		slm::AxisAlignedBox2u testBox{1u, 1u, 3u, 3u};
+
+		slm::Vec2f test{2.0f, 2.0f};
+		CHECK(test.insideBox(testBox));
+
+		test.x(4.0f);
+		CHECK(!test.insideBox(testBox));
+
+		test.x(0.0f);
+		CHECK(!test.insideBox(testBox));
+
+		test.x(2.0f);
+		test.y(4.0f);
+		CHECK(!test.insideBox(testBox));
+
+		test.y(0.0f);
+		CHECK(!test.insideBox(testBox));
+
+		test.x(0.0f);
+		test.y(0.0f);
+		CHECK(!test.insideBox(testBox));
+
+		test.x(2.0f);
+		test.y(2.0f);
+		CHECK(test.insideBox(testBox));
+	}
 	SECTION("void translate(const Vec2f& amount)") {
 		slm::Vec2f test{1.0f, 2.0f};
 		const slm::Vec2f translateAmount{3.0f, 4.0f};

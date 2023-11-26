@@ -1,5 +1,7 @@
 #include "Vec.h"
 
+#include "Primitive.h"
+
 namespace slm {
 
 	//////////
@@ -68,6 +70,13 @@ namespace slm {
 
 	float Vec2f::y() const {
 		return m_values[1];
+	}
+
+	bool Vec2f::insideBox(const AxisAlignedBox2u& box) const {
+		const bool horizontalCheck = x() >= box.getLeft() && x() <= box.getRight();
+		const bool verticalCheck   = y() >= box.getBottom() && y() <= box.getTop();
+
+		return horizontalCheck && verticalCheck;
 	}
 
 	void Vec2f::translate(const Vec2& amount) {
