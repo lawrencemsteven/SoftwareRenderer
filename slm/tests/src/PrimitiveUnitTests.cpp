@@ -200,6 +200,148 @@ TEST_CASE("Line2f") {
 			}
 		}
 	}
+	SECTION("std::optional<slm::Vec2f> getIntersectionPoint(const Line2f& other) const") {
+		SECTION("Horizontal & Vertical Lines") {
+			slm::Line2f line1(0.0f, 1.0f, 2.0f, 1.0f);
+			slm::Line2f line2(1.0f, 0.0f, 1.0f, 2.0f);
+
+			auto intersectionPointOptional = line1.getIntersectionPoint(line2);
+			REQUIRE(intersectionPointOptional.has_value());
+			auto intersectionPoint = intersectionPointOptional.value();
+			helpers::checkValues(intersectionPoint, 1.0f, 1.0f);
+
+			intersectionPointOptional = line2.getIntersectionPoint(line1);
+			REQUIRE(intersectionPointOptional.has_value());
+			intersectionPoint = intersectionPointOptional.value();
+			helpers::checkValues(intersectionPoint, 1.0f, 1.0f);
+		}
+		SECTION("45 Degree Lines") {
+			slm::Line2f line1(0.0f, 0.0f, 2.0f, 2.0f);
+			slm::Line2f line2(0.0f, 2.0f, 2.0f, 0.0f);
+
+			auto intersectionPointOptional = line1.getIntersectionPoint(line2);
+			REQUIRE(intersectionPointOptional.has_value());
+			auto intersectionPoint = intersectionPointOptional.value();
+			helpers::checkValues(intersectionPoint, 1.0f, 1.0f);
+
+			intersectionPointOptional = line2.getIntersectionPoint(line1);
+			REQUIRE(intersectionPointOptional.has_value());
+			intersectionPoint = intersectionPointOptional.value();
+			helpers::checkValues(intersectionPoint, 1.0f, 1.0f);
+		}
+	}
+	SECTION("std::optional<float> getYAtX(const float horizontalValue) const") {
+		SECTION("Horizontal Line") {
+			slm::Line2f line{0.0f, 0.0f, 2.0f, 0.0f};
+
+			auto yValOptional = line.getYAtX(1.0f);
+			REQUIRE(yValOptional.has_value());
+			auto yVal = yValOptional.value();
+			helpers::checkValues(yVal, 0.0f);
+
+			yValOptional = line.getYAtX(-1.0f);
+			REQUIRE(!yValOptional.has_value());
+
+			yValOptional = line.getYAtX(4.0f);
+			REQUIRE(!yValOptional.has_value());
+		}
+		SECTION("Vertical Line") {
+			slm::Line2f line{0.0f, 0.0f, 0.0f, 2.0f};
+
+			auto yValOptional = line.getYAtX(1.0f);
+			REQUIRE(!yValOptional.has_value());
+
+			yValOptional = line.getYAtX(-1.0f);
+			REQUIRE(!yValOptional.has_value());
+
+			yValOptional = line.getYAtX(4.0f);
+			REQUIRE(!yValOptional.has_value());
+		}
+		SECTION("45 Degree Line") {
+			slm::Line2f line{0.0f, 0.0f, 2.0f, 2.0f};
+
+			auto yValOptional = line.getYAtX(1.0f);
+			REQUIRE(yValOptional.has_value());
+			auto yVal = yValOptional.value();
+			helpers::checkValues(yVal, 1.0f);
+
+			yValOptional = line.getYAtX(-1.0f);
+			REQUIRE(!yValOptional.has_value());
+
+			yValOptional = line.getYAtX(4.0f);
+			REQUIRE(!yValOptional.has_value());
+		}
+		SECTION("-45 Degree Line") {
+			slm::Line2f line{2.0f, 2.0f, 0.0f, 0.0f};
+
+			auto yValOptional = line.getYAtX(1.0f);
+			REQUIRE(yValOptional.has_value());
+			auto yVal = yValOptional.value();
+			helpers::checkValues(yVal, 1.0f);
+
+			yValOptional = line.getYAtX(-1.0f);
+			REQUIRE(!yValOptional.has_value());
+
+			yValOptional = line.getYAtX(4.0f);
+			REQUIRE(!yValOptional.has_value());
+		}
+	}
+	SECTION("std::optional<float> getXAtY(const float verticalValue) const") {
+		SECTION("Horizontal Line") {
+			slm::Line2f line{0.0f, 0.0f, 2.0f, 0.0f};
+
+			auto xValOptional = line.getXAtY(1.0f);
+			REQUIRE(!xValOptional.has_value());
+
+			xValOptional = line.getXAtY(-1.0f);
+			REQUIRE(!xValOptional.has_value());
+
+			xValOptional = line.getXAtY(4.0f);
+			REQUIRE(!xValOptional.has_value());
+		}
+		SECTION("Vertical Line") {
+			slm::Line2f line{0.0f, 0.0f, 0.0f, 2.0f};
+
+			auto xValOptional = line.getXAtY(1.0f);
+			REQUIRE(xValOptional.has_value());
+			auto xVal = xValOptional.value();
+			helpers::checkValues(xVal, 0.0f);
+
+			xValOptional = line.getXAtY(-1.0f);
+			REQUIRE(!xValOptional.has_value());
+
+			xValOptional = line.getXAtY(4.0f);
+			REQUIRE(!xValOptional.has_value());
+		}
+		SECTION("45 Degree Line") {
+			slm::Line2f line{0.0f, 0.0f, 2.0f, 2.0f};
+
+			auto xValOptional = line.getXAtY(1.0f);
+			REQUIRE(xValOptional.has_value());
+			auto xVal = xValOptional.value();
+			helpers::checkValues(xVal, 1.0f);
+
+			xValOptional = line.getXAtY(-1.0f);
+			REQUIRE(!xValOptional.has_value());
+
+			xValOptional = line.getXAtY(4.0f);
+			REQUIRE(!xValOptional.has_value());
+		}
+		SECTION("-45 Degree Line") {
+			slm::Line2f line{2.0f, 2.0f, 0.0f, 0.0f};
+
+			auto xValOptional = line.getXAtY(1.0f);
+			REQUIRE(xValOptional.has_value());
+			auto xVal = xValOptional.value();
+			helpers::checkValues(xVal, 1.0f);
+
+			xValOptional = line.getXAtY(-1.0f);
+			REQUIRE(!xValOptional.has_value());
+
+			xValOptional = line.getXAtY(4.0f);
+			REQUIRE(!xValOptional.has_value());
+		}
+	}
 	SECTION("const Vec2f& operator[](const std::size_t idx) const") {
 		slm::Line2f test{1.0f, 2.0f, 3.0f, 4.0f};
 
@@ -369,8 +511,76 @@ TEST_CASE("AxisAlignedBox2u") {
 
 		helpers::checkValues(test, 1u, 8u, 3u, 16u);
 	}
-	SECTION("void clip() override") {
-		// TODO: Clipping
+	SECTION("ClippingStatus clip(const AxisAlignedBox2u& clippingBox)") {
+		const slm::AxisAlignedBox2u clippingBox{1u, 1u, 3u, 3u};
+
+		SECTION("Inside Line") {
+			slm::Line2f test{1.5f, 1.5f, 2.5f, 2.5f};
+
+			CHECK(test.clip(clippingBox) == slm::ClippingStatus::Inside);
+		}
+		SECTION("Horizontal Line Above") {
+			slm::Line2f test{0.0f, 4.0f, 4.0f, 4.0f};
+
+			CHECK(test.clip(clippingBox) == slm::ClippingStatus::Outside);
+		}
+		SECTION("Horizontal Line Below") {
+			slm::Line2f test{0.0f, 0.0f, 4.0f, 0.0f};
+
+			CHECK(test.clip(clippingBox) == slm::ClippingStatus::Outside);
+		}
+		SECTION("Vertical Line Left") {
+			slm::Line2f test{0.0f, 0.0f, 0.0f, 4.0f};
+
+			CHECK(test.clip(clippingBox) == slm::ClippingStatus::Outside);
+		}
+		SECTION("Vertical Line Right") {
+			slm::Line2f test{4.0f, 0.0f, 4.0f, 4.0f};
+
+			CHECK(test.clip(clippingBox) == slm::ClippingStatus::Outside);
+		}
+		SECTION("Horizontal Line Intersection") {
+			slm::Line2f test{0.0f, 2.0f, 4.0f, 2.0f};
+
+			CHECK(test.clip(clippingBox) == slm::ClippingStatus::Modified);
+			helpers::checkValues(test.getStart(), 1.0f, 2.0f);
+			helpers::checkValues(test.getEnd(), 3.0f, 2.0f);
+		}
+		SECTION("Vertical Line Intersecting") {
+			slm::Line2f test{2.0f, 0.0f, 2.0f, 4.0f};
+
+			CHECK(test.clip(clippingBox) == slm::ClippingStatus::Modified);
+			helpers::checkValues(test.getStart(), 2.0f, 1.0f);
+			helpers::checkValues(test.getEnd(), 2.0f, 3.0f);
+		}
+		SECTION("Longest Diagonal Line 45 Degrees") {
+			slm::Line2f test{0.0f, 0.0f, 4.0f, 4.0f};
+
+			CHECK(test.clip(clippingBox) == slm::ClippingStatus::Modified);
+			helpers::checkValues(test.getStart(), 1.0f, 1.0f);
+			helpers::checkValues(test.getEnd(), 3.0f, 3.0f);
+		}
+		SECTION("Longest Diagonal Line -45 Degrees") {
+			slm::Line2f test{0.0f, 4.0f, 4.0f, 0.0f};
+
+			CHECK(test.clip(clippingBox) == slm::ClippingStatus::Modified);
+			helpers::checkValues(test.getStart(), 1.0f, 3.0f);
+			helpers::checkValues(test.getEnd(), 3.0f, 1.0f);
+		}
+		SECTION("Short Diagonal Line 45 Degrees") {
+			slm::Line2f test{0.0f, 1.0f, 4.0f, 5.0f};
+
+			CHECK(test.clip(clippingBox) == slm::ClippingStatus::Modified);
+			helpers::checkValues(test.getStart(), 1.0f, 2.0f);
+			helpers::checkValues(test.getEnd(), 2.0f, 3.0f);
+		}
+		SECTION("Short Diagonal Line -45 Degrees") {
+			slm::Line2f test{0.0f, 5.0f, 4.0f, 1.0f};
+
+			CHECK(test.clip(clippingBox) == slm::ClippingStatus::Modified);
+			helpers::checkValues(test.getStart(), 2.0f, 3.0f);
+			helpers::checkValues(test.getEnd(), 3.0f, 2.0f);
+		}
 	}
 	SECTION("const Vec2u& operator[](const std::size_t idx) const") {
 		slm::AxisAlignedBox2u test{1u, 2u, 3u, 4u};

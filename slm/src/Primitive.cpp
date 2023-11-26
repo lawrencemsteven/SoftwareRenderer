@@ -62,18 +62,46 @@ namespace slm {
 	}
 
 	ClippingStatus Line2f::clip(const AxisAlignedBox2u& clippingBox) {
-		const auto point1Status = m_points[0].insideBox(clippingBox);
-		const auto point2Status = m_points[1].insideBox(clippingBox);
+		std::array<slm::BitLocation, 2> pointBitLocations{m_points[0].insideBox(clippingBox),
+																m_points[1].insideBox(clippingBox)};
 
-		/*if (point1Status.inside() && point2Status.inside()) {
+		// Both Inside
+		if (pointBitLocations[0].getInside() && pointBitLocations[1].getInside()) {
 			return ClippingStatus::Inside;
 		}
 
-		if (point1Status.outside() && point2Status.outside()) {
+		// Outside on same side (0b1010 & 0b1001 = 0b1000 => Fully above)
+		if (pointBitLocations[0].getLocation() & pointBitLocations[1].getLocation()) {
 			return ClippingStatus::Outside;
-		}*/
+		}
 
-		return ClippingStatus::Outside;
+		// Move points until inside or invalid
+		for (std::size_t i = 0; i < pointBitLocations.size(); i++) {
+			std::optional<slm::Vec2f> newPointOptional{};
+			bool successfulMove = true;
+
+			if (pointBitLocations[i].getAbove()) {
+				successfulMove = movePointVertically(i, clippingBox.getTop());
+			}
+			else if (pointBitLocations[i].getBelow()) {
+				successfulMove = movePointVertically(i, clippingBox.getBottom());
+			}
+
+			pointBitLocations[i] = m_points[i].insideBox(clippingBox);
+
+			if (pointBitLocations[i].getLeft()) {
+				successfulMove = successfulMove && movePointHorizontally(i, clippingBox.getLeft());
+			}
+			else if (pointBitLocations[i].getRight()) {
+				successfulMove = successfulMove && movePointHorizontally(i, clippingBox.getRight());
+			}
+
+			if (!successfulMove) {
+				return ClippingStatus::Outside;
+			}
+		}
+
+		return ClippingStatus::Modified;
 	}
 
 	float Line2f::getXMin() const {
@@ -131,6 +159,65 @@ namespace slm {
 		return std::nullopt;
 	}
 
+	std::optional<float> Line2f::getYAtX(const float horizontalValue) const {
+		const auto x1 = m_points[0][0];
+		const auto x2 = m_points[1][0];
+		const auto y1 = m_points[0][1];
+		const auto y2 = m_points[1][1];
+		const auto dy = y2 - y1;
+		const auto dx = x2 - x1;
+
+		// Outside of line segment
+		if ((horizontalValue < x1 && horizontalValue < x2) ||
+			(horizontalValue > x1 && horizontalValue > x2)) {
+			return std::nullopt;
+		}
+
+		// Vertical Line
+		if (dx == 0.0f) {
+			return std::nullopt;
+		}
+
+		const auto outY = (dy / dx) * (horizontalValue - x1) + y1;
+
+		// Outside of line segment
+		if ((outY < y1 && outY < y2) || (outY > y1 && outY > y2)) {
+			return std::nullopt;
+		}
+
+		return outY;
+	}
+
+	std::optional<float> Line2f::getXAtY(const float verticalValue) const {
+
+		const auto x1 = m_points[0][0];
+		const auto x2 = m_points[1][0];
+		const auto y1 = m_points[0][1];
+		const auto y2 = m_points[1][1];
+		const auto dy = y2 - y1;
+		const auto dx = x2 - x1;
+
+		// Outside of line segment
+		if ((verticalValue < y1 && verticalValue < y2) ||
+			(verticalValue > y1 && verticalValue > y2)) {
+			return std::nullopt;
+		}
+
+		// Horizontal Line
+		if (dy == 0.0f) {
+			return std::nullopt;
+		}
+
+		const auto outX = (dx / dy) * (verticalValue - y1) + x1;
+
+		// Outside of line segment
+		if ((outX < x1 && outX < x2) || (outX > x1 && outX > x2)) {
+			return std::nullopt;
+		}
+
+		return outX;
+	}
+
 	const Vec2f& Line2f::operator[](const std::size_t idx) const {
 		return m_points[idx];
 	}
@@ -141,6 +228,36 @@ namespace slm {
 
 	bool Line2f::operator!=(const Line2f& other) const {
 		return !(*this == other);
+	}
+
+	bool Line2f::movePointVertically(const std::size_t pointIdx, const float yVal) {
+		const auto xValOptional = getXAtY(yVal);
+
+		if (!xValOptional.has_value()) {
+			return false;
+		}
+
+		const auto xVal = xValOptional.value();
+
+		m_points[pointIdx].x(xVal);
+		m_points[pointIdx].y(yVal);
+
+		return true;
+	}
+
+	bool Line2f::movePointHorizontally(const std::size_t pointIdx, const float xVal) {
+		const auto yValOptional = getYAtX(xVal);
+
+		if (!yValOptional.has_value()) {
+			return false;
+		}
+
+		const auto yVal = yValOptional.value();
+
+		m_points[pointIdx].x(xVal);
+		m_points[pointIdx].y(yVal);
+
+		return true;
 	}
 
 
