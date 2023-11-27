@@ -91,8 +91,77 @@ TEST_CASE("Line2f") {
 
 		helpers::checkValues(test, 1.0f, 4.0f, 3.0f, 8.0f);
 	}
-	SECTION("void clip() override") {
-		// TODO: CLIPPING
+
+	SECTION("ClippingStatus clip(const AxisAlignedBox2u& clippingBox)") {
+		const slm::AxisAlignedBox2u clippingBox{1u, 1u, 3u, 3u};
+
+		SECTION("Inside Line") {
+			slm::Line2f test{1.5f, 1.5f, 2.5f, 2.5f};
+
+			CHECK(test.clip(clippingBox) == slm::ClippingStatus::Inside);
+		}
+		SECTION("Horizontal Line Above") {
+			slm::Line2f test{0.0f, 4.0f, 4.0f, 4.0f};
+
+			CHECK(test.clip(clippingBox) == slm::ClippingStatus::Outside);
+		}
+		SECTION("Horizontal Line Below") {
+			slm::Line2f test{0.0f, 0.0f, 4.0f, 0.0f};
+
+			CHECK(test.clip(clippingBox) == slm::ClippingStatus::Outside);
+		}
+		SECTION("Vertical Line Left") {
+			slm::Line2f test{0.0f, 0.0f, 0.0f, 4.0f};
+
+			CHECK(test.clip(clippingBox) == slm::ClippingStatus::Outside);
+		}
+		SECTION("Vertical Line Right") {
+			slm::Line2f test{4.0f, 0.0f, 4.0f, 4.0f};
+
+			CHECK(test.clip(clippingBox) == slm::ClippingStatus::Outside);
+		}
+		SECTION("Horizontal Line Intersection") {
+			slm::Line2f test{0.0f, 2.0f, 4.0f, 2.0f};
+
+			CHECK(test.clip(clippingBox) == slm::ClippingStatus::Modified);
+			helpers::checkValues(test.getStart(), 1.0f, 2.0f);
+			helpers::checkValues(test.getEnd(), 3.0f, 2.0f);
+		}
+		SECTION("Vertical Line Intersecting") {
+			slm::Line2f test{2.0f, 0.0f, 2.0f, 4.0f};
+
+			CHECK(test.clip(clippingBox) == slm::ClippingStatus::Modified);
+			helpers::checkValues(test.getStart(), 2.0f, 1.0f);
+			helpers::checkValues(test.getEnd(), 2.0f, 3.0f);
+		}
+		SECTION("Longest Diagonal Line 45 Degrees") {
+			slm::Line2f test{0.0f, 0.0f, 4.0f, 4.0f};
+
+			CHECK(test.clip(clippingBox) == slm::ClippingStatus::Modified);
+			helpers::checkValues(test.getStart(), 1.0f, 1.0f);
+			helpers::checkValues(test.getEnd(), 3.0f, 3.0f);
+		}
+		SECTION("Longest Diagonal Line -45 Degrees") {
+			slm::Line2f test{0.0f, 4.0f, 4.0f, 0.0f};
+
+			CHECK(test.clip(clippingBox) == slm::ClippingStatus::Modified);
+			helpers::checkValues(test.getStart(), 1.0f, 3.0f);
+			helpers::checkValues(test.getEnd(), 3.0f, 1.0f);
+		}
+		SECTION("Short Diagonal Line 45 Degrees") {
+			slm::Line2f test{0.0f, 1.0f, 4.0f, 5.0f};
+
+			CHECK(test.clip(clippingBox) == slm::ClippingStatus::Modified);
+			helpers::checkValues(test.getStart(), 1.0f, 2.0f);
+			helpers::checkValues(test.getEnd(), 2.0f, 3.0f);
+		}
+		SECTION("Short Diagonal Line -45 Degrees") {
+			slm::Line2f test{0.0f, 5.0f, 4.0f, 1.0f};
+
+			CHECK(test.clip(clippingBox) == slm::ClippingStatus::Modified);
+			helpers::checkValues(test.getStart(), 2.0f, 3.0f);
+			helpers::checkValues(test.getEnd(), 3.0f, 2.0f);
+		}
 	}
 	SECTION("float getXMin() const") {
 		{
@@ -510,77 +579,6 @@ TEST_CASE("AxisAlignedBox2u") {
 		test.scaleY(4.0f);
 
 		helpers::checkValues(test, 1u, 8u, 3u, 16u);
-	}
-	SECTION("ClippingStatus clip(const AxisAlignedBox2u& clippingBox)") {
-		const slm::AxisAlignedBox2u clippingBox{1u, 1u, 3u, 3u};
-
-		SECTION("Inside Line") {
-			slm::Line2f test{1.5f, 1.5f, 2.5f, 2.5f};
-
-			CHECK(test.clip(clippingBox) == slm::ClippingStatus::Inside);
-		}
-		SECTION("Horizontal Line Above") {
-			slm::Line2f test{0.0f, 4.0f, 4.0f, 4.0f};
-
-			CHECK(test.clip(clippingBox) == slm::ClippingStatus::Outside);
-		}
-		SECTION("Horizontal Line Below") {
-			slm::Line2f test{0.0f, 0.0f, 4.0f, 0.0f};
-
-			CHECK(test.clip(clippingBox) == slm::ClippingStatus::Outside);
-		}
-		SECTION("Vertical Line Left") {
-			slm::Line2f test{0.0f, 0.0f, 0.0f, 4.0f};
-
-			CHECK(test.clip(clippingBox) == slm::ClippingStatus::Outside);
-		}
-		SECTION("Vertical Line Right") {
-			slm::Line2f test{4.0f, 0.0f, 4.0f, 4.0f};
-
-			CHECK(test.clip(clippingBox) == slm::ClippingStatus::Outside);
-		}
-		SECTION("Horizontal Line Intersection") {
-			slm::Line2f test{0.0f, 2.0f, 4.0f, 2.0f};
-
-			CHECK(test.clip(clippingBox) == slm::ClippingStatus::Modified);
-			helpers::checkValues(test.getStart(), 1.0f, 2.0f);
-			helpers::checkValues(test.getEnd(), 3.0f, 2.0f);
-		}
-		SECTION("Vertical Line Intersecting") {
-			slm::Line2f test{2.0f, 0.0f, 2.0f, 4.0f};
-
-			CHECK(test.clip(clippingBox) == slm::ClippingStatus::Modified);
-			helpers::checkValues(test.getStart(), 2.0f, 1.0f);
-			helpers::checkValues(test.getEnd(), 2.0f, 3.0f);
-		}
-		SECTION("Longest Diagonal Line 45 Degrees") {
-			slm::Line2f test{0.0f, 0.0f, 4.0f, 4.0f};
-
-			CHECK(test.clip(clippingBox) == slm::ClippingStatus::Modified);
-			helpers::checkValues(test.getStart(), 1.0f, 1.0f);
-			helpers::checkValues(test.getEnd(), 3.0f, 3.0f);
-		}
-		SECTION("Longest Diagonal Line -45 Degrees") {
-			slm::Line2f test{0.0f, 4.0f, 4.0f, 0.0f};
-
-			CHECK(test.clip(clippingBox) == slm::ClippingStatus::Modified);
-			helpers::checkValues(test.getStart(), 1.0f, 3.0f);
-			helpers::checkValues(test.getEnd(), 3.0f, 1.0f);
-		}
-		SECTION("Short Diagonal Line 45 Degrees") {
-			slm::Line2f test{0.0f, 1.0f, 4.0f, 5.0f};
-
-			CHECK(test.clip(clippingBox) == slm::ClippingStatus::Modified);
-			helpers::checkValues(test.getStart(), 1.0f, 2.0f);
-			helpers::checkValues(test.getEnd(), 2.0f, 3.0f);
-		}
-		SECTION("Short Diagonal Line -45 Degrees") {
-			slm::Line2f test{0.0f, 5.0f, 4.0f, 1.0f};
-
-			CHECK(test.clip(clippingBox) == slm::ClippingStatus::Modified);
-			helpers::checkValues(test.getStart(), 2.0f, 3.0f);
-			helpers::checkValues(test.getEnd(), 3.0f, 2.0f);
-		}
 	}
 	SECTION("const Vec2u& operator[](const std::size_t idx) const") {
 		slm::AxisAlignedBox2u test{1u, 2u, 3u, 4u};
