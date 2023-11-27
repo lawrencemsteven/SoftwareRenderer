@@ -29,6 +29,8 @@ namespace slm {
 		virtual void scaleX(const float factor) = 0;
 		virtual void scaleY(const float factor) = 0;
 
+		virtual void printPostscript() const = 0;
+
 		virtual ClippingStatus clip(const AxisAlignedBox2u& clippingBox) = 0;
 
 		virtual const Vec2f& operator[](const std::size_t idx) const = 0;
@@ -60,6 +62,8 @@ namespace slm {
 		void scaleY(const float factor) override;
 
 		ClippingStatus clip(const AxisAlignedBox2u& clippingBox) override;
+
+		void printPostscript() const;
 
 		float getXMin() const;
 		float getXMax() const;
@@ -158,6 +162,8 @@ namespace slm {
 
 		ClippingStatus clip(const AxisAlignedBox2u& clippingBox) override;
 
+		void printPostscript() const;
+
 		float getXMin() const;
 		float getXMax() const;
 		float getYMin() const;
@@ -197,6 +203,45 @@ namespace slm {
 		std::vector<slm::Vec3i> m_faces{};
 
 		bool notEnoughVertices(const slm::Vec3i& face);
+	};
+
+
+
+
+	////////////////
+	// ViewVolume //
+	////////////////
+
+	class ViewVolume {
+	public:
+		ViewVolume();
+
+		const slm::Vec3f& getProjectionReferencePoint() const;
+		const slm::Vec3f& getViewReferencePoint() const;
+		const slm::Vec3f& getViewPlaneNormal() const;
+		const slm::Vec3f& getViewUpVector() const;
+		float getVRCUMin() const;
+		float getVRCVMin() const;
+		float getVRCUMax() const;
+		float getVRCVMax() const;
+		bool getParallelProjection() const;
+
+		void setProjectionReferencePoint(slm::Vec3f projectionReferencePoint);
+		void setViewReferencePoint(slm::Vec3f viewReferencePoint);
+		void setViewPlaneNormal(slm::Vec3f viewPlaneNormal);
+		void setViewUpVector(slm::Vec3f viewUpVector);
+		void setVRCMinMaxUV(const float uMin, const float vMin, const float uMax, const float vMax);
+		void setParallelProjection(const bool parallel);
+	protected:
+		slm::Vec3f m_projectionReferencePoint{0.0f, 0.0f, 1.0f};
+		slm::Vec3f m_viewReferencePoint{0.0f, 0.0f, 0.0f};
+		slm::Vec3f m_viewPlaneNormal{0.0f, 0.0f, -1.0f};
+		slm::Vec3f m_viewUpVector{0.0f, 1.0f, 0.0f};
+		float m_uMin{-0.7f};
+		float m_vMin{-0.7f};
+		float m_uMax{0.7f};
+		float m_vMax{0.7f};
+		bool m_parallelProjection{false};
 	};
 
 

@@ -908,6 +908,28 @@ TEST_CASE("Polygon2f") {
 			helpers::checkValues(test.getPoint(2), 2.5f, 2.5f);
 			helpers::checkValues(test.getPoint(3), 1.5f, 2.5f);
 		}
+		SECTION("Outside On All Sides") {
+			slm::Polygon2f test{};
+
+			test.addPoint({2.0f, 0.5f});
+			test.addPoint({0.5f, 2.0f});
+			test.addPoint({2.0f, 3.5f});
+			test.addPoint({3.5f, 2.0f});
+
+			const auto clipStatus = test.clip(clippingBox);
+
+			CHECK(clipStatus == slm::ClippingStatus::Modified);
+
+			helpers::checkValues(test.getSize(), 8);
+			helpers::checkValues(test.getPoint(0), 3.0f, 1.5f);
+			helpers::checkValues(test.getPoint(1), 2.5f, 1.0f);
+			helpers::checkValues(test.getPoint(2), 1.5f, 1.0f);
+			helpers::checkValues(test.getPoint(3), 1.0f, 1.5f);
+			helpers::checkValues(test.getPoint(4), 1.0f, 2.5f);
+			helpers::checkValues(test.getPoint(5), 1.5f, 3.0f);
+			helpers::checkValues(test.getPoint(6), 2.5f, 3.0f);
+			helpers::checkValues(test.getPoint(7), 3.0f, 2.5f);
+		}
 		SECTION("Surrounding Box") {
 			slm::Polygon2f test{};
 
@@ -1365,6 +1387,112 @@ TEST_CASE("SMFModel") {
 
 			helpers::checkValues(test.getFaceCount(), 0);
 		}
+	}
+}
+
+
+
+
+////////////////
+// ViewVolume //
+////////////////
+
+TEST_CASE("ViewVolume") {
+	SECTION("ViewVolume()") {
+		slm::ViewVolume test{};
+
+		CHECK(true);
+	}
+	SECTION("const slm::Vec3f& getProjectionReferencePoint() const") {
+		slm::ViewVolume test{};
+
+		helpers::checkValues(test.getProjectionReferencePoint(), 0.0f, 0.0f, 1.0f);
+	}
+	SECTION("const slm::Vec3f& getViewReferencePoint() const") {
+		slm::ViewVolume test{};
+
+		helpers::checkValues(test.getViewReferencePoint(), 0.0f, 0.0f, 0.0f);
+	}
+	SECTION("const slm::Vec3f& getViewPlaneNormal() const") {
+		slm::ViewVolume test{};
+
+		helpers::checkValues(test.getViewPlaneNormal(), 0.0f, 0.0f, -1.0f);
+	}
+	SECTION("const slm::Vec3f& getViewUpVector() const") {
+		slm::ViewVolume test{};
+
+		helpers::checkValues(test.getViewUpVector(), 0.0f, 1.0f, 0.0f);
+	}
+	SECTION("float getVRCUMin() const") {
+		slm::ViewVolume test{};
+
+		helpers::checkValues(test.getVRCUMin(), -0.7f);
+	}
+	SECTION("float getVRCVMin() const") {
+		slm::ViewVolume test{};
+
+		helpers::checkValues(test.getVRCVMin(), -0.7f);
+	}
+	SECTION("float getVRCUMax() const") {
+		slm::ViewVolume test{};
+
+		helpers::checkValues(test.getVRCUMax(), 0.7f);
+	}
+	SECTION("float getVRCVMax() const") {
+		slm::ViewVolume test{};
+
+		helpers::checkValues(test.getVRCVMax(), 0.7f);
+	}
+	SECTION("bool getParallelProjection() const") {
+		slm::ViewVolume test{};
+
+		helpers::checkValues(test.getParallelProjection(), false);
+	}
+	SECTION("void setProjectionReferencePoint(slm::Vec3f projectionReferencePoint)") {
+		slm::ViewVolume test{};
+
+		test.setProjectionReferencePoint({1.0f, 2.0f, 3.0f});
+
+		helpers::checkValues(test.getProjectionReferencePoint(), 1.0f, 2.0f, 3.0f);
+	}
+	SECTION("void setViewReferencePoint(slm::Vec3f viewReferencePoint)") {
+		slm::ViewVolume test{};
+
+		test.setViewReferencePoint({1.0f, 2.0f, 3.0f});
+
+		helpers::checkValues(test.getViewReferencePoint(), 1.0f, 2.0f, 3.0f);
+	}
+	SECTION("void setViewPlaneNormal(slm::Vec3f viewPlaneNormal)") {
+		slm::ViewVolume test{};
+
+		test.setViewPlaneNormal({1.0f, 2.0f, 3.0f});
+
+		helpers::checkValues(test.getViewPlaneNormal(), 1.0f, 2.0f, 3.0f);
+	}
+	SECTION("void setViewUpVector(slm::Vec3f viewUpVector)") {
+		slm::ViewVolume test{};
+
+		test.setViewUpVector({1.0f, 2.0f, 3.0f});
+
+		helpers::checkValues(test.getViewUpVector(), 1.0f, 2.0f, 3.0f);
+	}
+	SECTION("void setVRCMinMaxUV(const float uMin, const float vMin, const float uMax, const float "
+			"vMax)") {
+		slm::ViewVolume test{};
+
+		test.setVRCMinMaxUV(1.0f, 2.0f, 3.0f, 4.0f);
+
+		helpers::checkValues(test.getVRCUMin(), 1.0f);
+		helpers::checkValues(test.getVRCVMin(), 2.0f);
+		helpers::checkValues(test.getVRCUMax(), 3.0f);
+		helpers::checkValues(test.getVRCVMax(), 4.0f);
+	}
+	SECTION("void setParallelProjection(const bool parallel)") {
+		slm::ViewVolume test{};
+
+		test.setParallelProjection(true);
+
+		helpers::checkValues(test.getParallelProjection(), true);
 	}
 }
 

@@ -531,7 +531,11 @@ namespace slm {
 				const slm::Vec2f currentPoint		   = inputPoints[j];
 				const slm::BitLocation currentPointLoc = currentPoint.insideBox(clippingBox);
 
-				const slm::Vec2f prevPoint			= inputPoints[(j - 1) % inputPoints.size()];
+				std::size_t prevPointIndex = j - 1;
+				if (j == 0) {
+					prevPointIndex = inputPoints.size() - 1;
+				}
+				const slm::Vec2f prevPoint			= inputPoints[prevPointIndex];
 				const slm::BitLocation prevPointLoc = prevPoint.insideBox(clippingBox);
 
 				const slm::Line2f line{prevPoint, currentPoint};
@@ -651,7 +655,7 @@ namespace slm {
 		}
 
 		// Check Forward Direction
-		bool allPointsMatch = true;
+		bool allPointsMatch				 = true;
 		auto otherStartingPointIndexCopy = otherStartingPointIndex;
 		for (std::size_t i = 1; i < getSize(); i++) {
 			otherStartingPointIndexCopy = (otherStartingPointIndexCopy + 1) % other.getSize();
@@ -744,6 +748,79 @@ namespace slm {
 
 
 
+	////////////////
+	// ViewVolume //
+	////////////////
+
+	ViewVolume::ViewVolume() {}
+
+	const slm::Vec3f& ViewVolume::getProjectionReferencePoint() const {
+		return m_projectionReferencePoint;
+	}
+
+	const slm::Vec3f& ViewVolume::getViewReferencePoint() const {
+		return m_viewReferencePoint;
+	}
+
+	const slm::Vec3f& ViewVolume::getViewPlaneNormal() const {
+		return m_viewPlaneNormal;
+	}
+
+	const slm::Vec3f& ViewVolume::getViewUpVector() const {
+		return m_viewUpVector;
+	}
+
+	float ViewVolume::getVRCUMin() const {
+		return m_uMin;
+	}
+
+	float ViewVolume::getVRCVMin() const {
+		return m_vMin;
+	}
+
+	float ViewVolume::getVRCUMax() const {
+		return m_uMax;
+	}
+
+	float ViewVolume::getVRCVMax() const {
+		return m_vMax;
+	}
+
+	bool ViewVolume::getParallelProjection() const {
+		return m_parallelProjection;
+	}
+
+	void ViewVolume::setProjectionReferencePoint(slm::Vec3f projectionReferencePoint) {
+		m_projectionReferencePoint = std::move(projectionReferencePoint);
+	}
+
+	void ViewVolume::setViewReferencePoint(slm::Vec3f viewReferencePoint) {
+		m_viewReferencePoint = std::move(viewReferencePoint);
+	}
+
+	void ViewVolume::setViewPlaneNormal(slm::Vec3f viewPlaneNormal) {
+		m_viewPlaneNormal = std::move(viewPlaneNormal);
+	}
+
+	void ViewVolume::setViewUpVector(slm::Vec3f viewUpVector) {
+		m_viewUpVector = std::move(viewUpVector);
+	}
+
+	void ViewVolume::setVRCMinMaxUV(const float uMin, const float vMin, const float uMax,
+									const float vMax) {
+		m_uMin = uMin;
+		m_vMin = vMin;
+		m_uMax = uMax;
+		m_vMax = vMax;
+	}
+
+	void ViewVolume::setParallelProjection(const bool parallel) {
+		m_parallelProjection = parallel;
+	}
+
+
+
+
 	///////////
 	// Scene //
 	///////////
@@ -802,5 +879,4 @@ namespace slm {
 			}
 		}
 	}
-
 }
