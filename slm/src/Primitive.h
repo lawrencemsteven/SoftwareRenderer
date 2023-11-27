@@ -126,12 +126,38 @@ namespace slm {
 
 
 	///////////////
-	// Polygon2D //
+	// Polygon2f //
 	///////////////
 
 	class Polygon2f : public Primitive2 {
 	public:
+		Polygon2f();
+
+		void addPoint(Vec2f point);
+		void setPoint(std::size_t idx, slm::Vec2f point);
+		const Vec2f& getPoint(std::size_t idx) const;
+
+		std::size_t getSize() const;
+		const std::vector<slm::Vec2f>& getPoints() const;
+
+		void translate(const Vec2& amount);
+		void rotate(const int32_t degreesCounterClockwise);
+		void scale(const float factor);
+		void scaleX(const float factor);
+		void scaleY(const float factor);
+
+		ClippingStatus clip(const AxisAlignedBox2u& clippingBox);
+
+		float getXMin() const;
+		float getXMax() const;
+		float getYMin() const;
+		float getYMax() const;
+
+		const Vec2f& operator[](const std::size_t idx) const;
+		bool operator==(const Polygon2f& other) const;
+		bool operator!=(const Polygon2f& other) const;
 	protected:
+		std::vector<slm::Vec2f> m_points{};
 	};
 
 

@@ -618,6 +618,359 @@ TEST_CASE("AxisAlignedBox2u") {
 
 
 
+///////////////
+// Polygon2f //
+///////////////
+
+TEST_CASE("Polygon2f") {
+	SECTION("Polygon2f()") {
+		slm::Polygon2f test{};
+
+		helpers::checkValues(test.getSize(), 0);
+	}
+	SECTION("void addPoint(Vec2f point)") {
+		slm::Polygon2f test{};
+
+		test.addPoint({0.0f, 1.0f});
+
+		helpers::checkValues(test.getSize(), 1);
+		helpers::checkValues(test.getPoint(0), 0.0f, 1.0f);
+
+		test.addPoint({2.0f, 3.0f});
+
+		helpers::checkValues(test.getSize(), 2);
+		helpers::checkValues(test.getPoint(1), 2.0f, 3.0f);
+
+		test.addPoint({4.0f, 5.0f});
+
+		helpers::checkValues(test.getSize(), 3);
+		helpers::checkValues(test.getPoint(2), 4.0f, 5.0f);
+	}
+	SECTION("void setPoint(std::size_t idx, slm::Vec2f point)") {
+		slm::Polygon2f test{};
+
+		test.addPoint({0.0f, 1.0f});
+		test.addPoint({2.0f, 3.0f});
+		test.addPoint({4.0f, 5.0f});
+
+		helpers::checkValues(test.getSize(), 3);
+		helpers::checkValues(test.getPoint(0), 0.0f, 1.0f);
+		helpers::checkValues(test.getPoint(1), 2.0f, 3.0f);
+		helpers::checkValues(test.getPoint(2), 4.0f, 5.0f);
+
+		test.setPoint(1, {6.0f, 7.0f});
+
+		helpers::checkValues(test.getSize(), 3);
+		helpers::checkValues(test.getPoint(0), 0.0f, 1.0f);
+		helpers::checkValues(test.getPoint(1), 6.0f, 7.0f);
+		helpers::checkValues(test.getPoint(2), 4.0f, 5.0f);
+	}
+	SECTION("const Vec2f& getPoint(std::size_t idx) const") {
+		slm::Polygon2f test{};
+
+		for (std::size_t i = 0; i < 10; i++) {
+			const auto pointVal = static_cast<float>(i);
+			test.addPoint({pointVal, pointVal});
+		}
+
+		for (std::size_t i = 0; i < 10; i++) {
+			const auto pointVal = static_cast<float>(i);
+			helpers::checkValues(test.getPoint(i), pointVal, pointVal);
+		}
+	}
+	SECTION("std::size_t getSize() const") {
+		slm::Polygon2f test{};
+
+		for (std::size_t i = 0; i < 10; i++) {
+			const auto pointVal = static_cast<float>(i);
+			test.addPoint({pointVal, pointVal});
+		}
+
+		helpers::checkValues(test.getSize(), 10);
+	}
+	SECTION("const std::vector<slm::Vec2f>& getPoints() const") {
+		slm::Polygon2f test{};
+
+		for (std::size_t i = 0; i < 10; i++) {
+			const auto pointVal = static_cast<float>(i);
+			test.addPoint({pointVal, pointVal});
+		}
+
+		const auto allPoints = test.getPoints();
+
+		for (std::size_t i = 0; i < 10; i++) {
+			const auto pointVal = static_cast<float>(i);
+			helpers::checkValues(allPoints[i], pointVal, pointVal);
+		}
+	}
+	SECTION("void translate(const Vec2& amount)") {
+		slm::Polygon2f test{};
+
+		test.addPoint({0.0f, 0.0f});
+		test.addPoint({2.0f, 0.0f});
+		test.addPoint({1.0f, 2.0f});
+
+		test.translate(slm::Vec2f{1.0f, 2.0f});
+
+		helpers::checkValues(test.getPoint(0), 1.0f, 2.0f);
+		helpers::checkValues(test.getPoint(1), 3.0f, 2.0f);
+		helpers::checkValues(test.getPoint(2), 2.0f, 4.0f);
+	}
+	SECTION("void rotate(const int32_t degreesCounterClockwise)") {
+		slm::Polygon2f test{};
+
+		test.addPoint({0.0f, 0.0f});
+		test.addPoint({2.0f, 0.0f});
+		test.addPoint({2.0f, 2.0f});
+		test.addPoint({0.0f, 2.0f});
+
+		test.rotate(90);
+
+		helpers::checkValues(test.getPoint(0), 0.0f, 0.0f);
+		helpers::checkValues(test.getPoint(1), 0.0f, 2.0f);
+		helpers::checkValues(test.getPoint(2), -2.0f, 2.0f);
+		helpers::checkValues(test.getPoint(3), -2.0f, 0.0f);
+	}
+	SECTION("void scale(const float factor)") {
+		slm::Polygon2f test{};
+
+		test.addPoint({0.0f, 0.0f});
+		test.addPoint({2.0f, 0.0f});
+		test.addPoint({2.0f, 2.0f});
+		test.addPoint({0.0f, 2.0f});
+
+		test.scale(2.0f);
+
+		helpers::checkValues(test.getPoint(0), 0.0f, 0.0f);
+		helpers::checkValues(test.getPoint(1), 4.0f, 0.0f);
+		helpers::checkValues(test.getPoint(2), 4.0f, 4.0f);
+		helpers::checkValues(test.getPoint(3), 0.0f, 4.0f);
+	}
+	SECTION("void scaleX(const float factor)") {
+		slm::Polygon2f test{};
+
+		test.addPoint({0.0f, 0.0f});
+		test.addPoint({2.0f, 0.0f});
+		test.addPoint({2.0f, 2.0f});
+		test.addPoint({0.0f, 2.0f});
+
+		test.scaleX(2.0f);
+
+		helpers::checkValues(test.getPoint(0), 0.0f, 0.0f);
+		helpers::checkValues(test.getPoint(1), 4.0f, 0.0f);
+		helpers::checkValues(test.getPoint(2), 4.0f, 2.0f);
+		helpers::checkValues(test.getPoint(3), 0.0f, 2.0f);
+	}
+	SECTION("void scaleY(const float factor)") {
+		slm::Polygon2f test{};
+
+		test.addPoint({0.0f, 0.0f});
+		test.addPoint({2.0f, 0.0f});
+		test.addPoint({2.0f, 2.0f});
+		test.addPoint({0.0f, 2.0f});
+
+		test.scaleY(2.0f);
+
+		helpers::checkValues(test.getPoint(0), 0.0f, 0.0f);
+		helpers::checkValues(test.getPoint(1), 2.0f, 0.0f);
+		helpers::checkValues(test.getPoint(2), 2.0f, 4.0f);
+		helpers::checkValues(test.getPoint(3), 0.0f, 4.0f);
+	}
+	SECTION("ClippingStatus clip(const AxisAlignedBox2u& clippingBox)") {
+		// TODO
+	}
+	SECTION("float getXMin() const") {
+		slm::Polygon2f test{};
+
+		test.addPoint({-2.0f, 10.0f});
+		test.addPoint({-1.0f, -4.0f});
+		test.addPoint({-10.0f, 15.0f});
+		test.addPoint({5.0f, 2.0f});
+
+		helpers::checkValues(test.getXMin(), -10.0f);
+	}
+	SECTION("float getXMax() const") {
+		slm::Polygon2f test{};
+
+		test.addPoint({-2.0f, 10.0f});
+		test.addPoint({-1.0f, -4.0f});
+		test.addPoint({-10.0f, 15.0f});
+		test.addPoint({5.0f, 2.0f});
+
+		helpers::checkValues(test.getXMax(), 5.0f);
+	}
+	SECTION("float getYMin() const") {
+		slm::Polygon2f test{};
+
+		test.addPoint({-2.0f, 10.0f});
+		test.addPoint({-1.0f, -4.0f});
+		test.addPoint({-10.0f, 15.0f});
+		test.addPoint({5.0f, 2.0f});
+
+		helpers::checkValues(test.getYMin(), -4.0f);
+	}
+	SECTION("float getYMax() const") {
+		slm::Polygon2f test{};
+
+		test.addPoint({-2.0f, 10.0f});
+		test.addPoint({-1.0f, -4.0f});
+		test.addPoint({-10.0f, 15.0f});
+		test.addPoint({5.0f, 2.0f});
+
+		helpers::checkValues(test.getYMax(), 15.0f);
+	}
+	SECTION("const Vec2f& operator[](const std::size_t idx) const") {
+		slm::Polygon2f test{};
+
+		for (std::size_t i = 0; i < 10; i++) {
+			const auto pointVal = static_cast<float>(i);
+			test.addPoint({pointVal, pointVal});
+		}
+
+		for (std::size_t i = 0; i < 10; i++) {
+			const auto pointVal = static_cast<float>(i);
+			helpers::checkValues(test[i], pointVal, pointVal);
+		}
+	}
+	SECTION("bool operator==(const Polygon2f& other) const") {
+		SECTION("Empty") {
+			slm::Polygon2f test1{};
+			slm::Polygon2f test2{};
+
+			CHECK(test1 == test2);
+		}
+		SECTION("Different Size") {
+			slm::Polygon2f test1{};
+			slm::Polygon2f test2{};
+
+			for (std::size_t i = 0; i < 10; i++) {
+				const auto pointVal = static_cast<float>(i);
+				test1.addPoint({pointVal, pointVal});
+				test2.addPoint({pointVal, pointVal});
+			}
+
+			test2.addPoint({10.0f, 10.0f});
+
+			CHECK(!(test1 == test2));
+		}
+		SECTION("Different Values") {
+			slm::Polygon2f test1{};
+			slm::Polygon2f test2{};
+
+			for (std::size_t i = 0; i < 10; i++) {
+				const auto pointVal = static_cast<float>(i);
+				test1.addPoint({pointVal, pointVal});
+				test2.addPoint({pointVal + 1.0f, pointVal + 1.0f});
+			}
+
+			CHECK(!(test1 == test2));
+		}
+		SECTION("Many of the same") {
+			slm::Polygon2f test1{};
+			slm::Polygon2f test2{};
+
+			for (std::size_t i = 0; i < 10; i++) {
+				const auto pointVal = static_cast<float>(i);
+				test1.addPoint({pointVal, pointVal});
+				test2.addPoint({pointVal, pointVal});
+			}
+
+			CHECK(test1 == test2);
+		}
+		SECTION("Many of the same offset") {
+			slm::Polygon2f test1{};
+			slm::Polygon2f test2{};
+
+			for (std::size_t i = 0; i < 10; i++) {
+				const auto pointVal = static_cast<float>(i);
+				test1.addPoint({pointVal, pointVal});
+			}
+
+			for (std::size_t i = 7; i < 10; i++) {
+				const auto pointVal = static_cast<float>(i);
+				test2.addPoint({pointVal, pointVal});
+			}
+
+			for (std::size_t i = 0; i < 7; i++) {
+				const auto pointVal = static_cast<float>(i);
+				test2.addPoint({pointVal, pointVal});
+			}
+
+			CHECK(test1 == test2);
+		}
+	}
+	SECTION("bool operator!=(const Polygon2f& other) const") {
+		SECTION("Empty") {
+			slm::Polygon2f test1{};
+			slm::Polygon2f test2{};
+
+			CHECK(!(test1 != test2));
+		}
+		SECTION("Different Size") {
+			slm::Polygon2f test1{};
+			slm::Polygon2f test2{};
+
+			for (std::size_t i = 0; i < 10; i++) {
+				const auto pointVal = static_cast<float>(i);
+				test1.addPoint({pointVal, pointVal});
+				test2.addPoint({pointVal, pointVal});
+			}
+
+			test2.addPoint({10.0f, 10.0f});
+
+			CHECK(test1 != test2);
+		}
+		SECTION("Different Values") {
+			slm::Polygon2f test1{};
+			slm::Polygon2f test2{};
+
+			for (std::size_t i = 0; i < 10; i++) {
+				const auto pointVal = static_cast<float>(i);
+				test1.addPoint({pointVal, pointVal});
+				test2.addPoint({pointVal + 1.0f, pointVal + 1.0f});
+			}
+
+			CHECK(test1 != test2);
+		}
+		SECTION("Many of the same") {
+			slm::Polygon2f test1{};
+			slm::Polygon2f test2{};
+
+			for (std::size_t i = 0; i < 10; i++) {
+				const auto pointVal = static_cast<float>(i);
+				test1.addPoint({pointVal, pointVal});
+				test2.addPoint({pointVal, pointVal});
+			}
+
+			CHECK(!(test1 != test2));
+		}
+		SECTION("Many of the same offset") {
+			slm::Polygon2f test1{};
+			slm::Polygon2f test2{};
+
+			for (std::size_t i = 0; i < 10; i++) {
+				const auto pointVal = static_cast<float>(i);
+				test1.addPoint({pointVal, pointVal});
+			}
+
+			for (std::size_t i = 7; i < 10; i++) {
+				const auto pointVal = static_cast<float>(i);
+				test2.addPoint({pointVal, pointVal});
+			}
+
+			for (std::size_t i = 0; i < 7; i++) {
+				const auto pointVal = static_cast<float>(i);
+				test2.addPoint({pointVal, pointVal});
+			}
+
+			CHECK(!(test1 != test2));
+		}
+	}
+}
+
+
+
+
 //////////////
 // SMFModel //
 //////////////

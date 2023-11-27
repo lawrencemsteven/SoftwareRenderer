@@ -63,7 +63,7 @@ namespace slm {
 
 	ClippingStatus Line2f::clip(const AxisAlignedBox2u& clippingBox) {
 		std::array<slm::BitLocation, 2> pointBitLocations{m_points[0].insideBox(clippingBox),
-																m_points[1].insideBox(clippingBox)};
+														  m_points[1].insideBox(clippingBox)};
 
 		// Both Inside
 		if (pointBitLocations[0].getInside() && pointBitLocations[1].getInside()) {
@@ -425,6 +425,163 @@ namespace slm {
 		if (getBottom() > getTop()) {
 			m_points[1].y(getBottom());
 		}
+	}
+
+
+
+
+	///////////////
+	// Polygon2f //
+	///////////////
+
+	Polygon2f::Polygon2f() {}
+
+	void Polygon2f::addPoint(Vec2f point) {
+		m_points.push_back(std::move(point));
+	}
+
+	void Polygon2f::setPoint(std::size_t idx, slm::Vec2f point) {
+		m_points[idx] = std::move(point);
+	}
+
+	const Vec2f& Polygon2f::getPoint(std::size_t idx) const {
+		return m_points[idx];
+	}
+
+	std::size_t Polygon2f::getSize() const {
+		return m_points.size();
+	}
+
+	const std::vector<slm::Vec2f>& Polygon2f::getPoints() const {
+		return m_points;
+	}
+
+	void Polygon2f::translate(const Vec2& amount) {
+		for (auto& point : m_points) {
+			point.translate(amount);
+		}
+	}
+
+	void Polygon2f::rotate(const int32_t degreesCounterClockwise) {
+		for (auto& point : m_points) {
+			point.rotate(degreesCounterClockwise);
+		}
+	}
+
+	void Polygon2f::scale(const float factor) {
+		for (auto& point : m_points) {
+			point.scale(factor);
+		}
+	}
+
+	void Polygon2f::scaleX(const float factor) {
+		for (auto& point : m_points) {
+			point.scaleX(factor);
+		}
+	}
+
+	void Polygon2f::scaleY(const float factor) {
+		for (auto& point : m_points) {
+			point.scaleY(factor);
+		}
+	}
+
+	ClippingStatus Polygon2f::clip(const AxisAlignedBox2u& clippingBox) {
+		return ClippingStatus::Outside;
+	}
+
+	float Polygon2f::getXMin() const {
+		auto xMin = m_points[0].x();
+
+		for (const auto& point : m_points) {
+			if (point.x() < xMin) {
+				xMin = point.x();
+			}
+		}
+
+		return xMin;
+	}
+
+	float Polygon2f::getXMax() const {
+		auto xMax = m_points[0].x();
+
+		for (const auto& point : m_points) {
+			if (point.x() > xMax) {
+				xMax = point.x();
+			}
+		}
+
+		return xMax;
+	}
+
+	float Polygon2f::getYMin() const {
+		auto yMin = m_points[0].y();
+
+		for (const auto& point : m_points) {
+			if (point.y() < yMin) {
+				yMin = point.y();
+			}
+		}
+
+		return yMin;
+	}
+
+	float Polygon2f::getYMax() const {
+		auto yMax = m_points[0].y();
+
+		for (const auto& point : m_points) {
+			if (point.y() > yMax) {
+				yMax = point.y();
+			}
+		}
+
+		return yMax;
+	}
+
+	const Vec2f& Polygon2f::operator[](const std::size_t idx) const {
+		return getPoint(idx);
+	}
+
+	bool Polygon2f::operator==(const Polygon2f& other) const {
+		if (getSize() != other.getSize()) {
+			return false;
+		}
+
+		if (getSize() == 0) {
+			return true;
+		}
+
+		const auto& startingPoint			= getPoint(0);
+		bool pointFound						= false;
+		std::size_t otherStartingPointIndex = 0;
+
+		for (std::size_t i = 0; i < other.getSize(); i++) {
+			if (startingPoint == other.getPoint(i)) {
+				pointFound				= true;
+				otherStartingPointIndex = i;
+				break;
+			}
+		}
+
+		if (!pointFound) {
+			return false;
+		}
+
+		for (std::size_t i = 1; i < getSize(); i++) {
+			otherStartingPointIndex++;
+			if (otherStartingPointIndex >= other.getSize()) {
+				otherStartingPointIndex = 0;
+			}
+			if (getPoint(i) != other.getPoint(otherStartingPointIndex)) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	bool Polygon2f::operator!=(const Polygon2f& other) const {
+		return !(*this == other);
 	}
 
 
