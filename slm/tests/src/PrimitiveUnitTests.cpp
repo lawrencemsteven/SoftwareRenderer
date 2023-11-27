@@ -299,6 +299,33 @@ TEST_CASE("Line2f") {
 			helpers::checkValues(intersectionPoint, 1.0f, 1.0f);
 		}
 	}
+	SECTION("std::optional<slm::Vec2f> getHorizontalIntersectionPoint(const float yVal) "
+			"const") {
+		slm::Line2f test{0.0f, 1.0f, 2.0f, 3.0f};
+
+		auto intersectionPointOptional = test.getHorizontalIntersectionPoint(2.0f);
+		REQUIRE(intersectionPointOptional.has_value());
+		helpers::checkValues(intersectionPointOptional.value(), 1.0f, 2.0f);
+
+		intersectionPointOptional = test.getHorizontalIntersectionPoint(0.0f);
+		CHECK(!intersectionPointOptional.has_value());
+
+		intersectionPointOptional = test.getHorizontalIntersectionPoint(4.0f);
+		CHECK(!intersectionPointOptional.has_value());
+	}
+	SECTION("std::optional<slm::Vec2f> getVerticalIntersectionPoint(const float xVal) const") {
+		slm::Line2f test{0.0f, 1.0f, 2.0f, 3.0f};
+
+		auto intersectionPointOptional = test.getVerticalIntersectionPoint(1.0f);
+		REQUIRE(intersectionPointOptional.has_value());
+		helpers::checkValues(intersectionPointOptional.value(), 1.0f, 2.0f);
+
+		intersectionPointOptional = test.getVerticalIntersectionPoint(-1.0f);
+		CHECK(!intersectionPointOptional.has_value());
+
+		intersectionPointOptional = test.getVerticalIntersectionPoint(3.0f);
+		CHECK(!intersectionPointOptional.has_value());
+	}
 	SECTION("std::optional<float> getYAtX(const float horizontalValue) const") {
 		SECTION("Horizontal Line") {
 			slm::Line2f line{0.0f, 0.0f, 2.0f, 0.0f};
@@ -777,7 +804,128 @@ TEST_CASE("Polygon2f") {
 		helpers::checkValues(test.getPoint(3), 0.0f, 4.0f);
 	}
 	SECTION("ClippingStatus clip(const AxisAlignedBox2u& clippingBox)") {
-		// TODO
+		slm::AxisAlignedBox2u clippingBox{1u, 1u, 3u, 3u};
+
+		SECTION("Completely Inside") {
+			slm::Polygon2f test{};
+
+			test.addPoint({1.5f, 1.5f});
+			test.addPoint({2.5f, 1.5f});
+			test.addPoint({2.5f, 2.5f});
+			test.addPoint({1.5f, 2.5f});
+
+			const auto clipStatus = test.clip(clippingBox);
+
+			CHECK(clipStatus == slm::ClippingStatus::Inside);
+
+			helpers::checkValues(test.getSize(), 4);
+			helpers::checkValues(test.getPoint(0), 1.5f, 1.5f);
+			helpers::checkValues(test.getPoint(1), 2.5f, 1.5f);
+			helpers::checkValues(test.getPoint(2), 2.5f, 2.5f);
+			helpers::checkValues(test.getPoint(3), 1.5f, 2.5f);
+		}
+		SECTION("Completely Outside") {
+			slm::Polygon2f test{};
+
+			test.addPoint({0.0f, 0.0f});
+			test.addPoint({-1.0f, 0.0f});
+			test.addPoint({-1.0f, -1.0f});
+			test.addPoint({0.0f, -1.0f});
+
+			const auto clipStatus = test.clip(clippingBox);
+
+			CHECK(clipStatus == slm::ClippingStatus::Outside);
+		}
+		SECTION("Outside On Left") {
+			slm::Polygon2f test{};
+
+			test.addPoint({0.0f, 1.5f});
+			test.addPoint({2.5f, 1.5f});
+			test.addPoint({2.5f, 2.5f});
+			test.addPoint({0.0f, 2.5f});
+
+			const auto clipStatus = test.clip(clippingBox);
+
+			CHECK(clipStatus == slm::ClippingStatus::Modified);
+
+			helpers::checkValues(test.getSize(), 4);
+			helpers::checkValues(test.getPoint(0), 1.0f, 1.5f);
+			helpers::checkValues(test.getPoint(1), 2.5f, 1.5f);
+			helpers::checkValues(test.getPoint(2), 2.5f, 2.5f);
+			helpers::checkValues(test.getPoint(3), 1.0f, 2.5f);
+		}
+		SECTION("Outside On Top") {
+			slm::Polygon2f test{};
+
+			test.addPoint({1.5f, 1.5f});
+			test.addPoint({2.5f, 1.5f});
+			test.addPoint({2.5f, 4.0f});
+			test.addPoint({1.5f, 4.0f});
+
+			const auto clipStatus = test.clip(clippingBox);
+
+			CHECK(clipStatus == slm::ClippingStatus::Modified);
+
+			helpers::checkValues(test.getSize(), 4);
+			helpers::checkValues(test.getPoint(1), 1.5f, 1.5f);
+			helpers::checkValues(test.getPoint(2), 2.5f, 1.5f);
+			helpers::checkValues(test.getPoint(3), 2.5f, 3.0f);
+			helpers::checkValues(test.getPoint(0), 1.5f, 3.0f);
+		}
+		SECTION("Outside On Right") {
+			slm::Polygon2f test{};
+
+			test.addPoint({1.5f, 1.5f});
+			test.addPoint({4.0f, 1.5f});
+			test.addPoint({4.0f, 2.5f});
+			test.addPoint({1.5f, 2.5f});
+
+			const auto clipStatus = test.clip(clippingBox);
+
+			CHECK(clipStatus == slm::ClippingStatus::Modified);
+
+			helpers::checkValues(test.getSize(), 4);
+			helpers::checkValues(test.getPoint(0), 1.5f, 1.5f);
+			helpers::checkValues(test.getPoint(1), 3.0f, 1.5f);
+			helpers::checkValues(test.getPoint(2), 3.0f, 2.5f);
+			helpers::checkValues(test.getPoint(3), 1.5f, 2.5f);
+		}
+		SECTION("Outside On Bottom") {
+			slm::Polygon2f test{};
+
+			test.addPoint({1.5f, 0.0f});
+			test.addPoint({2.5f, 0.0f});
+			test.addPoint({2.5f, 2.5f});
+			test.addPoint({1.5f, 2.5f});
+
+			const auto clipStatus = test.clip(clippingBox);
+
+			CHECK(clipStatus == slm::ClippingStatus::Modified);
+
+			helpers::checkValues(test.getSize(), 4);
+			helpers::checkValues(test.getPoint(0), 1.5f, 1.0f);
+			helpers::checkValues(test.getPoint(1), 2.5f, 1.0f);
+			helpers::checkValues(test.getPoint(2), 2.5f, 2.5f);
+			helpers::checkValues(test.getPoint(3), 1.5f, 2.5f);
+		}
+		SECTION("Surrounding Box") {
+			slm::Polygon2f test{};
+
+			test.addPoint({0.0f, 0.0f});
+			test.addPoint({0.0f, 4.0f});
+			test.addPoint({4.0f, 4.0f});
+			test.addPoint({4.0f, 0.0f});
+
+			const auto clipStatus = test.clip(clippingBox);
+
+			CHECK(clipStatus == slm::ClippingStatus::Modified);
+
+			helpers::checkValues(test.getSize(), 4);
+			helpers::checkValues(test.getPoint(1), 1.0f, 1.0f);
+			helpers::checkValues(test.getPoint(0), 3.0f, 1.0f);
+			helpers::checkValues(test.getPoint(3), 3.0f, 3.0f);
+			helpers::checkValues(test.getPoint(2), 1.0f, 3.0f);
+		}
 	}
 	SECTION("float getXMin() const") {
 		slm::Polygon2f test{};
@@ -896,6 +1044,43 @@ TEST_CASE("Polygon2f") {
 				test2.addPoint({pointVal, pointVal});
 			}
 
+			CHECK(test1 == test2);
+		}
+		SECTION("Many of the same reverse") {
+			slm::Polygon2f test1{};
+			slm::Polygon2f test2{};
+
+			for (std::size_t i = 0; i < 10; i++) {
+				const auto pointVal = static_cast<float>(i);
+				test1.addPoint({pointVal, pointVal});
+			}
+			for (std::size_t i = 10; i-- > 0;) {
+				const auto pointVal = static_cast<float>(i);
+				test2.addPoint({pointVal, pointVal});
+			}
+			test1 == test2;
+			CHECK(test1 == test2);
+		}
+		SECTION("Many of the same offset reverse") {
+			slm::Polygon2f test1{};
+			slm::Polygon2f test2{};
+
+			for (std::size_t i = 0; i < 10; i++) {
+				const auto pointVal = static_cast<float>(i);
+				test1.addPoint({pointVal, pointVal});
+			}
+
+			for (std::size_t i = 7; i-- > 0;) {
+				const auto pointVal = static_cast<float>(i);
+				test2.addPoint({pointVal, pointVal});
+			}
+
+			for (std::size_t i = 10; i-- > 7;) {
+				const auto pointVal = static_cast<float>(i);
+				test2.addPoint({pointVal, pointVal});
+			}
+
+			test1 == test2;
 			CHECK(test1 == test2);
 		}
 	}

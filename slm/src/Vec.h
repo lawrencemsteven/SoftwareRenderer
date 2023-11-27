@@ -14,10 +14,11 @@ namespace slm {
 			enum : unsigned char { NONE = 0b0000, ABOVE = 0b1000, BELOW = 0b0100, RIGHT = 0b0010, LEFT = 0b0001 };
 		};
 		struct BIT_LOCATIONS_INVERTED {
-			enum : unsigned char { ABOVE = 0b0111, BELOW = 0b1011, RIGHT = 0b1101, LEFT = 0b1110 };
+			enum : unsigned char { NONE = 0b1111, ABOVE = 0b0111, BELOW = 0b1011, RIGHT = 0b1101, LEFT = 0b1110 };
 		};
 
 		BitLocation();
+		BitLocation(unsigned char location);
 		BitLocation(bool above, bool below, bool left, bool right);
 
 		void setLocation(unsigned char location);
@@ -33,6 +34,10 @@ namespace slm {
 		bool getRight() const;
 		bool getInside() const;
 		bool getOutside() const;
+		bool getVertical() const;
+		bool getHorizontal() const;
+
+		unsigned char compareLocations(const BitLocation& other) const;
 
 	protected:
 		unsigned char m_location : 4 = 0b0000;

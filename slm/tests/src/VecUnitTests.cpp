@@ -9,10 +9,17 @@
 
 TEST_CASE("BitLocation") {
 	typedef slm::BitLocation::BIT_LOCATIONS BIT_LOCATIONS;
+	typedef slm::BitLocation::BIT_LOCATIONS_INVERTED BIT_LOCATIONS_INVERTED;
+
 	SECTION("BitLocation()") {
 		slm::BitLocation test{};
 
 		CHECK(test.getLocation() == BIT_LOCATIONS::NONE);
+	}
+	SECTION("BitLocation::BitLocation(unsigned char location)") {
+		slm::BitLocation test{BIT_LOCATIONS::ABOVE};
+
+		CHECK(test.getLocation() == BIT_LOCATIONS::ABOVE);
 	}
 	SECTION("BitLocation(bool above, bool below, bool left, bool right)") {
 		slm::BitLocation test{true, true, true, true};
@@ -163,6 +170,56 @@ TEST_CASE("BitLocation") {
 		CHECK(test.getOutside());
 		test.setRight(false);
 		CHECK(!test.getOutside());
+	}
+	SECTION("bool getVertical() const") {
+		slm::BitLocation test{};
+
+		CHECK(!test.getVertical());
+		test.setAbove(true);
+		CHECK(test.getVertical());
+		test.setBelow(true);
+		CHECK(test.getVertical());
+		test.setAbove(false);
+		test.setLeft(true);
+		CHECK(test.getVertical());
+		test.setBelow(false);
+		CHECK(!test.getVertical());
+	}
+	SECTION("bool getHorizontal() const") {
+		slm::BitLocation test{};
+
+		CHECK(!test.getHorizontal());
+		test.setRight(true);
+		CHECK(test.getHorizontal());
+		test.setLeft(true);
+		CHECK(test.getHorizontal());
+		test.setRight(false);
+		test.setAbove(true);
+		CHECK(test.getHorizontal());
+		test.setLeft(false);
+		CHECK(!test.getHorizontal());
+	}
+	SECTION("unsigned char BitLocation::compareLocations(const BitLocation& other) const") {
+		slm::BitLocation test1{};
+		slm::BitLocation test2{};
+
+		CHECK(test1.compareLocations(test2) == BIT_LOCATIONS::NONE);
+		CHECK(test2.compareLocations(test1) == BIT_LOCATIONS::NONE);
+
+		test1.setAbove(true);
+
+		CHECK(test1.compareLocations(test2) == BIT_LOCATIONS::NONE);
+		CHECK(test2.compareLocations(test1) == BIT_LOCATIONS::NONE);
+
+		test2.setAbove(true);
+
+		CHECK(test1.compareLocations(test2) == BIT_LOCATIONS::ABOVE);
+		CHECK(test2.compareLocations(test1) == BIT_LOCATIONS::ABOVE);
+
+		test1.setLocation(BIT_LOCATIONS_INVERTED::NONE);
+
+		CHECK(test1.compareLocations(test2) == BIT_LOCATIONS::ABOVE);
+		CHECK(test2.compareLocations(test1) == BIT_LOCATIONS::ABOVE);
 	}
 }
 

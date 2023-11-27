@@ -159,6 +159,30 @@ namespace slm {
 		return std::nullopt;
 	}
 
+	std::optional<slm::Vec2f> Line2f::getHorizontalIntersectionPoint(const float yVal) const {
+		const auto xValOptional = getXAtY(yVal);
+
+		if (!xValOptional.has_value()) {
+			return std::nullopt;
+		}
+
+		const auto xVal = xValOptional.value();
+
+		return slm::Vec2f{xVal, yVal};
+	}
+
+	std::optional<slm::Vec2f> Line2f::getVerticalIntersectionPoint(const float xVal) const {
+		const auto yValOptional = getYAtX(xVal);
+
+		if (!yValOptional.has_value()) {
+			return std::nullopt;
+		}
+
+		const auto yVal = yValOptional.value();
+
+		return slm::Vec2f{xVal, yVal};
+	}
+
 	std::optional<float> Line2f::getYAtX(const float horizontalValue) const {
 		const auto x1 = m_points[0][0];
 		const auto x2 = m_points[1][0];
@@ -487,7 +511,64 @@ namespace slm {
 	}
 
 	ClippingStatus Polygon2f::clip(const AxisAlignedBox2u& clippingBox) {
-		return ClippingStatus::Outside;
+		typedef slm::BitLocation::BIT_LOCATIONS BIT_LOCATIONS;
+
+		bool completelyInside = true;
+		std::vector<slm::Vec2f> outputPoints{m_points};
+		const float borderValues[4]{static_cast<float>(clippingBox.getLeft()),
+									static_cast<float>(clippingBox.getTop()),
+									static_cast<float>(clippingBox.getRight()),
+									static_cast<float>(clippingBox.getBottom())};
+		const BitLocation borderBitValues[4]{
+			BitLocation{BIT_LOCATIONS::LEFT}, BitLocation{BIT_LOCATIONS::ABOVE},
+			BitLocation{BIT_LOCATIONS::RIGHT}, BitLocation{BIT_LOCATIONS::BELOW}};
+
+		for (std::size_t i = 0; i < 4; i++) {
+			std::vector<slm::Vec2f> inputPoints{outputPoints};
+			outputPoints.clear();
+
+			for (std::size_t j = 0; j < inputPoints.size(); j++) {
+				const slm::Vec2f currentPoint		   = inputPoints[j];
+				const slm::BitLocation currentPointLoc = currentPoint.insideBox(clippingBox);
+
+				const slm::Vec2f prevPoint			= inputPoints[(j - 1) % inputPoints.size()];
+				const slm::BitLocation prevPointLoc = prevPoint.insideBox(clippingBox);
+
+				const slm::Line2f line{prevPoint, currentPoint};
+
+				const auto intersectionPointOptional =
+					borderBitValues[i].getVertical()
+						? line.getHorizontalIntersectionPoint(borderValues[i])
+						: line.getVerticalIntersectionPoint(borderValues[i]);
+
+				const bool currentPointInside =
+					!currentPointLoc.compareLocations(borderBitValues[i]);
+				const bool previousPointInside = !prevPointLoc.compareLocations(borderBitValues[i]);
+
+				if (currentPointInside) {
+					if (!previousPointInside) {
+						outputPoints.push_back(intersectionPointOptional.value());
+						completelyInside = false;
+					}
+					outputPoints.push_back(currentPoint);
+				}
+				else if (previousPointInside) {
+					outputPoints.push_back(intersectionPointOptional.value());
+					completelyInside = false;
+				}
+			}
+		}
+
+		if (outputPoints.size() == 0) {
+			return ClippingStatus::Outside;
+		}
+
+		if (completelyInside) {
+			return ClippingStatus::Inside;
+		}
+
+		m_points = outputPoints;
+		return ClippingStatus::Modified;
 	}
 
 	float Polygon2f::getXMin() const {
@@ -543,6 +624,8 @@ namespace slm {
 	}
 
 	bool Polygon2f::operator==(const Polygon2f& other) const {
+		// TODO: CHECK REVERSE DIRECTION OF POLYGON POINTS!!!
+
 		if (getSize() != other.getSize()) {
 			return false;
 		}
@@ -567,11 +650,27 @@ namespace slm {
 			return false;
 		}
 
+		// Check Forward Direction
+		bool allPointsMatch = true;
+		auto otherStartingPointIndexCopy = otherStartingPointIndex;
 		for (std::size_t i = 1; i < getSize(); i++) {
-			otherStartingPointIndex++;
-			if (otherStartingPointIndex >= other.getSize()) {
-				otherStartingPointIndex = 0;
+			otherStartingPointIndexCopy = (otherStartingPointIndexCopy + 1) % other.getSize();
+			if (getPoint(i) != other.getPoint(otherStartingPointIndexCopy)) {
+				allPointsMatch = false;
+				break;
 			}
+		}
+
+		if (allPointsMatch) {
+			return true;
+		}
+
+		// Check Reverse Direction
+		for (std::size_t i = 1; i < getSize(); i++) {
+			if (otherStartingPointIndex == 0) {
+				otherStartingPointIndex = other.getSize();
+			}
+			otherStartingPointIndex = otherStartingPointIndex - 1;
 			if (getPoint(i) != other.getPoint(otherStartingPointIndex)) {
 				return false;
 			}

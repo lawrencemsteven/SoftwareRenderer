@@ -10,6 +10,10 @@ namespace slm {
 
 	BitLocation::BitLocation() {}
 
+	BitLocation::BitLocation(unsigned char location) {
+		setLocation(location);
+	}
+
 	BitLocation::BitLocation(bool above, bool below, bool left, bool right) {
 		setAbove(above);
 		setBelow(below);
@@ -22,19 +26,23 @@ namespace slm {
 	}
 
 	void BitLocation::setAbove(bool above) {
-		m_location = above ? m_location | BIT_LOCATIONS::ABOVE : m_location & BIT_LOCATIONS_INVERTED::ABOVE;
+		m_location =
+			above ? m_location | BIT_LOCATIONS::ABOVE : m_location & BIT_LOCATIONS_INVERTED::ABOVE;
 	}
 
 	void BitLocation::setBelow(bool below) {
-		m_location = below ? m_location | BIT_LOCATIONS::BELOW : m_location & BIT_LOCATIONS_INVERTED::BELOW;
+		m_location =
+			below ? m_location | BIT_LOCATIONS::BELOW : m_location & BIT_LOCATIONS_INVERTED::BELOW;
 	}
 
 	void BitLocation::setLeft(bool left) {
-		m_location = left ? m_location | BIT_LOCATIONS::LEFT : m_location & BIT_LOCATIONS_INVERTED::LEFT;
+		m_location =
+			left ? m_location | BIT_LOCATIONS::LEFT : m_location & BIT_LOCATIONS_INVERTED::LEFT;
 	}
 
 	void BitLocation::setRight(bool right) {
-		m_location = right ? m_location | BIT_LOCATIONS::RIGHT : m_location & BIT_LOCATIONS_INVERTED::RIGHT;
+		m_location =
+			right ? m_location | BIT_LOCATIONS::RIGHT : m_location & BIT_LOCATIONS_INVERTED::RIGHT;
 	}
 
 	unsigned char BitLocation::getLocation() const {
@@ -63,6 +71,18 @@ namespace slm {
 
 	bool BitLocation::getOutside() const {
 		return m_location;
+	}
+
+	bool BitLocation::getVertical() const {
+		return getAbove() || getBelow();
+	}
+
+	bool BitLocation::getHorizontal() const {
+		return getLeft() || getRight();
+	}
+
+	unsigned char BitLocation::compareLocations(const BitLocation& other) const {
+		return getLocation() & other.getLocation();
 	}
 
 

@@ -59,6 +59,8 @@ namespace slm {
 		float getYMax() const;
 		std::optional<float> getSlope() const;
 		std::optional<slm::Vec2f> getIntersectionPoint(const Line2f& other) const;
+		std::optional<slm::Vec2f> getHorizontalIntersectionPoint(const float yVal) const;
+		std::optional<slm::Vec2f> getVerticalIntersectionPoint(const float xVal) const;
 		std::optional<float> getYAtX(const float horizontalValue) const;
 		std::optional<float> getXAtY(const float verticalValue) const;
 
@@ -69,8 +71,8 @@ namespace slm {
 	protected:
 		std::array<Vec2f, 2> m_points{};
 
-		bool movePointVertically(const std::size_t pointIdx, const float verticalValue);
-		bool movePointHorizontally(const std::size_t pointIdx, const float horizontalValue);
+		bool movePointVertically(const std::size_t pointIdx, const float yVal);
+		bool movePointHorizontally(const std::size_t pointIdx, const float xVal);
 	};
 
 
