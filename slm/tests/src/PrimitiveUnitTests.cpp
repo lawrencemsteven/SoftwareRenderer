@@ -56,35 +56,35 @@ TEST_CASE("Line2f") {
 
 		helpers::checkValues(end, 3.0f, 4.0f);
 	}
-	SECTION("void translate(const Vec2& amount)") {
+	SECTION("void translate(const Vec2& amount) override") {
 		slm::Line2f test{1.0f, 2.0f, 3.0f, 4.0f};
 
 		test.translate(slm::Vec2f{5.0f, 6.0f});
 
 		helpers::checkValues(test, 6.0f, 8.0f, 8.0f, 10.0f);
 	}
-	SECTION("void rotate(const int32_t degreesCounterClockwise)") {
+	SECTION("void rotate(const int32_t degreesCounterClockwise) override") {
 		slm::Line2f test{0.0f, 0.0f, 1.0f, 0.0f};
 
 		test.rotate(90);
 
 		helpers::checkValues(test, 0.0f, 0.0f, 0.0f, 1.0f);
 	}
-	SECTION("void scale(const float factor)") {
+	SECTION("void scale(const float factor) override") {
 		slm::Line2f test{1.0f, 2.0f, 3.0f, 4.0f};
 
 		test.scale(2);
 
 		helpers::checkValues(test, 2.0f, 4.0f, 6.0f, 8.0f);
 	}
-	SECTION("void scaleX(const float factor)") {
+	SECTION("void scaleX(const float factor) override") {
 		slm::Line2f test{1.0f, 2.0f, 3.0f, 4.0f};
 
 		test.scaleX(2);
 
 		helpers::checkValues(test, 2.0f, 2.0f, 6.0f, 4.0f);
 	}
-	SECTION("void scaleY(const float factor)") {
+	SECTION("void scaleY(const float factor) override") {
 		slm::Line2f test{1.0f, 2.0f, 3.0f, 4.0f};
 
 		test.scaleY(2);
@@ -92,7 +92,7 @@ TEST_CASE("Line2f") {
 		helpers::checkValues(test, 1.0f, 4.0f, 3.0f, 8.0f);
 	}
 
-	SECTION("ClippingStatus clip(const AxisAlignedBox2u& clippingBox)") {
+	SECTION("ClippingStatus clip(const AxisAlignedBox2u& clippingBox) override") {
 		const slm::AxisAlignedBox2u clippingBox{1u, 1u, 3u, 3u};
 
 		SECTION("Inside Line") {
@@ -438,7 +438,7 @@ TEST_CASE("Line2f") {
 			REQUIRE(!xValOptional.has_value());
 		}
 	}
-	SECTION("const Vec2f& operator[](const std::size_t idx) const") {
+	SECTION("const Vec2f& operator[](const std::size_t idx) const override") {
 		slm::Line2f test{1.0f, 2.0f, 3.0f, 4.0f};
 
 		helpers::checkValues(test[0], test.getStart());
@@ -730,7 +730,7 @@ TEST_CASE("Polygon2f") {
 			helpers::checkValues(allPoints[i], pointVal, pointVal);
 		}
 	}
-	SECTION("void translate(const Vec2& amount)") {
+	SECTION("void translate(const Vec2& amount) override") {
 		slm::Polygon2f test{};
 
 		test.addPoint({0.0f, 0.0f});
@@ -743,7 +743,7 @@ TEST_CASE("Polygon2f") {
 		helpers::checkValues(test.getPoint(1), 3.0f, 2.0f);
 		helpers::checkValues(test.getPoint(2), 2.0f, 4.0f);
 	}
-	SECTION("void rotate(const int32_t degreesCounterClockwise)") {
+	SECTION("void rotate(const int32_t degreesCounterClockwise) override") {
 		slm::Polygon2f test{};
 
 		test.addPoint({0.0f, 0.0f});
@@ -758,7 +758,7 @@ TEST_CASE("Polygon2f") {
 		helpers::checkValues(test.getPoint(2), -2.0f, 2.0f);
 		helpers::checkValues(test.getPoint(3), -2.0f, 0.0f);
 	}
-	SECTION("void scale(const float factor)") {
+	SECTION("void scale(const float factor) override") {
 		slm::Polygon2f test{};
 
 		test.addPoint({0.0f, 0.0f});
@@ -773,7 +773,7 @@ TEST_CASE("Polygon2f") {
 		helpers::checkValues(test.getPoint(2), 4.0f, 4.0f);
 		helpers::checkValues(test.getPoint(3), 0.0f, 4.0f);
 	}
-	SECTION("void scaleX(const float factor)") {
+	SECTION("void scaleX(const float factor) override") {
 		slm::Polygon2f test{};
 
 		test.addPoint({0.0f, 0.0f});
@@ -788,7 +788,7 @@ TEST_CASE("Polygon2f") {
 		helpers::checkValues(test.getPoint(2), 4.0f, 2.0f);
 		helpers::checkValues(test.getPoint(3), 0.0f, 2.0f);
 	}
-	SECTION("void scaleY(const float factor)") {
+	SECTION("void scaleY(const float factor) override") {
 		slm::Polygon2f test{};
 
 		test.addPoint({0.0f, 0.0f});
@@ -803,7 +803,7 @@ TEST_CASE("Polygon2f") {
 		helpers::checkValues(test.getPoint(2), 2.0f, 4.0f);
 		helpers::checkValues(test.getPoint(3), 0.0f, 4.0f);
 	}
-	SECTION("ClippingStatus clip(const AxisAlignedBox2u& clippingBox)") {
+	SECTION("ClippingStatus clip(const AxisAlignedBox2u& clippingBox) override") {
 		slm::AxisAlignedBox2u clippingBox{1u, 1u, 3u, 3u};
 
 		SECTION("Completely Inside") {
@@ -967,7 +967,7 @@ TEST_CASE("Polygon2f") {
 
 		helpers::checkValues(test.getYMax(), 15.0f);
 	}
-	SECTION("const Vec2f& operator[](const std::size_t idx) const") {
+	SECTION("const Vec2f& operator[](const std::size_t idx) const override") {
 		slm::Polygon2f test{};
 
 		for (std::size_t i = 0; i < 10; i++) {
@@ -1365,5 +1365,164 @@ TEST_CASE("SMFModel") {
 
 			helpers::checkValues(test.getFaceCount(), 0);
 		}
+	}
+}
+
+
+
+
+///////////
+// Scene //
+///////////
+
+TEST_CASE("Scene") {
+	SECTION("Scene()") {
+		slm::Scene test{};
+
+		helpers::checkValues(test.getSize(), 0);
+	}
+	SECTION("void addPrimitive(std::unique_ptr<slm::Primitive2> primitive)") {
+		slm::Scene test{};
+
+		test.addPrimitive(std::make_unique<slm::Line2f>(slm::Line2f{0.0f, 0.0f, 1.0f, 1.0f}));
+		helpers::checkValues(test.getSize(), 1);
+
+		test.addPrimitive(std::make_unique<slm::Line2f>(slm::Line2f{0.0f, 0.0f, 1.0f, 1.0f}));
+		helpers::checkValues(test.getSize(), 2);
+
+		test.addPrimitive(std::make_unique<slm::Line2f>(slm::Line2f{0.0f, 0.0f, 1.0f, 1.0f}));
+		helpers::checkValues(test.getSize(), 3);
+	}
+	SECTION("const std::unique_ptr<slm::Primitive2>& getPrimitive(std::size_t idx) const") {
+		slm::Scene test{};
+
+		test.addPrimitive(std::make_unique<slm::Line2f>(slm::Line2f{0.0f, 0.0f, 1.0f, 1.0f}));
+		helpers::checkValues(test.getSize(), 1);
+		auto line = *dynamic_cast<slm::Line2f*>(test.getPrimitive(0).get());
+		helpers::checkValues(line, 0.0f, 0.0f, 1.0f, 1.0f);
+
+		test.addPrimitive(std::make_unique<slm::Line2f>(slm::Line2f{2.0f, 2.0f, 3.0f, 3.0f}));
+		helpers::checkValues(test.getSize(), 2);
+		line = *dynamic_cast<slm::Line2f*>(test.getPrimitive(0).get());
+		helpers::checkValues(line, 0.0f, 0.0f, 1.0f, 1.0f);
+		line = *dynamic_cast<slm::Line2f*>(test.getPrimitive(1).get());
+		helpers::checkValues(line, 2.0f, 2.0f, 3.0f, 3.0f);
+
+		test.addPrimitive(std::make_unique<slm::Line2f>(slm::Line2f{4.0f, 4.0f, 5.0f, 5.0f}));
+		helpers::checkValues(test.getSize(), 3);
+		line = *dynamic_cast<slm::Line2f*>(test.getPrimitive(0).get());
+		helpers::checkValues(line, 0.0f, 0.0f, 1.0f, 1.0f);
+		line = *dynamic_cast<slm::Line2f*>(test.getPrimitive(1).get());
+		helpers::checkValues(line, 2.0f, 2.0f, 3.0f, 3.0f);
+		line = *dynamic_cast<slm::Line2f*>(test.getPrimitive(2).get());
+		helpers::checkValues(line, 4.0f, 4.0f, 5.0f, 5.0f);
+	}
+	SECTION("std::size_t getSize() const") {
+		slm::Scene test{};
+
+		test.addPrimitive(std::make_unique<slm::Line2f>(slm::Line2f{0.0f, 0.0f, 1.0f, 1.0f}));
+		test.addPrimitive(std::make_unique<slm::Line2f>(slm::Line2f{0.0f, 0.0f, 1.0f, 1.0f}));
+		test.addPrimitive(std::make_unique<slm::Line2f>(slm::Line2f{0.0f, 0.0f, 1.0f, 1.0f}));
+
+		helpers::checkValues(test.getSize(), 3);
+	}
+	SECTION("void translate(const Vec2& amount)") {
+		slm::Scene test{};
+
+		test.addPrimitive(std::make_unique<slm::Line2f>(slm::Line2f{0.0f, 0.0f, 1.0f, 1.0f}));
+		test.addPrimitive(std::make_unique<slm::Line2f>(slm::Line2f{2.0f, 2.0f, 3.0f, 3.0f}));
+		test.addPrimitive(std::make_unique<slm::Line2f>(slm::Line2f{4.0f, 4.0f, 5.0f, 5.0f}));
+
+		test.translate(slm::Vec2f{1.0f, 2.0f});
+
+		helpers::checkValues(test.getSize(), 3);
+		auto line = *dynamic_cast<slm::Line2f*>(test.getPrimitive(0).get());
+		helpers::checkValues(line, 1.0f, 2.0f, 2.0f, 3.0f);
+		line = *dynamic_cast<slm::Line2f*>(test.getPrimitive(1).get());
+		helpers::checkValues(line, 3.0f, 4.0f, 4.0f, 5.0f);
+		line = *dynamic_cast<slm::Line2f*>(test.getPrimitive(2).get());
+		helpers::checkValues(line, 5.0f, 6.0f, 6.0f, 7.0f);
+	}
+	SECTION("void rotate(const int32_t degreesCounterClockwise)") {
+		slm::Scene test{};
+
+		test.addPrimitive(std::make_unique<slm::Line2f>(slm::Line2f{0.0f, 0.0f, 1.0f, 1.0f}));
+		test.addPrimitive(std::make_unique<slm::Line2f>(slm::Line2f{2.0f, 2.0f, 3.0f, 3.0f}));
+		test.addPrimitive(std::make_unique<slm::Line2f>(slm::Line2f{4.0f, 4.0f, 5.0f, 5.0f}));
+
+		test.rotate(90);
+
+		helpers::checkValues(test.getSize(), 3);
+		auto line = *dynamic_cast<slm::Line2f*>(test.getPrimitive(0).get());
+		helpers::checkValues(line, 0.0f, 0.0f, -1.0f, 1.0f);
+		line = *dynamic_cast<slm::Line2f*>(test.getPrimitive(1).get());
+		helpers::checkValues(line, -2.0f, 2.0f, -3.0f, 3.0f);
+		line = *dynamic_cast<slm::Line2f*>(test.getPrimitive(2).get());
+		helpers::checkValues(line, -4.0f, 4.0f, -5.0f, 5.0f);
+	}
+	SECTION("void scale(const float factor)") {
+		slm::Scene test{};
+
+		test.addPrimitive(std::make_unique<slm::Line2f>(slm::Line2f{0.0f, 0.0f, 1.0f, 1.0f}));
+		test.addPrimitive(std::make_unique<slm::Line2f>(slm::Line2f{2.0f, 2.0f, 3.0f, 3.0f}));
+		test.addPrimitive(std::make_unique<slm::Line2f>(slm::Line2f{4.0f, 4.0f, 5.0f, 5.0f}));
+
+		test.scale(2.0f);
+
+		helpers::checkValues(test.getSize(), 3);
+		auto line = *dynamic_cast<slm::Line2f*>(test.getPrimitive(0).get());
+		helpers::checkValues(line, 0.0f, 0.0f, 2.0f, 2.0f);
+		line = *dynamic_cast<slm::Line2f*>(test.getPrimitive(1).get());
+		helpers::checkValues(line, 4.0f, 4.0f, 6.0f, 6.0f);
+		line = *dynamic_cast<slm::Line2f*>(test.getPrimitive(2).get());
+		helpers::checkValues(line, 8.0f, 8.0f, 10.0f, 10.0f);
+	}
+	SECTION("void scaleX(const float factor)") {
+		slm::Scene test{};
+
+		test.addPrimitive(std::make_unique<slm::Line2f>(slm::Line2f{0.0f, 0.0f, 1.0f, 1.0f}));
+		test.addPrimitive(std::make_unique<slm::Line2f>(slm::Line2f{2.0f, 2.0f, 3.0f, 3.0f}));
+		test.addPrimitive(std::make_unique<slm::Line2f>(slm::Line2f{4.0f, 4.0f, 5.0f, 5.0f}));
+
+		test.scaleX(2.0f);
+
+		helpers::checkValues(test.getSize(), 3);
+		auto line = *dynamic_cast<slm::Line2f*>(test.getPrimitive(0).get());
+		helpers::checkValues(line, 0.0f, 0.0f, 2.0f, 1.0f);
+		line = *dynamic_cast<slm::Line2f*>(test.getPrimitive(1).get());
+		helpers::checkValues(line, 4.0f, 2.0f, 6.0f, 3.0f);
+		line = *dynamic_cast<slm::Line2f*>(test.getPrimitive(2).get());
+		helpers::checkValues(line, 8.0f, 4.0f, 10.0f, 5.0f);
+	}
+	SECTION("void scaleY(const float factor)") {
+		slm::Scene test{};
+
+		test.addPrimitive(std::make_unique<slm::Line2f>(slm::Line2f{0.0f, 0.0f, 1.0f, 1.0f}));
+		test.addPrimitive(std::make_unique<slm::Line2f>(slm::Line2f{2.0f, 2.0f, 3.0f, 3.0f}));
+		test.addPrimitive(std::make_unique<slm::Line2f>(slm::Line2f{4.0f, 4.0f, 5.0f, 5.0f}));
+
+		test.scaleY(2.0f);
+
+		helpers::checkValues(test.getSize(), 3);
+		auto line = *dynamic_cast<slm::Line2f*>(test.getPrimitive(0).get());
+		helpers::checkValues(line, 0.0f, 0.0f, 1.0f, 2.0f);
+		line = *dynamic_cast<slm::Line2f*>(test.getPrimitive(1).get());
+		helpers::checkValues(line, 2.0f, 4.0f, 3.0f, 6.0f);
+		line = *dynamic_cast<slm::Line2f*>(test.getPrimitive(2).get());
+		helpers::checkValues(line, 4.0f, 8.0f, 5.0f, 10.0f);
+	}
+	SECTION("void clip(const AxisAlignedBox2u& clippingBox)") {
+		slm::Scene test{};
+		slm::AxisAlignedBox2u clippingBox{1u, 1u, 3u, 3u};
+
+		test.addPrimitive(std::make_unique<slm::Line2f>(slm::Line2f{0.0f, 0.0f, 0.5f, 0.5f}));
+		test.addPrimitive(std::make_unique<slm::Line2f>(slm::Line2f{2.0f, 2.0f, 3.0f, 3.0f}));
+		test.addPrimitive(std::make_unique<slm::Line2f>(slm::Line2f{4.0f, 4.0f, 5.0f, 5.0f}));
+
+		test.clip(clippingBox);
+
+		helpers::checkValues(test.getSize(), 1);
+		auto line = *dynamic_cast<slm::Line2f*>(test.getPrimitive(0).get());
+		helpers::checkValues(line, 2.0f, 2.0f, 3.0f, 3.0f);
 	}
 }

@@ -741,4 +741,66 @@ namespace slm {
 			   face[2] > getVertexCount();
 	}
 
+
+
+
+	///////////
+	// Scene //
+	///////////
+
+	Scene::Scene() {}
+
+	void Scene::addPrimitive(std::unique_ptr<slm::Primitive2> primitive) {
+		m_primitives.push_back(std::move(primitive));
+	}
+
+	const std::unique_ptr<slm::Primitive2>& Scene::getPrimitive(std::size_t idx) const {
+		return m_primitives[idx];
+	}
+
+	std::size_t Scene::getSize() const {
+		return m_primitives.size();
+	}
+
+	void Scene::translate(const Vec2& amount) {
+		for (auto& primtive : m_primitives) {
+			primtive->translate(amount);
+		}
+	}
+
+	void Scene::rotate(const int32_t degreesCounterClockwise) {
+		for (auto& primtive : m_primitives) {
+			primtive->rotate(degreesCounterClockwise);
+		}
+	}
+
+	void Scene::scale(const float factor) {
+		for (auto& primtive : m_primitives) {
+			primtive->scale(factor);
+		}
+	}
+
+	void Scene::scaleX(const float factor) {
+		for (auto& primtive : m_primitives) {
+			primtive->scaleX(factor);
+		}
+	}
+
+	void Scene::scaleY(const float factor) {
+		for (auto& primtive : m_primitives) {
+			primtive->scaleY(factor);
+		}
+	}
+
+	void Scene::clip(const AxisAlignedBox2u& clippingBox) {
+		for (std::size_t i = 0; i < m_primitives.size(); i++) {
+			const auto clippingStatus = m_primitives[i]->clip(clippingBox);
+
+			if (clippingStatus == ClippingStatus::Outside) {
+				m_primitives.erase(m_primitives.begin() + i);
+				i--;
+			}
+		}
+	}
+
 }

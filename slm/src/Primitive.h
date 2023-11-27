@@ -23,7 +23,15 @@ namespace slm {
 
 	class Primitive2 {
 	public:
+		virtual void translate(const Vec2& amount) = 0;
+		virtual void rotate(const int32_t degreesCounterClockwise) = 0;
+		virtual void scale(const float factor) = 0;
+		virtual void scaleX(const float factor) = 0;
+		virtual void scaleY(const float factor) = 0;
 
+		virtual ClippingStatus clip(const AxisAlignedBox2u& clippingBox) = 0;
+
+		virtual const Vec2f& operator[](const std::size_t idx) const = 0;
 	protected:
 	};
 
@@ -45,13 +53,13 @@ namespace slm {
 		const Vec2f& getStart() const;
 		const Vec2f& getEnd() const;
 
-		void translate(const Vec2& amount);
-		void rotate(const int32_t degreesCounterClockwise);
-		void scale(const float factor);
-		void scaleX(const float factor);
-		void scaleY(const float factor);
+		void translate(const Vec2& amount) override;
+		void rotate(const int32_t degreesCounterClockwise) override;
+		void scale(const float factor) override;
+		void scaleX(const float factor) override;
+		void scaleY(const float factor) override;
 
-		ClippingStatus clip(const AxisAlignedBox2u& clippingBox);
+		ClippingStatus clip(const AxisAlignedBox2u& clippingBox) override;
 
 		float getXMin() const;
 		float getXMax() const;
@@ -64,7 +72,7 @@ namespace slm {
 		std::optional<float> getYAtX(const float horizontalValue) const;
 		std::optional<float> getXAtY(const float verticalValue) const;
 
-		const Vec2f& operator[](const std::size_t idx) const;
+		const Vec2f& operator[](const std::size_t idx) const override;
 		bool operator==(const Line2f& other) const;
 		bool operator!=(const Line2f& other) const;
 
@@ -82,7 +90,7 @@ namespace slm {
 	// AxisAlignedBox2u //
 	//////////////////////
 
-	class AxisAlignedBox2u : public Primitive2 {
+	class AxisAlignedBox2u {
 	public:
 		AxisAlignedBox2u();
 		AxisAlignedBox2u(Vec2u bottomLeft, Vec2u topRight);
@@ -142,20 +150,20 @@ namespace slm {
 		std::size_t getSize() const;
 		const std::vector<slm::Vec2f>& getPoints() const;
 
-		void translate(const Vec2& amount);
-		void rotate(const int32_t degreesCounterClockwise);
-		void scale(const float factor);
-		void scaleX(const float factor);
-		void scaleY(const float factor);
+		void translate(const Vec2& amount) override;
+		void rotate(const int32_t degreesCounterClockwise) override;
+		void scale(const float factor) override;
+		void scaleX(const float factor) override;
+		void scaleY(const float factor) override;
 
-		ClippingStatus clip(const AxisAlignedBox2u& clippingBox);
+		ClippingStatus clip(const AxisAlignedBox2u& clippingBox) override;
 
 		float getXMin() const;
 		float getXMax() const;
 		float getYMin() const;
 		float getYMax() const;
 
-		const Vec2f& operator[](const std::size_t idx) const;
+		const Vec2f& operator[](const std::size_t idx) const override;
 		bool operator==(const Polygon2f& other) const;
 		bool operator!=(const Polygon2f& other) const;
 	protected:
@@ -189,5 +197,31 @@ namespace slm {
 		std::vector<slm::Vec3i> m_faces{};
 
 		bool notEnoughVertices(const slm::Vec3i& face);
+	};
+
+
+
+
+	///////////
+	// Scene //
+	///////////
+
+	class Scene {
+	public:
+		Scene();
+
+		void addPrimitive(std::unique_ptr<slm::Primitive2> primitive);
+		const std::unique_ptr<slm::Primitive2>& getPrimitive(std::size_t idx) const;
+		std::size_t getSize() const;
+
+		void translate(const Vec2& amount);
+		void rotate(const int32_t degreesCounterClockwise);
+		void scale(const float factor);
+		void scaleX(const float factor);
+		void scaleY(const float factor);
+
+		void clip(const AxisAlignedBox2u& clippingBox);
+	protected:
+		std::vector<std::unique_ptr<slm::Primitive2>> m_primitives{};
 	};
 }
