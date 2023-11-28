@@ -988,8 +988,11 @@ namespace slm {
 			projectionMatrix =
 				perspectiveScale * perspectiveShear * perspectiveTranslate * rotation * translation;
 
-			scaleValues.x(static_cast<float>(viewport.getWidth()) / 2.0f);
-			scaleValues.y(static_cast<float>(viewport.getHeight()) / 2.0f);
+			scaleValues.x(static_cast<float>(viewport.getWidth()));
+			scaleValues.y(static_cast<float>(viewport.getHeight()));
+
+			translateValues.x(static_cast<float>(viewport.getWidth()) / 2.0f);
+			translateValues.y(static_cast<float>(viewport.getHeight()) / 2.0f);
 		}
 
 		for (std::size_t i = 0; i < model.getFaceCount(); i++) {
