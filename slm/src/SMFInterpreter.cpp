@@ -80,14 +80,14 @@ namespace slm::SMFInterpreter {
 		return FirstCharData{std::nullopt};
 	}
 
-	slm::SMFModel slm::SMFInterpreter::interpret(const std::filesystem::path& path) {
+	slm::SMFModel interpret(const std::filesystem::path& path) {
 		FileIO::FileReader fileReader{path};
 		SMFModel outputModel{};
 
 		std::string currentLine;
 		while (fileReader.hasContents()) {
 			currentLine.clear();
-			currentLine			 = fileReader.readNextLine();
+			currentLine				 = fileReader.readNextLine();
 			const auto firstCharData = getFirstChar(currentLine);
 
 			if (firstCharData.invalidSMF()) {
