@@ -1146,4 +1146,59 @@ namespace slm {
 									   static_cast<uint32_t>(m_values[2])};
 	}
 
+
+
+
+	///////////
+	// Vec4f //
+	///////////
+
+	Vec4f::Vec4f()
+		: m_values{0.0f, 0.0f, 0.0f, 0.0f} {}
+
+	Vec4f::Vec4f(const float vals[4])
+		: m_values{vals[0], vals[1], vals[2], vals[3]} {}
+
+	Vec4f::Vec4f(const std::array<float, 4>& vals)
+		: m_values{vals[0], vals[1], vals[2], vals[3]} {}
+
+	Vec4f::Vec4f(const float x, const float y, const float z, const float w)
+		: m_values{x, y, z, w} {}
+
+	void Vec4f::x(const float x) {
+		m_values[0] = x;
+	}
+
+	void Vec4f::y(const float y) {
+		m_values[1] = y;
+	}
+
+	void Vec4f::z(const float z) {
+		m_values[2] = z;
+	}
+
+	void Vec4f::w(const float w) {
+		m_values[3] = w;
+	}
+
+	float Vec4f::x() const {
+		return m_values[0];
+	}
+
+	float Vec4f::y() const {
+		return m_values[1];
+	}
+
+	float Vec4f::z() const {
+		return m_values[2];
+	}
+
+	float Vec4f::w() const {
+		return m_values[3];
+	}
+
+	float Vec4f::operator[](const std::size_t idx) const {
+		return m_values[idx];
+	}
+
 }

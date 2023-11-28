@@ -156,6 +156,33 @@ namespace helpers {
 
 
 
+	///////////
+	// Vec4f //
+	///////////
+
+	void checkValues(const slm::Vec4f& vec, const slm::Vec4f& otherVec) {
+		for (std::size_t i = 0; i < 4; i++) {
+			checkValues(vec[i], otherVec[i]);
+		}
+	}
+
+	void checkValues(const slm::Vec4f& vec, const std::array<float, 4>& values) {
+		for (std::size_t i = 0; i < 4; i++) {
+			checkValues(vec[i], values[i]);
+		}
+	}
+
+	void checkValues(const slm::Vec4f& vec, const float x, const float y, const float z,
+					 const float w) {
+		checkValues(vec.x(), x);
+		checkValues(vec.y(), y);
+		checkValues(vec.z(), z);
+		checkValues(vec.w(), w);
+	}
+
+
+
+
 	////////////
 	// Line2f //
 	////////////

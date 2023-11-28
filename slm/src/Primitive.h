@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Mat.h"
 #include "Vec.h"
 
 namespace slm {

@@ -1,4 +1,6 @@
 set(slm_FILES
+    "./src/Mat.cpp"
+    "./src/Mat.h"
     "./src/PBMImage.cpp"
     "./src/PBMImage.h"
     "./src/PostscriptInterpreter.cpp"

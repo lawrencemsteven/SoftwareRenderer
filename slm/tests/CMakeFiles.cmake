@@ -1,6 +1,7 @@
 set(slm_test_FILES
     "./src/HelperFunctions.cpp"
     "./src/HelperFunctions.h"
+    "./src/MatUnitTests.cpp"
     "./src/PBMImageUnitTests.cpp"
     "./src/PostscriptInterpreterUnitTests.cpp"
     "./src/PrimitiveUnitTests.cpp"

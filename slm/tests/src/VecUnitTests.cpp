@@ -2991,3 +2991,93 @@ TEST_CASE("Vec3i") {
 		helpers::checkValues(values[2], 3u);
 	}
 }
+
+
+
+
+///////////
+// Vec4f //
+///////////
+
+TEST_CASE("Vec4f") {
+	SECTION("Vec4f()") {
+		slm::Vec4f test{};
+
+		helpers::checkValues(test, 0.0f, 0.0f, 0.0f, 0.0f);
+	}
+	SECTION("Vec4f(const float vals[4])") {
+		const float vals[4]{1.0f, 2.0f, 3.0f, 4.0f};
+
+		slm::Vec4f test{vals};
+
+		helpers::checkValues(test, 1.0f, 2.0f, 3.0f, 4.0f);
+	}
+	SECTION("Vec4f(const std::array<float, 4>& vals)") {
+		const std::array<float, 4> vals{1.0f, 2.0f, 3.0f, 4.0f};
+
+		slm::Vec4f test{vals};
+
+		helpers::checkValues(test, 1.0f, 2.0f, 3.0f, 4.0f);
+	}
+	SECTION("Vec4f(const float x, const float y, const float z, const float w)") {
+		slm::Vec4f test{1.0f, 2.0f, 3.0f, 4.0f};
+
+		helpers::checkValues(test, 1.0f, 2.0f, 3.0f, 4.0f);
+	}
+	SECTION("void x(const float x)") {
+		slm::Vec4f test{1.0f, 2.0f, 3.0f, 4.0f};
+
+		test.x(5.0f);
+
+		helpers::checkValues(test, 5.0f, 2.0f, 3.0f, 4.0f);
+	}
+	SECTION("void y(const float y)") {
+		slm::Vec4f test{1.0f, 2.0f, 3.0f, 4.0f};
+
+		test.y(5.0f);
+
+		helpers::checkValues(test, 1.0f, 5.0f, 3.0f, 4.0f);
+	}
+	SECTION("void z(const float z)") {
+		slm::Vec4f test{1.0f, 2.0f, 3.0f, 4.0f};
+
+		test.z(5.0f);
+
+		helpers::checkValues(test, 1.0f, 2.0f, 5.0f, 4.0f);
+	}
+	SECTION("void w(const float w)") {
+		slm::Vec4f test{1.0f, 2.0f, 3.0f, 4.0f};
+
+		test.w(5.0f);
+
+		helpers::checkValues(test, 1.0f, 2.0f, 3.0f, 5.0f);
+	}
+	SECTION("float x() const") {
+		slm::Vec4f test{1.0f, 2.0f, 3.0f, 4.0f};
+
+		helpers::checkValues(test.x(), 1.0f);
+	}
+	SECTION("float y() const") {
+		slm::Vec4f test{1.0f, 2.0f, 3.0f, 4.0f};
+
+		helpers::checkValues(test.y(), 2.0f);
+	}
+	SECTION("float z() const") {
+		slm::Vec4f test{1.0f, 2.0f, 3.0f, 4.0f};
+
+		helpers::checkValues(test.z(), 3.0f);
+	}
+	SECTION("float w() const") {
+		slm::Vec4f test{1.0f, 2.0f, 3.0f, 4.0f};
+
+		helpers::checkValues(test.w(), 4.0f);
+	}
+	SECTION("float operator[](const std::size_t idx) const") {
+		slm::Vec4f test{1.0f, 2.0f, 3.0f, 4.0f};
+
+		helpers::checkValues(test[0], 1.0f);
+		helpers::checkValues(test[1], 2.0f);
+		helpers::checkValues(test[2], 3.0f);
+		helpers::checkValues(test[3], 4.0f);
+	}
+}

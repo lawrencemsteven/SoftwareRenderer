@@ -87,6 +87,17 @@ namespace helpers {
 
 
 
+	///////////
+	// Vec4f //
+	///////////
+
+	void checkValues(const slm::Vec4f& vec, const slm::Vec4f& otherVec);
+	void checkValues(const slm::Vec4f& vec, const std::array<float, 4>& values);
+	void checkValues(const slm::Vec4f& vec, const float x, const float y, const float z, const float w);
+
+
+
+
 	////////////
 	// Line2f //
 	////////////

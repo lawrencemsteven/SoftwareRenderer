@@ -386,4 +386,33 @@ namespace slm {
 	protected:
 		int32_t m_values[3];
 	};
+
+
+
+
+	///////////
+	// Vec4f //
+	///////////
+
+	class Vec4f {
+	public:
+		Vec4f();
+		Vec4f(const float vals[4]);
+		Vec4f(const std::array<float, 4>& vals);
+		Vec4f(const float x, const float y, const float z, const float w);
+
+		void x(const float x);
+		void y(const float y);
+		void z(const float z);
+		void w(const float w);
+		float x() const;
+		float y() const;
+		float z() const;
+		float w() const;
+
+		float operator[](const std::size_t idx) const;
+
+	protected:
+		float m_values[4];
+	};
 }
