@@ -411,6 +411,7 @@ namespace slm {
 		float w() const;
 
 		float operator[](const std::size_t idx) const;
+		float& operator[](const std::size_t idx);
 
 	protected:
 		float m_values[4];

@@ -5,19 +5,51 @@
 int main(const int argc, const char* argv[]) {
 	CommandLineParser clp{argc, argv};
 
-	std::string fileName = clp.getValueOr("-f", "hw3_split.ps");
-	float scale			 = clp.getValueOr("-s", 1.0f);
-	int degreeRotation	 = clp.getValueOr("-r", 0);
-	int xTranslation	 = clp.getValueOr("-m", 0);
-	int yTranslation	 = clp.getValueOr("-n", 0);
-	int winLowX			 = clp.getValueOr("-a", 0);
-	int winLowY			 = clp.getValueOr("-b", 0);
-	int winUpX			 = clp.getValueOr("-c", 250);
-	int winUpY			 = clp.getValueOr("-d", 250);
-	int viewLowX		 = clp.getValueOr("-j", 0);
-	int viewLowY		 = clp.getValueOr("-k", 0);
-	int viewUpX			 = clp.getValueOr("-o", 200);
-	int viewUpY			 = clp.getValueOr("-p", 200);
+	std::string fileName = clp.getValueOr("-f", std::string{""});
+	uint32_t viewLowX	 = clp.getValueOr("-j", 0u);
+	uint32_t viewLowY	 = clp.getValueOr("-k", 0u);
+	uint32_t viewUpX		 = clp.getValueOr("-o", 500u);
+	uint32_t viewUpY		 = clp.getValueOr("-p", 500u);
+
+	float PRPx = clp.getValueOr("-x", 0.0f);
+	float PRPy = clp.getValueOr("-y", 0.0f);
+	float PRPz = clp.getValueOr("-z", 1.0f);
+
+	float VRPx = clp.getValueOr("-X", 0.0f);
+	float VRPy = clp.getValueOr("-Y", 0.0f);
+	float VRPz = clp.getValueOr("-Z", 0.0f);
+
+	float VPNx = clp.getValueOr("-q", 0.0f);
+	float VPNy = clp.getValueOr("-r", 0.0f);
+	float VPNz = clp.getValueOr("-w", -1.0f);
+
+	float VUPx = clp.getValueOr("-Q", 0.0f);
+	float VUPy = clp.getValueOr("-R", 1.0f);
+	float VUPz = clp.getValueOr("-W", 0.0f);
+
+	float uMin = clp.getValueOr("-u", -0.7f);
+	float vMin = clp.getValueOr("-v", -0.7f);
+	float uMax = clp.getValueOr("-U", 0.7f);
+	float vMax = clp.getValueOr("-V", 0.7f);
+
+	bool parallelProjection = clp.getValueOr("-P", true);
 
 	slm::SMFModel model = slm::SMFInterpreter::interpret(fileName);
+
+	slm::AxisAlignedBox2u viewport{viewLowX, viewLowY, viewUpX, viewUpY};
+
+	slm::ViewVolume viewVolume{};
+	viewVolume.setProjectionReferencePoint({PRPx, PRPy, PRPz});
+	viewVolume.setViewReferencePoint({VRPx, VRPy, VRPz});
+	viewVolume.setViewPlaneNormal({VPNx, VPNy, VPNz});
+	viewVolume.setViewUpVector({VUPx, VUPy, VUPz});
+	viewVolume.setParallelProjection(parallelProjection);
+
+	slm::Scene scene{};
+
+	scene.convertModel(viewVolume, model, viewport);
+
+	scene.clip(viewport);
+
+	scene.printPostscript(viewport);
 }

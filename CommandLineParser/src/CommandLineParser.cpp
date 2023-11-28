@@ -6,7 +6,21 @@ CommandLineParser::CommandLineParser(const int argc, const char* argv[]) {
 	}
 }
 
-int CommandLineParser::getValueOr(const std::string& key, int defaultValue) {
+bool CommandLineParser::getValueOr(const std::string& key, bool defaultValue) {
+	if (auto search = m_arguments.find(key); search != m_arguments.end()) {
+		return std::stoi(search->second);
+	}
+	return defaultValue;
+}
+
+int32_t CommandLineParser::getValueOr(const std::string& key, int32_t defaultValue) {
+	if (auto search = m_arguments.find(key); search != m_arguments.end()) {
+		return std::stoi(search->second);
+	}
+	return defaultValue;
+}
+
+uint32_t CommandLineParser::getValueOr(const std::string& key, uint32_t defaultValue) {
 	if (auto search = m_arguments.find(key); search != m_arguments.end()) {
 		return std::stoi(search->second);
 	}

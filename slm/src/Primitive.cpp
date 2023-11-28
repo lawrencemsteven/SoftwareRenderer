@@ -105,10 +105,10 @@ namespace slm {
 	}
 
 	void Line2f::printPostscript() const {
-		std::cout << static_cast<int>(m_points[0].x()) << " " << static_cast<int>(m_points[0].y())
-				  << " moveto\n"
-				  << static_cast<int>(m_points[1].x()) << " " << static_cast<int>(m_points[1].y())
-				  << " lineto\nstroke\n";
+		std::cout << static_cast<int32_t>(m_points[0].x()) << " "
+				  << static_cast<int32_t>(m_points[0].y()) << " moveto\n"
+				  << static_cast<int32_t>(m_points[1].x()) << " "
+				  << static_cast<int32_t>(m_points[1].y()) << " lineto\nstroke\n";
 	}
 
 	float Line2f::getXMin() const {
@@ -896,6 +896,120 @@ namespace slm {
 				m_primitives.erase(m_primitives.begin() + i);
 				i--;
 			}
+		}
+	}
+
+	void Scene::convertModel(const ViewVolume& viewVolume, const SMFModel& model, const AxisAlignedBox2u& viewport) {
+		const float F = 0.6f;
+		const float B = -0.6f;
+		glm::mat4 projectionMatrix{};
+
+		const auto vrp	= viewVolume.getViewReferencePoint();
+		const auto vpn	= viewVolume.getViewPlaneNormal();
+		const auto vup	= viewVolume.getViewUpVector();
+		const auto prp	= viewVolume.getProjectionReferencePoint();
+		const auto uMax = viewVolume.getVRCUMax();
+		const auto uMin = viewVolume.getVRCUMin();
+		const auto vMax = viewVolume.getVRCVMax();
+		const auto vMin = viewVolume.getVRCVMin();
+
+		// Translate VRP to origin
+		glm::mat4 translation{1.0f};
+		translation[0][3] = -vrp.x();
+		translation[1][3] = -vrp.y();
+		translation[2][3] = -vrp.z();
+
+		// Rotate
+		glm::mat4 rotation{1.0f};
+		const auto rz  = glm::normalize(glm::vec3{vpn.x(), vpn.y(), vpn.z()});
+		const auto rx  = glm::normalize(glm::cross(glm::vec3{vup.x(), vup.y(), vup.z()}, rz));
+		const auto ry  = glm::cross(rz, rx);
+		rotation[0][0] = rx[0];
+		rotation[0][1] = rx[1];
+		rotation[0][2] = rx[2];
+		rotation[1][0] = ry[0];
+		rotation[1][1] = ry[1];
+		rotation[1][2] = ry[2];
+		rotation[2][0] = rz[0];
+		rotation[2][1] = rz[1];
+		rotation[2][2] = rz[2];
+
+		// Parallel Projection
+		if (viewVolume.getParallelProjection()) {
+			// Shear
+			glm::mat4 parallelShear{1.0f};
+			parallelShear[0][2] = (0.5f * (uMax + uMin) - prp.x()) / prp.z();
+			parallelShear[1][2] = (0.5f * (vMax + vMin) - prp.y()) / prp.z();
+
+			// Parallel Translation
+			glm::mat4 parallelTranslation{1.0f};
+			parallelTranslation[0][3] = -0.5f * (uMax + uMin);
+			parallelTranslation[1][3] = -0.5f * (vMax + vMin);
+			parallelTranslation[2][3] = -F;
+
+			// Parallel Scale
+			glm::mat4 parallelScale{1.0f};
+			parallelScale[0][0] = 2.0f / (uMax - uMin);
+			parallelScale[1][1] = 2.0f / (vMax - vMin);
+			parallelScale[2][2] = 1.0f / (F - B);
+
+			projectionMatrix =
+				parallelScale * parallelTranslation * parallelShear * rotation * translation;
+		}
+		// Perspective Projection
+		else {
+			// Translate
+			glm::mat4 perspectiveTranslate{1.0f};
+			perspectiveTranslate[0][4] = -prp.x();
+			perspectiveTranslate[1][4] = -prp.y();
+			perspectiveTranslate[2][4] = -prp.z();
+
+			// Shear
+			glm::mat4 perspectiveShear{1.0f};
+			perspectiveShear[0][3] = (0.5f * (uMax + uMin) - prp.x()) / prp.z();
+			perspectiveShear[1][3] = (0.5f * (vMax + vMin) - prp.y()) / prp.z();
+
+			// Scale
+			glm::mat4 perspectiveScale{1.0f};
+			perspectiveScale[0][0] = (2.0f * prp.z()) / ((uMax - uMin) * (prp.z() - B));
+			perspectiveScale[1][1] = (2.0f * prp.z()) / ((vMax - vMin) * (prp.z() - B));
+			perspectiveScale[2][2] = 1.0f / (prp.z() - B);
+
+			projectionMatrix =
+				perspectiveScale * perspectiveShear * perspectiveTranslate * rotation * translation;
+		}
+
+		for (std::size_t i = 0; i < model.getFaceCount(); i++) {
+			auto faceVertices = model.getFaceVertices(i);
+
+			std::array<glm::vec4, 3> faceVerticesGLM{
+				glm::vec4{(*(faceVertices[0]))[0], (*(faceVertices[0]))[1], (*(faceVertices[0]))[2],
+						  1.0f},
+				glm::vec4{(*(faceVertices[1]))[0], (*(faceVertices[1]))[1], (*(faceVertices[1]))[2],
+						  1.0f},
+				glm::vec4{(*(faceVertices[2]))[0], (*(faceVertices[2]))[1], (*(faceVertices[2]))[2],
+						  1.0f}};
+
+			faceVerticesGLM[0] = (projectionMatrix * faceVerticesGLM[0]);
+			faceVerticesGLM[1] = (projectionMatrix * faceVerticesGLM[1]);
+			faceVerticesGLM[2] = (projectionMatrix * faceVerticesGLM[2]);
+
+			std::vector<slm::Vec2f> newFaceVertices{};
+			newFaceVertices.resize(3);
+			newFaceVertices[0] = slm::Vec2f{faceVerticesGLM[0][0], faceVerticesGLM[0][1]};
+			newFaceVertices[1] = slm::Vec2f{faceVerticesGLM[1][0], faceVerticesGLM[1][1]};
+			newFaceVertices[2] = slm::Vec2f{faceVerticesGLM[2][0], faceVerticesGLM[2][1]};
+
+			newFaceVertices[0].scale(slm::Vec2u{viewport.getWidth(), viewport.getHeight()});
+			newFaceVertices[1].scale(slm::Vec2u{viewport.getWidth(), viewport.getHeight()});
+			newFaceVertices[2].scale(slm::Vec2u{viewport.getWidth(), viewport.getHeight()});
+
+			m_primitives.push_back(
+				std::make_unique<slm::Line2f>(slm::Line2f{newFaceVertices[0], newFaceVertices[1]}));
+			m_primitives.push_back(
+				std::make_unique<slm::Line2f>(slm::Line2f{newFaceVertices[1], newFaceVertices[2]}));
+			m_primitives.push_back(
+				std::make_unique<slm::Line2f>(slm::Line2f{newFaceVertices[2], newFaceVertices[0]}));
 		}
 	}
 

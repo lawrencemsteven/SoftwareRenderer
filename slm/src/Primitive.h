@@ -2,6 +2,7 @@
 
 #include "Mat.h"
 #include "Vec.h"
+#include "glm/glm.hpp"
 
 namespace slm {
 
@@ -9,11 +10,7 @@ namespace slm {
 	// ClippingStatus //
 	////////////////////
 
-	enum class ClippingStatus {
-		Inside,
-		Modified,
-		Outside
-	};
+	enum class ClippingStatus { Inside, Modified, Outside };
 
 
 
@@ -24,17 +21,18 @@ namespace slm {
 
 	class Primitive2 {
 	public:
-		virtual void translate(const Vec2& amount) = 0;
+		virtual void translate(const Vec2& amount)				   = 0;
 		virtual void rotate(const int32_t degreesCounterClockwise) = 0;
-		virtual void scale(const float factor) = 0;
-		virtual void scaleX(const float factor) = 0;
-		virtual void scaleY(const float factor) = 0;
+		virtual void scale(const float factor)					   = 0;
+		virtual void scaleX(const float factor)					   = 0;
+		virtual void scaleY(const float factor)					   = 0;
 
 		virtual void printPostscript() const = 0;
 
 		virtual ClippingStatus clip(const AxisAlignedBox2u& clippingBox) = 0;
 
 		virtual const Vec2f& operator[](const std::size_t idx) const = 0;
+
 	protected:
 	};
 
@@ -175,6 +173,7 @@ namespace slm {
 		const Vec2f& operator[](const std::size_t idx) const override;
 		bool operator==(const Polygon2f& other) const;
 		bool operator!=(const Polygon2f& other) const;
+
 	protected:
 		std::vector<slm::Vec2f> m_points{};
 	};
@@ -201,6 +200,7 @@ namespace slm {
 		void addVertex(const float x, const float y, const float z);
 		void addFace(slm::Vec3i face);
 		void addFace(const int32_t vertex1, const int32_t vertex2, const int32_t vertex3);
+
 	protected:
 		std::vector<slm::Vec3f> m_vertices{};
 		std::vector<slm::Vec3i> m_faces{};
@@ -235,6 +235,7 @@ namespace slm {
 		void setViewUpVector(slm::Vec3f viewUpVector);
 		void setVRCMinMaxUV(const float uMin, const float vMin, const float uMax, const float vMax);
 		void setParallelProjection(const bool parallel);
+
 	protected:
 		slm::Vec3f m_projectionReferencePoint{0.0f, 0.0f, 1.0f};
 		slm::Vec3f m_viewReferencePoint{0.0f, 0.0f, 0.0f};
@@ -270,7 +271,11 @@ namespace slm {
 
 		void clip(const AxisAlignedBox2u& clippingBox);
 
+		void convertModel(const ViewVolume& viewVolume, const SMFModel& model,
+						  const AxisAlignedBox2u& viewport);
+
 		void printPostscript(const AxisAlignedBox2u& viewport);
+
 	protected:
 		std::vector<std::unique_ptr<slm::Primitive2>> m_primitives{};
 	};

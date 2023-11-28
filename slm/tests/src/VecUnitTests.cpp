@@ -3073,11 +3073,29 @@ TEST_CASE("Vec4f") {
 		helpers::checkValues(test.w(), 4.0f);
 	}
 	SECTION("float operator[](const std::size_t idx) const") {
+		const slm::Vec4f test{1.0f, 2.0f, 3.0f, 4.0f};
+
+		helpers::checkValues(test[0], 1.0f);
+		helpers::checkValues(test[1], 2.0f);
+		helpers::checkValues(test[2], 3.0f);
+		helpers::checkValues(test[3], 4.0f);
+	}
+	SECTION("float& operator[](const std::size_t idx)") {
 		slm::Vec4f test{1.0f, 2.0f, 3.0f, 4.0f};
 
 		helpers::checkValues(test[0], 1.0f);
 		helpers::checkValues(test[1], 2.0f);
 		helpers::checkValues(test[2], 3.0f);
 		helpers::checkValues(test[3], 4.0f);
+
+		test[0] = 5.0f;
+		test[1] = 6.0f;
+		test[2] = 7.0f;
+		test[3] = 8.0f;
+
+		helpers::checkValues(test[0], 5.0f);
+		helpers::checkValues(test[1], 6.0f);
+		helpers::checkValues(test[2], 7.0f);
+		helpers::checkValues(test[3], 8.0f);
 	}
 }

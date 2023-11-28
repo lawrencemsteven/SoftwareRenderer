@@ -1201,4 +1201,8 @@ namespace slm {
 		return m_values[idx];
 	}
 
+	float& Vec4f::operator[](const std::size_t idx) {
+		return m_values[idx];
+	}
+
 }
