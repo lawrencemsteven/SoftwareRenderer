@@ -906,6 +906,7 @@ namespace slm {
 		glm::mat4 projectionMatrix{};
 
 		slm::Vec2f scaleValues{};
+		slm::Vec2f translateValues{};
 
 		const auto vrp	= viewVolume.getViewReferencePoint();
 		const auto vpn	= viewVolume.getViewPlaneNormal();
@@ -961,6 +962,9 @@ namespace slm {
 
 			scaleValues.x(static_cast<float>(viewport.getWidth()) / 2.0f);
 			scaleValues.y(static_cast<float>(viewport.getHeight()) / 2.0f);
+
+			translateValues.x(static_cast<float>(viewport.getWidth()) / 2.0f);
+			translateValues.y(static_cast<float>(viewport.getHeight()) / 2.0f);
 		}
 		// Perspective Projection
 		else {
@@ -1012,6 +1016,10 @@ namespace slm {
 			newFaceVertices[0].scale(scaleValues);
 			newFaceVertices[1].scale(scaleValues);
 			newFaceVertices[2].scale(scaleValues);
+
+			newFaceVertices[0].translate(translateValues);
+			newFaceVertices[1].translate(translateValues);
+			newFaceVertices[2].translate(translateValues);
 
 			m_primitives.push_back(
 				std::make_unique<slm::Line2f>(slm::Line2f{newFaceVertices[0], newFaceVertices[1]}));
