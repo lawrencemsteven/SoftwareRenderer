@@ -976,8 +976,8 @@ namespace slm {
 
 			// Shear
 			glm::mat4 perspectiveShear{1.0f};
-			perspectiveShear[0][3] = (0.5f * (uMax + uMin) - prp.x()) / prp.z();
-			perspectiveShear[1][3] = (0.5f * (vMax + vMin) - prp.y()) / prp.z();
+			perspectiveShear[0][2] = (0.5f * (uMax + uMin) - prp.x()) / prp.z();
+			perspectiveShear[1][2] = (0.5f * (vMax + vMin) - prp.y()) / prp.z();
 
 			// Scale
 			glm::mat4 perspectiveScale{1.0f};
