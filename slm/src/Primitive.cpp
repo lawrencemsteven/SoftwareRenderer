@@ -104,6 +104,13 @@ namespace slm {
 		return ClippingStatus::Modified;
 	}
 
+	void Line2f::printPostscript() const {
+		std::cout << static_cast<int>(m_points[0].x()) << " " << static_cast<int>(m_points[0].y())
+				  << " moveto\n"
+				  << static_cast<int>(m_points[1].x()) << " " << static_cast<int>(m_points[1].y())
+				  << " lineto\nstroke\n";
+	}
+
 	float Line2f::getXMin() const {
 		return std::min(m_points[0].x(), m_points[1].x());
 	}
@@ -360,6 +367,14 @@ namespace slm {
 		return m_points[1].x();
 	}
 
+	uint32_t AxisAlignedBox2u::getWidth() const {
+		return getRight() - getLeft();
+	}
+
+	uint32_t AxisAlignedBox2u::getHeight() const {
+		return getTop() - getBottom();
+	}
+
 	void AxisAlignedBox2u::translate(const Vec2& amount) {
 		for (auto& point : m_points) {
 			point.translate(amount);
@@ -573,6 +588,10 @@ namespace slm {
 
 		m_points = outputPoints;
 		return ClippingStatus::Modified;
+	}
+
+	void Polygon2f::printPostscript() const {
+		std::cout << "Polygon2f::printPostscript() TO IMPLEMENT!\n";
 	}
 
 	float Polygon2f::getXMin() const {
@@ -878,5 +897,21 @@ namespace slm {
 				i--;
 			}
 		}
+	}
+
+	void Scene::printPostscript(const AxisAlignedBox2u& viewport) {
+		translate(slm::Vec2f{-static_cast<float>(viewport.getLeft()),
+							 -static_cast<float>(viewport.getBottom())});
+
+		std::cout << "%!PS\n\n0.1 setlinewidth\n\n%%BeginSetup\n  << /PageSize ["
+				  << viewport.getWidth() << " " << viewport.getHeight()
+				  << "] >> setpagedevice\n%%EndSetup\n\n%%%BEGIN\n";
+		for (const auto& primitive : m_primitives) {
+			primitive->printPostscript();
+		}
+		std::cout << "0 setgray\n%%%END\n";
+
+		translate(slm::Vec2f{static_cast<float>(viewport.getLeft()),
+							 static_cast<float>(viewport.getBottom())});
 	}
 }

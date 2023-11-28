@@ -113,6 +113,8 @@ namespace slm {
 		uint32_t getLeft() const;
 		uint32_t getTop() const;
 		uint32_t getRight() const;
+		uint32_t getWidth() const;
+		uint32_t getHeight() const;
 
 		void translate(const Vec2& amount);
 		void rotate(const int32_t degreesCounterClockwise);
@@ -266,6 +268,8 @@ namespace slm {
 		void scaleY(const float factor);
 
 		void clip(const AxisAlignedBox2u& clippingBox);
+
+		void printPostscript(const AxisAlignedBox2u& viewport);
 	protected:
 		std::vector<std::unique_ptr<slm::Primitive2>> m_primitives{};
 	};

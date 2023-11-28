@@ -572,6 +572,20 @@ TEST_CASE("AxisAlignedBox2u") {
 
 		helpers::checkValues(right, 3u);
 	}
+	SECTION("uint32_t getWidth() const") {
+		slm::AxisAlignedBox2u test{1u, 2u, 3u, 5u};
+
+		const auto width = test.getWidth();
+
+		helpers::checkValues(width, 2u);
+	}
+	SECTION("uint32_t getHeight() const") {
+		slm::AxisAlignedBox2u test{1u, 2u, 3u, 5u};
+
+		const auto height = test.getHeight();
+
+		helpers::checkValues(height, 3u);
+	}
 	SECTION("void translate(const Vec2& amount)") {
 		slm::AxisAlignedBox2u test{1u, 2u, 3u, 4u};
 
