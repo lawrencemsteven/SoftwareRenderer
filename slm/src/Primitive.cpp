@@ -970,9 +970,9 @@ namespace slm {
 		else {
 			// Translate
 			glm::mat4 perspectiveTranslate{1.0f};
-			perspectiveTranslate[0][4] = -prp.x();
-			perspectiveTranslate[1][4] = -prp.y();
-			perspectiveTranslate[2][4] = -prp.z();
+			perspectiveTranslate[0][3] = -prp.x();
+			perspectiveTranslate[1][3] = -prp.y();
+			perspectiveTranslate[2][3] = -prp.z();
 
 			// Shear
 			glm::mat4 perspectiveShear{1.0f};
