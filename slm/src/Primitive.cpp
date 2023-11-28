@@ -899,10 +899,13 @@ namespace slm {
 		}
 	}
 
-	void Scene::convertModel(const ViewVolume& viewVolume, const SMFModel& model, const AxisAlignedBox2u& viewport) {
+	void Scene::convertModel(const ViewVolume& viewVolume, const SMFModel& model,
+							 const AxisAlignedBox2u& viewport) {
 		const float F = 0.6f;
 		const float B = -0.6f;
 		glm::mat4 projectionMatrix{};
+
+		slm::Vec2f scaleValues{};
 
 		const auto vrp	= viewVolume.getViewReferencePoint();
 		const auto vpn	= viewVolume.getViewPlaneNormal();
@@ -955,6 +958,9 @@ namespace slm {
 
 			projectionMatrix =
 				parallelScale * parallelTranslation * parallelShear * rotation * translation;
+
+			scaleValues.x(static_cast<float>(viewport.getWidth()) / 2.0f);
+			scaleValues.y(static_cast<float>(viewport.getHeight()) / 2.0f);
 		}
 		// Perspective Projection
 		else {
@@ -977,6 +983,9 @@ namespace slm {
 
 			projectionMatrix =
 				perspectiveScale * perspectiveShear * perspectiveTranslate * rotation * translation;
+
+			scaleValues.x(static_cast<float>(viewport.getWidth()) / 2.0f);
+			scaleValues.y(static_cast<float>(viewport.getHeight()) / 2.0f);
 		}
 
 		for (std::size_t i = 0; i < model.getFaceCount(); i++) {
@@ -1000,9 +1009,9 @@ namespace slm {
 			newFaceVertices[1] = slm::Vec2f{faceVerticesGLM[1][0], faceVerticesGLM[1][1]};
 			newFaceVertices[2] = slm::Vec2f{faceVerticesGLM[2][0], faceVerticesGLM[2][1]};
 
-			newFaceVertices[0].scale(slm::Vec2u{viewport.getWidth(), viewport.getHeight()});
-			newFaceVertices[1].scale(slm::Vec2u{viewport.getWidth(), viewport.getHeight()});
-			newFaceVertices[2].scale(slm::Vec2u{viewport.getWidth(), viewport.getHeight()});
+			newFaceVertices[0].scale(scaleValues);
+			newFaceVertices[1].scale(scaleValues);
+			newFaceVertices[2].scale(scaleValues);
 
 			m_primitives.push_back(
 				std::make_unique<slm::Line2f>(slm::Line2f{newFaceVertices[0], newFaceVertices[1]}));
