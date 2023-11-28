@@ -990,11 +990,11 @@ namespace slm {
 
 			const auto d	= prp.z() / (B - prp.z());
 
-			scaleValues.x(static_cast<float>(viewport.getWidth()));
-			scaleValues.y(static_cast<float>(viewport.getHeight()));
+			scaleValues.x(d * static_cast<float>(viewport.getWidth()));
+			scaleValues.y(d * static_cast<float>(viewport.getHeight()));
 
-			translateValues.x(d * static_cast<float>(viewport.getWidth()) / 2.0f);
-			translateValues.y(d * static_cast<float>(viewport.getHeight()) / 2.0f);
+			translateValues.x(static_cast<float>(viewport.getWidth()) / 2.0f);
+			translateValues.y(static_cast<float>(viewport.getHeight()) / 2.0f);
 		}
 
 		for (std::size_t i = 0; i < model.getFaceCount(); i++) {
