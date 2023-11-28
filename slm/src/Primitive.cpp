@@ -991,8 +991,8 @@ namespace slm {
 			const auto zMin = (prp.z() - F) / (B - prp.z());
 			const auto d	= prp.z() / (B - prp.z());
 
-			scaleValues.x(d * static_cast<float>(viewport.getWidth()) / 2.0f);
-			scaleValues.y(zMin * static_cast<float>(viewport.getHeight()) / 2.0f);
+			scaleValues.x(d * static_cast<float>(viewport.getWidth()) * 0.75f);
+			scaleValues.y(zMin * static_cast<float>(viewport.getHeight()) * 0.75f);
 
 			translateValues.x(static_cast<float>(viewport.getWidth()) / 2.0f);
 			translateValues.y(static_cast<float>(viewport.getHeight()) / 2.0f);
