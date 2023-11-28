@@ -988,10 +988,11 @@ namespace slm {
 			projectionMatrix =
 				perspectiveScale * perspectiveShear * perspectiveTranslate * rotation * translation;
 
+			const auto zMin = (prp.z() - F) / (B - prp.z());
 			const auto d	= prp.z() / (B - prp.z());
 
 			scaleValues.x(d * static_cast<float>(viewport.getWidth()));
-			scaleValues.y(d * static_cast<float>(viewport.getHeight()));
+			scaleValues.y(zMin * static_cast<float>(viewport.getHeight()));
 
 			translateValues.x(static_cast<float>(viewport.getWidth()) / 2.0f);
 			translateValues.y(static_cast<float>(viewport.getHeight()) / 2.0f);
