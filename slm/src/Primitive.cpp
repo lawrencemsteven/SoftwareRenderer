@@ -905,8 +905,8 @@ namespace slm {
 		const float B = -0.6f;
 		glm::mat4 projectionMatrix{};
 
-		slm::Vec2f scaleValues{};
-		slm::Vec2f translateValues{};
+		slm::Vec2f scaleValues{1.0f, 1.0f};
+		slm::Vec2f translateValues{0.0f, 0.0f};
 
 		const auto vrp	= viewVolume.getViewReferencePoint();
 		const auto vpn	= viewVolume.getViewPlaneNormal();

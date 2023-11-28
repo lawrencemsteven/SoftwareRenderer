@@ -43,6 +43,7 @@ int main(const int argc, const char* argv[]) {
 	viewVolume.setViewReferencePoint({VRPx, VRPy, VRPz});
 	viewVolume.setViewPlaneNormal({VPNx, VPNy, VPNz});
 	viewVolume.setViewUpVector({VUPx, VUPy, VUPz});
+	viewVolume.setVRCMinMaxUV(uMin, vMin, uMax, vMax);
 	viewVolume.setParallelProjection(parallelProjection);
 
 	slm::Scene scene{};
