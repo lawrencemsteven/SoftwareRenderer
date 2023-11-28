@@ -34,6 +34,9 @@ int main(const int argc, const char* argv[]) {
 
 	bool parallelProjection = clp.getExists("-P");
 
+	std::cout << "HELLO!\n";
+	std::cout << "Parallel: " << (parallelProjection ? "YES" : "NO") << std::endl;
+
 	slm::SMFModel model = slm::SMFInterpreter::interpret(fileName);
 
 	slm::AxisAlignedBox2u viewport{viewLowX, viewLowY, viewUpX, viewUpY};

@@ -2,7 +2,19 @@
 
 CommandLineParser::CommandLineParser(const int argc, const char* argv[]) {
 	for (int i = 1; i < argc; i += 2) {
-		m_arguments[argv[i]] = argv[i + 1];
+		if (i + 1 < argc) {
+			if (argv[i + 1][0] == '-' && !isdigit(argv[i + 1][1])) {
+				m_arguments[argv[i]] = "";
+				i -= 1;
+			}
+			else {
+				m_arguments[argv[i]] = argv[i + 1];
+			}
+		}
+		else {
+			m_arguments[argv[i]] = "";
+			i -= 1;
+		}
 	}
 }
 
