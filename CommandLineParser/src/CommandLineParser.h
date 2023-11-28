@@ -11,7 +11,7 @@ public:
 
 	int32_t getValueOr(const std::string& key, int32_t defaultValue);
 	uint32_t getValueOr(const std::string& key, uint32_t defaultValue);
-	bool getValueOr(const std::string& key, bool defaultValue);
+	bool getExists(const std::string& key);
 	std::string getValueOr(const std::string& key, const std::string defaultValue);
 	float getValueOr(const std::string& key, float defaultValue);
 

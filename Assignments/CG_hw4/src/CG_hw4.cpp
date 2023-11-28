@@ -8,8 +8,8 @@ int main(const int argc, const char* argv[]) {
 	std::string fileName = clp.getValueOr("-f", std::string{""});
 	uint32_t viewLowX	 = clp.getValueOr("-j", 0u);
 	uint32_t viewLowY	 = clp.getValueOr("-k", 0u);
-	uint32_t viewUpX		 = clp.getValueOr("-o", 500u);
-	uint32_t viewUpY		 = clp.getValueOr("-p", 500u);
+	uint32_t viewUpX	 = clp.getValueOr("-o", 500u);
+	uint32_t viewUpY	 = clp.getValueOr("-p", 500u);
 
 	float PRPx = clp.getValueOr("-x", 0.0f);
 	float PRPy = clp.getValueOr("-y", 0.0f);
@@ -32,7 +32,7 @@ int main(const int argc, const char* argv[]) {
 	float uMax = clp.getValueOr("-U", 0.7f);
 	float vMax = clp.getValueOr("-V", 0.7f);
 
-	bool parallelProjection = clp.getValueOr("-P", true);
+	bool parallelProjection = clp.getExists("-P");
 
 	slm::SMFModel model = slm::SMFInterpreter::interpret(fileName);
 
