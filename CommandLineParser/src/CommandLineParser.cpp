@@ -3,7 +3,7 @@
 CommandLineParser::CommandLineParser(const int argc, const char* argv[]) {
 	for (int i = 1; i < argc; i += 2) {
 		if (i + 1 < argc) {
-			if (argv[i + 1][0] == '-' && !isdigit(argv[i + 1][1])) {
+			if (argv[i + 1][0] == '-' && !isdigit(argv[i + 1][1]) && argv[i + 1][1] != '.') {
 				m_arguments[argv[i]] = "";
 				i -= 1;
 			}
