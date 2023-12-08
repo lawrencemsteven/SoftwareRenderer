@@ -809,6 +809,14 @@ namespace slm {
 		return m_parallelProjection;
 	}
 
+	float ViewVolume::getFront() const {
+		return m_front;
+	}
+
+	float ViewVolume::getBack() const {
+		return m_back;
+	}
+
 	void ViewVolume::setProjectionReferencePoint(slm::Vec3f projectionReferencePoint) {
 		m_projectionReferencePoint = std::move(projectionReferencePoint);
 	}
@@ -835,6 +843,92 @@ namespace slm {
 
 	void ViewVolume::setParallelProjection(const bool parallel) {
 		m_parallelProjection = parallel;
+	}
+
+	void ViewVolume::setFront(const float front) {
+		m_front = front;
+	}
+
+	void ViewVolume::setBack(const float back) {
+		m_back = back;
+	}
+
+	glm::mat4 ViewVolume::getViewMatrix() const {
+		// Translate VRP to origin
+		glm::mat4 translation{1.0f};
+		translation[0][3] = -m_viewReferencePoint.x();
+		translation[1][3] = -m_viewReferencePoint.y();
+		translation[2][3] = -m_viewReferencePoint.z();
+
+		// Rotate
+		glm::mat4 rotation{1.0f};
+		const auto rz = glm::normalize(
+			glm::vec3{m_viewPlaneNormal.x(), m_viewPlaneNormal.y(), m_viewPlaneNormal.z()});
+		const auto rx = glm::normalize(
+			glm::cross(glm::vec3{m_viewUpVector.x(), m_viewUpVector.y(), m_viewUpVector.z()}, rz));
+		const auto ry  = glm::cross(rz, rx);
+		rotation[0][0] = rx[0];
+		rotation[0][1] = rx[1];
+		rotation[0][2] = rx[2];
+		rotation[1][0] = ry[0];
+		rotation[1][1] = ry[1];
+		rotation[1][2] = ry[2];
+		rotation[2][0] = rz[0];
+		rotation[2][1] = rz[1];
+		rotation[2][2] = rz[2];
+
+		return translation * rotation;
+	}
+
+	glm::mat4 ViewVolume::getProjectionMatrix() const {
+		// Parallel Projection
+		if (getParallelProjection()) {
+			// Shear
+			glm::mat4 parallelShear{1.0f};
+			parallelShear[0][2] = (0.5f * (m_uMax + m_uMin) - m_projectionReferencePoint.x()) /
+								  m_projectionReferencePoint.z();
+			parallelShear[1][2] = (0.5f * (m_vMax + m_vMin) - m_projectionReferencePoint.y()) /
+								  m_projectionReferencePoint.z();
+
+			// Parallel Translation
+			glm::mat4 parallelTranslation{1.0f};
+			parallelTranslation[0][3] = -0.5f * (m_uMax + m_uMin);
+			parallelTranslation[1][3] = -0.5f * (m_vMax + m_vMin);
+			parallelTranslation[2][3] = -m_front;
+
+			// Parallel Scale
+			glm::mat4 parallelScale{1.0f};
+			parallelScale[0][0] = 2.0f / (m_uMax - m_uMin);
+			parallelScale[1][1] = 2.0f / (m_vMax - m_vMin);
+			parallelScale[2][2] = 1.0f / (m_front - m_back);
+
+			return getViewMatrix() * parallelShear * parallelTranslation * parallelScale;
+		}
+
+		// Perspective
+
+		// Translate
+		glm::mat4 perspectiveTranslate{1.0f};
+		perspectiveTranslate[0][3] = -m_projectionReferencePoint.x();
+		perspectiveTranslate[1][3] = -m_projectionReferencePoint.y();
+		perspectiveTranslate[2][3] = -m_projectionReferencePoint.z();
+
+		// Shear
+		glm::mat4 perspectiveShear{1.0f};
+		perspectiveShear[0][2] = (0.5f * (m_uMax + m_uMin) - m_projectionReferencePoint.x()) /
+								 m_projectionReferencePoint.z();
+		perspectiveShear[1][2] = (0.5f * (m_vMax + m_vMin) - m_projectionReferencePoint.y()) /
+								 m_projectionReferencePoint.z();
+
+		// Scale
+		glm::mat4 perspectiveScale{1.0f};
+		perspectiveScale[0][0] = (2.0f * m_projectionReferencePoint.z()) /
+								 ((m_uMax - m_uMin) * (m_projectionReferencePoint.z() - m_back));
+		perspectiveScale[1][1] = (2.0f * m_projectionReferencePoint.z()) /
+								 ((m_vMax - m_vMin) * (m_projectionReferencePoint.z() - m_back));
+		perspectiveScale[2][2] = 1.0f / (m_projectionReferencePoint.z() - m_back);
+
+		return getViewMatrix() * perspectiveTranslate * perspectiveShear * perspectiveScale;
 	}
 
 
@@ -899,67 +993,184 @@ namespace slm {
 		}
 	}
 
+	void Scene::addModel(SMFModel model, const Color color) {
+		m_models.push_back({model, color});
+	}
+
+	std::optional<float> barycentricCoordinates(const float& x, const float& y,
+												const std::vector<glm::vec4>& points) {
+		if (points.size() != 3) {
+			return std::nullopt;
+		}
+
+		const auto xa = points[0][0];
+		const auto xb = points[1][0];
+		const auto xc = points[2][0];
+		const auto ya = points[0][1];
+		const auto yb = points[1][1];
+		const auto yc = points[2][1];
+		const auto xk = x;
+		const auto yk = y;
+
+		// Weight A
+		const float weightADivisor = (xa - xc) * (yb - yc) - (xb - xc) * (ya - yc);
+		if (weightADivisor == 0.0f) {
+			return std::nullopt;
+		}
+		const float weightA = ((xb - xc) * (yc - yk) - (xc - xk) * (yb - yc)) / weightADivisor;
+		if (weightA < 0.0f) {
+			return std::nullopt;
+		}
+
+		// Weight B
+		const float weightBDivisor = (xb - xc) * (ya - yc) - (xa - xc) * (yb - yc);
+		if (weightBDivisor == 0.0f) {
+			return std::nullopt;
+		}
+		const float weightB = ((xa - xc) * (yc - yk) - (xc - xk) * (ya - yc)) / weightBDivisor;
+		if (weightB < 0.0f) {
+			return std::nullopt;
+		}
+
+		// Weight C
+		const float weightC = 1 - weightA - weightB;
+		if (weightC < 0.0f) {
+			return std::nullopt;
+		}
+
+		return weightA * points[0][2] + weightB * points[1][2] + weightC * points[2][2];
+	}
+
+	void Scene::projectModels(const ViewVolume& viewVolume, const AxisAlignedBox2u& window,
+							  const AxisAlignedBox2u& viewport) {
+		slm::ColorDepthBuffer colorDepthBuffer{window};
+		const auto projectionMatrix = glm::transpose(viewVolume.getProjectionMatrix());
+
+		for (std::size_t modelCount = 0; modelCount < m_models.size(); modelCount++) {
+			const auto model = m_models[modelCount].first;
+			const auto color = getColorValue(m_models[modelCount].second);
+			const auto back	 = -1.0f;
+			auto front = 0.0f;
+			if (!viewVolume.getParallelProjection()) {
+				front = (viewVolume.getProjectionReferencePoint().z() - viewVolume.getFront()) /
+						(viewVolume.getBack() - viewVolume.getProjectionReferencePoint().z());
+			}
+			for (std::size_t i = 0; i < model.getFaceCount(); i++) {
+				auto faceVertices = model.getFaceVertices(i);
+				// Project Vertices of face
+				std::vector<glm::vec4> faceVerticesGLM{faceVertices.size()};
+				for (std::size_t j = 0; j < faceVerticesGLM.size(); j++) {
+					faceVerticesGLM[j] = projectionMatrix *
+										 glm::vec4{(*(faceVertices[j]))[0], (*(faceVertices[j]))[1],
+												   (*(faceVertices[j]))[2], 1.0f};
+
+					// Parallel
+					if (viewVolume.getParallelProjection()) {
+						faceVerticesGLM[j][0] = std::lerp(viewport.getLeft(), viewport.getRight(),
+														  (faceVerticesGLM[j][0] + 1.0f) / 2.0f);
+						faceVerticesGLM[j][1] = std::lerp(viewport.getBottom(), viewport.getTop(),
+														  (faceVerticesGLM[j][1] + 1.0f) / 2.0f);
+						faceVerticesGLM[j][1] = window.getHeight() - faceVerticesGLM[j][1];
+						continue;
+					}
+
+					// Perspective
+					const auto prp		  = viewVolume.getProjectionReferencePoint();
+					const auto B		  = viewVolume.getBack();
+					const auto d		  = prp.z() / (B - prp.z());
+					faceVerticesGLM[j][0] = faceVerticesGLM[j][0] * d / faceVerticesGLM[j][2];
+					faceVerticesGLM[j][1] = faceVerticesGLM[j][1] * d / faceVerticesGLM[j][2];
+					faceVerticesGLM[j][0] =
+						std::lerp(viewport.getLeft(), viewport.getRight(),
+								  (faceVerticesGLM[j][0] + std::abs(d)) / (2.0f * std::abs(d)));
+					faceVerticesGLM[j][1] =
+						std::lerp(viewport.getBottom(), viewport.getTop(),
+								  (faceVerticesGLM[j][1] + std::abs(d)) / (2.0f * std::abs(d)));
+					faceVerticesGLM[j][1] = window.getHeight() - faceVerticesGLM[j][1];
+				}
+
+				// Get Bounding Box
+				int32_t xMin = window.getRight();
+				int32_t xMax = window.getLeft();
+				int32_t yMin = window.getTop();
+				int32_t yMax = window.getBottom();
+				for (std::size_t j = 0; j < faceVerticesGLM.size(); j++) {
+					const auto x = faceVerticesGLM[j][0];
+					const auto y = faceVerticesGLM[j][1];
+					xMin		 = std::min(static_cast<int32_t>(floor(x)), xMin);
+					xMax		 = std::max(static_cast<int32_t>(ceil(x)), xMax);
+					yMin		 = std::min(static_cast<int32_t>(floor(y)), yMin);
+					yMax		 = std::max(static_cast<int32_t>(ceil(y)), yMax);
+				}
+
+				// Clamp Values To Screen
+				xMin = std::clamp(xMin, static_cast<int32_t>(window.getLeft()),
+								  static_cast<int32_t>(window.getRight()));
+				xMax = std::clamp(xMax, static_cast<int32_t>(window.getLeft()),
+								  static_cast<int32_t>(window.getRight()));
+				yMin = std::clamp(yMin, static_cast<int32_t>(window.getBottom()),
+								  static_cast<int32_t>(window.getTop()));
+				yMax = std::clamp(yMax, static_cast<int32_t>(window.getBottom()),
+								  static_cast<int32_t>(window.getTop()));
+
+				// Use Barycentric Coordinates
+				const auto windowLeft	= static_cast<float>(window.getLeft());
+				const auto windowRight	= static_cast<float>(window.getRight());
+				const auto windowBottom = static_cast<float>(window.getBottom());
+				const auto windowTop	= static_cast<float>(window.getTop());
+				for (std::size_t pixelY = yMin; pixelY <= yMax; pixelY++) {
+					for (std::size_t pixelX = xMin; pixelX <= xMax; pixelX++) {
+						const auto zValOptional = barycentricCoordinates(
+							std::lerp(windowLeft, windowRight, static_cast<float>(pixelX)) /
+								window.getWidth(),
+							std::lerp(windowBottom, windowTop, static_cast<float>(pixelY)) /
+								window.getHeight(),
+							faceVerticesGLM);
+
+						if (!zValOptional.has_value()) {
+							continue;
+						}
+
+						const auto zVal = zValOptional.value();
+
+						// Front & Back Clipping
+						if (zVal < back || zVal > front) {
+							continue;
+						}
+
+						//  Color Pixel
+						const auto red = color[0] * (zVal - back) /
+										 (front - back);
+						const auto green = color[1] * (zVal - back) /
+										   (front - back);
+						const auto blue = color[2] * (zVal - back) /
+										  (front - back);
+						colorDepthBuffer.setPixel(pixelX, pixelY, zVal, red, green, blue);
+					}
+				}
+			}
+		}
+
+		colorDepthBuffer.printPPMImage();
+	}
+
+	std::array<float, 3> Scene::getColorValue(const Color& color) const {
+		switch (color) {
+			case Color::Red: return {1.0f, 0.0f, 0.0f};
+			case Color::Green: return {0.0f, 1.0f, 0.0f};
+			case Color::Blue: return {0.0f, 0.0f, 1.0f};
+		}
+	}
+
 	void Scene::convertModel(const ViewVolume& viewVolume, const SMFModel& model,
 							 const AxisAlignedBox2u& viewport) {
-		const float F = 0.6f;
-		const float B = -0.6f;
-		glm::mat4 projectionMatrix{};
+		glm::mat4 projectionMatrix = viewVolume.getProjectionMatrix();
 
 		slm::Vec2f scaleValues{1.0f, 1.0f};
 		slm::Vec2f translateValues{0.0f, 0.0f};
 
-		const auto vrp	= viewVolume.getViewReferencePoint();
-		const auto vpn	= viewVolume.getViewPlaneNormal();
-		const auto vup	= viewVolume.getViewUpVector();
-		const auto prp	= viewVolume.getProjectionReferencePoint();
-		const auto uMax = viewVolume.getVRCUMax();
-		const auto uMin = viewVolume.getVRCUMin();
-		const auto vMax = viewVolume.getVRCVMax();
-		const auto vMin = viewVolume.getVRCVMin();
-
-		// Translate VRP to origin
-		glm::mat4 translation{1.0f};
-		translation[0][3] = -vrp.x();
-		translation[1][3] = -vrp.y();
-		translation[2][3] = -vrp.z();
-
-		// Rotate
-		glm::mat4 rotation{1.0f};
-		const auto rz  = glm::normalize(glm::vec3{vpn.x(), vpn.y(), vpn.z()});
-		const auto rx  = glm::normalize(glm::cross(glm::vec3{vup.x(), vup.y(), vup.z()}, rz));
-		const auto ry  = glm::cross(rz, rx);
-		rotation[0][0] = rx[0];
-		rotation[0][1] = rx[1];
-		rotation[0][2] = rx[2];
-		rotation[1][0] = ry[0];
-		rotation[1][1] = ry[1];
-		rotation[1][2] = ry[2];
-		rotation[2][0] = rz[0];
-		rotation[2][1] = rz[1];
-		rotation[2][2] = rz[2];
-
 		// Parallel Projection
 		if (viewVolume.getParallelProjection()) {
-			// Shear
-			glm::mat4 parallelShear{1.0f};
-			parallelShear[0][2] = (0.5f * (uMax + uMin) - prp.x()) / prp.z();
-			parallelShear[1][2] = (0.5f * (vMax + vMin) - prp.y()) / prp.z();
-
-			// Parallel Translation
-			glm::mat4 parallelTranslation{1.0f};
-			parallelTranslation[0][3] = -0.5f * (uMax + uMin);
-			parallelTranslation[1][3] = -0.5f * (vMax + vMin);
-			parallelTranslation[2][3] = -F;
-
-			// Parallel Scale
-			glm::mat4 parallelScale{1.0f};
-			parallelScale[0][0] = 2.0f / (uMax - uMin);
-			parallelScale[1][1] = 2.0f / (vMax - vMin);
-			parallelScale[2][2] = 1.0f / (F - B);
-
-			projectionMatrix =
-				parallelScale * parallelTranslation * parallelShear * rotation * translation;
-
 			scaleValues.x(static_cast<float>(viewport.getWidth()) / 2.0f);
 			scaleValues.y(static_cast<float>(viewport.getHeight()) / 2.0f);
 
@@ -968,25 +1179,9 @@ namespace slm {
 		}
 		// Perspective Projection
 		else {
-			// Translate
-			glm::mat4 perspectiveTranslate{1.0f};
-			perspectiveTranslate[0][3] = -prp.x();
-			perspectiveTranslate[1][3] = -prp.y();
-			perspectiveTranslate[2][3] = -prp.z();
-
-			// Shear
-			glm::mat4 perspectiveShear{1.0f};
-			perspectiveShear[0][2] = (0.5f * (uMax + uMin) - prp.x()) / prp.z();
-			perspectiveShear[1][2] = (0.5f * (vMax + vMin) - prp.y()) / prp.z();
-
-			// Scale
-			glm::mat4 perspectiveScale{1.0f};
-			perspectiveScale[0][0] = (2.0f * prp.z()) / ((uMax - uMin) * (prp.z() - B));
-			perspectiveScale[1][1] = (2.0f * prp.z()) / ((vMax - vMin) * (prp.z() - B));
-			perspectiveScale[2][2] = 1.0f / (prp.z() - B);
-
-			projectionMatrix =
-				perspectiveScale * perspectiveShear * perspectiveTranslate * rotation * translation;
+			const auto prp = viewVolume.getProjectionReferencePoint();
+			const auto F   = viewVolume.getFront();
+			const auto B   = viewVolume.getBack();
 
 			const auto zMin = (prp.z() - F) / (B - prp.z());
 			const auto d	= prp.z() / (B - prp.z());

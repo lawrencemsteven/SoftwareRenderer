@@ -7,6 +7,8 @@ set(slm_FILES
     "./src/PostscriptInterpreter.h"
     "./src/Primitive.cpp"
     "./src/Primitive.h"
+    "./src/PPMImage.cpp"
+    "./src/PPMImage.h"
     "./src/Scene.cpp"
     "./src/Scene.h"
     "./src/slm.h"

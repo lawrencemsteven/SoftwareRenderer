@@ -4,6 +4,7 @@ set(slm_test_FILES
     "./src/MatUnitTests.cpp"
     "./src/PBMImageUnitTests.cpp"
     "./src/PostscriptInterpreterUnitTests.cpp"
+    "./src/PPMImageUnitTests.cpp"
     "./src/PrimitiveUnitTests.cpp"
     "./src/SceneUnitTests.cpp"
     "./src/SMFInterpreterUnitTests.cpp"

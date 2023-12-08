@@ -2,6 +2,7 @@
 
 #include "Mat.h"
 #include "Vec.h"
+#include "PPMImage.h"
 #include "glm/glm.hpp"
 
 namespace slm {
@@ -228,6 +229,8 @@ namespace slm {
 		float getVRCUMax() const;
 		float getVRCVMax() const;
 		bool getParallelProjection() const;
+		float getFront() const;
+		float getBack() const;
 
 		void setProjectionReferencePoint(slm::Vec3f projectionReferencePoint);
 		void setViewReferencePoint(slm::Vec3f viewReferencePoint);
@@ -235,6 +238,11 @@ namespace slm {
 		void setViewUpVector(slm::Vec3f viewUpVector);
 		void setVRCMinMaxUV(const float uMin, const float vMin, const float uMax, const float vMax);
 		void setParallelProjection(const bool parallel);
+		void setFront(const float front);
+		void setBack(const float back);
+
+		glm::mat4 getViewMatrix() const;
+		glm::mat4 getProjectionMatrix() const;
 
 	protected:
 		slm::Vec3f m_projectionReferencePoint{0.0f, 0.0f, 1.0f};
@@ -245,6 +253,8 @@ namespace slm {
 		float m_vMin{-0.7f};
 		float m_uMax{0.7f};
 		float m_vMax{0.7f};
+		float m_front{0.6f};
+		float m_back{-0.6f};
 		bool m_parallelProjection{false};
 	};
 
@@ -257,6 +267,8 @@ namespace slm {
 
 	class Scene {
 	public:
+		enum class Color { Red, Green, Blue };
+
 		Scene();
 
 		void addPrimitive(std::unique_ptr<slm::Primitive2> primitive);
@@ -271,6 +283,11 @@ namespace slm {
 
 		void clip(const AxisAlignedBox2u& clippingBox);
 
+		void addModel(SMFModel model, const Color color);
+		void projectModels(const ViewVolume& viewVolume, const AxisAlignedBox2u& window,
+						   const AxisAlignedBox2u& viewport);
+		std::array<float, 3> getColorValue(const Color& color) const;
+
 		void convertModel(const ViewVolume& viewVolume, const SMFModel& model,
 						  const AxisAlignedBox2u& viewport);
 
@@ -278,5 +295,6 @@ namespace slm {
 
 	protected:
 		std::vector<std::unique_ptr<slm::Primitive2>> m_primitives{};
+		std::vector<std::pair<SMFModel, Color>> m_models{};
 	};
 }
